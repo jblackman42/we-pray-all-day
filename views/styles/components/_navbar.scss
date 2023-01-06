@@ -1,0 +1,110 @@
+// controls when the navbar changed into dropdown menu
+$dropdownWidth: 768px;
+$navBackground: $accent-blue;
+$navFontColor: white;
+$dropdownBackground: #bdc3c7;
+$dropdownFontColor: black;
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: $navBackground;
+    color: $navFontColor;
+    justify-content: space-between;
+    position: relative;
+    .logo-container {
+        width: 20vw;
+        min-width: 200px;
+        max-width: 300px;
+
+        display: grid;
+        place-items: center;
+        padding: 0 1rem;
+        img {
+            width: 100%;
+            display: block;
+        }
+    }
+
+    .btn-container {
+        @media screen and (min-width: calc($dropdownWidth + 1px)) {
+            display: none;
+            visibility: hidden;
+        }
+        display: grid;
+        place-items: center;
+        button {
+            display: grid;
+            place-items: center;
+            color: currentColor;
+
+            border: none;
+            background-color: transparent;
+            padding: .5rem;
+            margin: .5rem;
+            cursor: pointer;
+            i {
+                font-size: 2rem;
+                color: currentColor;
+            }
+        }
+    }
+
+    .nav-container {
+        width: 100%;
+        overflow: hidden;
+        transition: max-height 150ms linear;
+        background-color: $dropdownBackground;
+
+        @media screen and (max-width: $dropdownWidth) {
+            color: $dropdownFontColor;
+            &.closed {
+                max-height: 0px !important;
+            }
+            @for $i from 1 through 10 {
+                &:has(ul li:nth-of-type(#{$i})) {
+                    max-height: calc(39px * $i);
+                }
+            }
+        }
+
+        @media screen and (min-width: calc($dropdownWidth + 1px)) {
+            width: max-content;
+            height: 100%;
+            margin: auto 0;
+            background-color: transparent;
+
+            ul.links {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                li a:hover {
+                    background-color: transparent !important;
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        ul.links {
+            margin: 0;
+            padding: 0;
+
+            list-style: none;
+            li {
+                width: 100%;
+                a {
+                    color: currentColor;
+                    text-decoration: none;
+                    padding: .5rem 1rem;
+                    display: block;
+                    font-size: 1.25rem;
+                    text-align: center;
+
+                    &:hover {
+                        background-color: rgba(0,0,0,.2);
+                    }
+                }
+            }
+        }
+    }
+}

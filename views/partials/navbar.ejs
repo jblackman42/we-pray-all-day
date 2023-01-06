@@ -1,0 +1,22 @@
+<nav>
+    <div class="logo-container">
+        <img src="/assets/logo.png" alt="">
+    </div>
+    <div class="btn-container">
+        <button onclick="toggleMenu()">
+            <i class="material-icons icon">menu</i>
+        </button>
+    </div>
+    <div class="nav-container closed">
+        <ul class="links">
+            <li><a href="#">It's Not About Us</a></li>
+            <li><a href="#">For Churches/Communities</a></li>
+        </ul>
+    </div>
+</nav>
+<script>
+    const toggleMenu = () => {
+        const dropdownContainerDOM = document.querySelector('.nav-container');
+        dropdownContainerDOM.classList.toggle('closed')
+    }
+</script>
