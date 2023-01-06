@@ -19,17 +19,32 @@
         draw = async () => {
             this.innerHTML = `
                 <div class="calendar">
-                    <h1>Choose A Day To Pray</h1>
-                    <p>Select A Day With Open Hours </p>
+                    <div id="context">    
+                        <h1>Choose A Day To Pray</h1>
+                        <p>Select A Day With Open Hours </p>
+                    </div>
                     <div id="month-header">
-                        <button class="btn" id="prev-month"><i class="material-icons">keyboard_arrow_left</i></button>
-                        <h3 id="month-label"></h3>
-                        <button class="btn" id="next-month"><i class="material-icons">keyboard_arrow_right</i></button>
+                        <div id="btn-container">
+                            <button class="btn" id="prev-month"><i class="material-icons">keyboard_arrow_left</i></button>
+                            <h3 id="month-label"></h3>
+                            <button class="btn" id="next-month"><i class="material-icons">keyboard_arrow_right</i></button>
+                        </div>
+                        <div id="legend">
+                            <div id="empty-square"></div>
+                            <p>: Open for Prayer</p>
+                            <div id="filled-square"></div>
+                            <p>: Booked for Prayer</p>
+                        </div>
                     </div>
                     <div id="weekdays"></div>
                     <div id="days-grid"></div>
                 </div>
             `;
+
+            const nextBtn = document.querySelector('#next-month')
+                nextBtn.onclick = this.nextMonth;
+            const prevBtn = document.querySelector('#prev-month');
+                prevBtn.onclick = this.prevMonth;
 
             this.update(this.year, this.month)
         }
@@ -47,9 +62,9 @@
             
             const bufferDays = parseInt(new Date(this.monthDays[0]).getDay());
             for (let i = 0; i < bufferDays; i ++) {
-                this.monthDays.unshift(0)
+                const earliestDate = new Date(this.monthDays[0]);
+                this.monthDays.unshift(new Date(earliestDate.setDate(earliestDate.getDate() - 1)).toDateString())
             }
-
             // ------------------------------------------------------------------------------
             
             // Create Header Row ------------------------------------------------------------

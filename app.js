@@ -20,6 +20,7 @@ const port = process.env.PORT || 3000;
 
 //navigation routing
 app.use('/', require('./routes/index'))
+app.use('/api/v1', require('./routes/mp'))
 // app.use('/api/oauth', require('./routes/oauth.js'))
 // app.use('/api/widgets', require('./routes/widgets.js'))
 // app.use('/api/attendance', require('./routes/AttendanceRoutes.js'))
