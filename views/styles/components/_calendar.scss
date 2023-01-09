@@ -11,6 +11,7 @@ prayer-calendar {
     background-color: $primary-white;
     width: 1000px;
     max-width: 90vw;
+    margin: 0 auto;
 
     #context {
         text-align: center;
@@ -100,6 +101,11 @@ prayer-calendar {
             text-align: center;
             display: flex;
             flex-direction: column;
+            text-decoration: none;
+            border: none;
+
+            cursor: pointer;
+            padding: 0;
 
             .date {
                 margin: .5rem 0 0 .5rem;
@@ -109,7 +115,8 @@ prayer-calendar {
             }
 
             .community-title {
-                margin: auto .25rem;
+                margin: auto;
+                padding: 0 .25rem;
                 font-size: 14px;
             }
 
@@ -120,8 +127,10 @@ prayer-calendar {
                 margin: 1px;
                 margin-top: auto;
                 background-color: inherit;
+                width: calc(100% - 2px);
 
                 .hour {
+                    display: block;
                     background-color: $secondary-white;
                     box-sizing: border-box;
                     width: 100%;

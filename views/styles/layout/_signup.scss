@@ -1,0 +1,85 @@
+$form-gap: 1rem;
+
+#sign-up-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $form-gap;
+    width: 1000px;
+    max-width: 95vw;
+    margin: $form-gap auto;
+
+    position: relative;
+    #back-btn {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #2980b9;
+    }
+    #prayer-date {
+        width: 100%;
+        text-align: center;
+        // margin: 0;
+    }
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        width: calc(50% - ($form-gap / 2));
+        input {
+            padding: .5rem .25rem;
+            border: none;
+            border-radius: 2px;
+
+        }
+    }
+    .dropdown-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        select {
+            padding: .5rem .25rem;
+            border: none;
+            border-radius: 2px;
+        }
+    }
+    .time-container {
+        width: 100%;
+    }
+    #hours-options {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        margin: 0 auto;
+        gap: .5rem;
+        // width: max-content;
+        .checkbox-container {
+            display: grid;
+            input[type='radio'] {
+                display: none;
+                visibility: hidden;
+                &:checked ~ label {
+                    background-color: $accent-blue;
+                    color: #FFF;
+                }
+            }
+            label {
+                background-color: #FFF;
+                padding: .5rem .25rem;
+                user-select: none;
+                text-align: center;
+                border-radius: 2px;
+            }
+
+        }
+    }
+    button[type="submit"] {
+        margin-left: auto;
+        border: none;
+        padding: .5rem 1rem;
+        background-color: $accent-blue;
+        color: white;
+        font-weight: bold;
+        border-radius: 2px;
+    }
+}

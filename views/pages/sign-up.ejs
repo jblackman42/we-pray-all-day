@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+    <%- include('../partials/navbar'); %>
+
+    <form id="sign-up-form">
+        <a id="back-btn" href="/"><i class="material-icons">keyboard_arrow_left	</i> Back To Calendar</a>
+        <h2 id="prayer-date"></h2>
+        <div class="input-container">
+            <label for="Fist_Name">First Name:</label>
+            <input type="text" name="First_Name" id="First_Name">
+        </div>
+        <div class="input-container">
+            <label for="Last_Name">Last Name:</label>
+            <input type="text" name="Last_Name" id="Last_Name">
+        </div>
+        <div class="input-container">
+            <label for="Email">Email:</label>
+            <input type="email" name="Email" id="Email">
+        </div>
+        <div class="input-container">
+            <label for="Phone">Phone Number:</label>
+            <input type="tel" name="Phone" id="Phone">
+        </div>
+        <div class="dropdown-container">
+            <label for="Community_ID">Community:</label>
+            <select name="Community_ID" id="Community_ID"></select>
+        </div>
+        <div class="time-container">
+            <label>Hour of Prayer:</label>
+            <div id="hours-options">
+            </div>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const date = urlParams.get('date');
+        const hour = urlParams.get('hour');
+
+        if (!date) window.location = '/'
+        // console.log(date, hour)
+        document.getElementById('prayer-date').innerText = new Date(date).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
+        (async () => {
+            const data = await axios({
+                method: 'get',
+                url: '/api/v1/Communities?$select=Community_ID,Community_Name'
+            })
+                .then(response => response.data)
+            
+            const {Communities} = data;
+            document.getElementById('Community_ID').innerHTML = Communities.map(community => {
+                const {Community_ID, Community_Name} = community;
+                return `
+                    <option value="${Community_ID}">${Community_Name}</option>
+                `
+            })
+
+
+            const hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+            document.querySelector('#hours-options').innerHTML = hours.map(hr => {
+                const time = hr == 0 ? `12 AM` : hr == 12 ? `${hr} PM` : hr > 12 ? `${hr - 12} PM` : `${hr} AM`;
+                return `
+                    <div class="checkbox-container">
+                        <input type="radio" name="hour" value="${hr}" id="${hr}" ${hr == hour ? 'checked' : ''}>
+                        <label for="${hr}">${time}</label>
+                    </div>
+                `
+            }).join('')
+        })()
+        document.getElementById('sign-up-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const First_Name = document.getElementById('First_Name').value;
+            const Last_Name = document.getElementById('Last_Name').value;
+            const Email = document.getElementById('Email').value;
+            const Phone = document.getElementById('Phone').value;
+            const Community_ID = document.getElementById('Community_ID').value;
+            const Hour_Value = [...document.getElementsByName('hour')].filter(elem => elem.checked)[0].value
+            console.log(Hour_Value)
+
+            const Start_Date = new Date(new Date(date).setHours(Hour_Value));
+            const adjustedStartDate = new Date(Start_Date.setMinutes(Start_Date.getMinutes() - Start_Date.getTimezoneOffset()));
+            const End_Date = new Date(adjustedStartDate.getMilliseconds() + 3599999)
+
+            const Prayer_Schedule = {
+                First_Name: First_Name,
+                Last_Name: Last_Name,
+                Email: Email,
+                Phone: Phone,
+                Community_ID: Community_ID,
+                Start_Date: adjustedStartDate.toISOString(),
+                End_Date: End_Date
+            }
+            console.log(Prayer_Schedule)
+            
+            await axios({
+                method: 'post',
+                url: '/api/v1/Prayer_Schedules',
+                data: Prayer_Schedule
+            })
+        })
+    </script>
+</body>
+
+</html>

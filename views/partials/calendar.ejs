@@ -84,7 +84,6 @@
             }).join('')
             
             // ----------------------------------------------------------------------------
-
             
             // Create Calendar Days ------------------------------------------------------------
 
@@ -95,28 +94,59 @@
                 const date = currDate.getDate();
                 const dateArray = date.toString().split('')
                 const lastDateDigit = dateArray[dateArray.length - 1];
-
                 const hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+
                 return `
-                    <div class="calendar-day">
+                    <button class="calendar-day" onclick="window.location='/signup?date=${day}'">
                         <p class="date">${date}<sup>${[11,12,13].includes(date) ? 'th' : lastDateDigit == 1 ? 'st' : lastDateDigit == 2 ? 'nd' : lastDateDigit == 3 ? 'rd' : 'th'}</sup></p>
-                        <p class="community-title">Pure Heart Church</p>
+                        <p class="community-title" id="title-${date}-${year}">${new Date().setHours(0, 0, 0, -1) >= currDate ? `<span id="value-${date}-${year}">0</span> hour<span id="s-${date}-${year}">s</span> prayed for` : `<span id="value-${date}-${year}">24</span> hour<span id="s-${date}-${year}">s</span> available`}</p>
                         <div class="hours-container">
                             ${hours.map(hour => {
-                                return `<div id="${date}-${hour}" class="hour ${randomIntFromInterval(0,2) == 2 ? 'booked' : ''}"></div>`
+                                return `<a href="/signup?date=${day}&hour=${hour}" id="${hour}-${date}-${year}" class="hour"></a>` //booked class makes it blue
                             }).join('')}    
                         </div>
-                    </div>
-                `
-            }).join('')
+                    </button>
+                    `
+    }).join('')
 
             document.querySelectorAll('.hour').forEach(elem => {
                 const {id} = elem;
-                const hour = id.split('-')[1];
+                const hour = id.split('-')[0];
                 const time = hour == 0 ? `12:00 am` : hour == 12 ? `${hour}:00 pm` : hour > 12 ? `${hour - 12}:00 pm` : `${hour}:00 am`
                 elem.setAttribute('data-content', time);
             })
             
+            // ---------------------------------------------------------------------------------
+            
+            // Get booked hours from api -------------------------------------------------------
+
+            const data = await axios({
+                method: 'get',
+                url: `/api/v1/Prayer_Schedules?$filter=MONTH(Start_Date)=${month + 1} AND YEAR(Start_Date)=${year}`
+            })
+                .then(response => response.data);
+
+            const {Prayer_Schedules} = data;
+
+            for (let i = 0; i < Prayer_Schedules.length; i ++) {
+                const {Start_Date, End_Date} = Prayer_Schedules[i];
+                const startDate = new Date(Start_Date);
+                const hour = startDate.getHours();
+                const date = startDate.getDate();
+                const year = startDate.getFullYear();
+
+                const currHourDOM = document.getElementById(`${hour}-${date}-${year}`);
+                    currHourDOM.classList.add('booked')
+
+                const remainingHoursValue = document.getElementById(`value-${date}-${year}`);
+                if (new Date().setHours(0, 0, 0, -1) >= startDate) {
+                    remainingHoursValue.innerText = parseInt(remainingHoursValue.innerText) + 1;
+                    console.log('before today')
+                } else {
+                    remainingHoursValue.innerText = parseInt(remainingHoursValue.innerText) - 1;
+                }
+                    document.getElementById(`s-${date}-${year}`).innerHTML = remainingHoursValue.innerText == 1 ? '' : 's'
+            }
             // ---------------------------------------------------------------------------------
         }
 

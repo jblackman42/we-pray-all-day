@@ -23,16 +23,17 @@ const authorize = async () => {
     return access_token;
 }
 
-//home page
 router.get('/Prayer_Schedules', async (req, res) => {
     if (!access_token) await authorize();
+    const {$filter} = req.query;
 
     try {
         const data = await axios({
             method: 'get',
-            url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
+            url: `https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules${$filter ? `?$filter=${$filter}` : ''}`,
             headers: {
-                Authorization: `Bearer ${access_token}`
+                'Authorization': `Bearer ${access_token}`,
+                'Content-Type': 'application/json'
             }
         })
             .then(response => response.data);
@@ -40,6 +41,59 @@ router.get('/Prayer_Schedules', async (req, res) => {
         res.status(200).send({Prayer_Schedules: data}).end();
     } catch (err) {
         res.status(500).send({error: err}).end();
+    }
+})
+
+router.post('/Prayer_Schedules', async (req, res) => {
+    if (!access_token) await authorize();
+    console.log('is this working')
+
+    try {
+        const {First_Name, Last_Name, Start_Date, End_Date, Email, Phone, Community_ID} = req.body;
+        if (!First_Name || !Start_Date || !End_Date || !Email || !Phone || !Community_ID) throw new Error('missing parameters')
+        const data = await axios({
+            method: 'post',
+            url: `https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules`,
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'Content-Type': 'application/json'
+            },
+            data: [{
+                First_Name: First_Name,
+                Last_Name: Last_Name || null,
+                Start_Date: Start_Date,
+                End_Date: End_Date,
+                Email: Email,
+                Phone: Phone,
+                Community_ID: Community_ID
+            }]
+        })
+            .then(response => response.data);
+
+        res.status(200).send(data).end();
+    } catch (error) {
+        res.status(500).send({error}).end();
+    }
+})
+
+router.get('/Communities', async (req, res) => {
+    if (!access_token) await authorize();
+    const {$select} = req.query;
+
+    try {
+        const data = await axios({
+            method: 'get',
+            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities${$select ? `?$select=${$select}` : ''}`,
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.data);
+        
+        res.status(200).send({Communities: data}).end();
+    } catch (error) {
+        res.status(500).send(error).end();
     }
 })
 
