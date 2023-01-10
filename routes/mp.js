@@ -19,6 +19,8 @@ const authorize = async () => {
         .then(response => response.data)
         .catch(err => console.log(err))
     
+    //automatically gets a new access token when the current one expires
+    setTimeout(async () => await authorize(), data.expires_in * 1000)
     access_token = data.access_token;
     return access_token;
 }
@@ -72,6 +74,7 @@ router.post('/Prayer_Schedules', async (req, res) => {
 
         res.status(200).send(data).end();
     } catch (error) {
+        console.error(error)
         res.status(500).send({error}).end();
     }
 })
@@ -95,6 +98,15 @@ router.get('/Communities', async (req, res) => {
     } catch (error) {
         res.status(500).send(error).end();
     }
+})
+
+router.post('/confirmation-email', async (req, res) => {
+    if (!access_token) await authorize();
+    
+    const {Recipient_Name, Recipient_Email, Start_Date, End_Date, Community_ID} = req.body;
+    console.log(req.body)
+
+    res.status(200).end();
 })
 
 module.exports = router;

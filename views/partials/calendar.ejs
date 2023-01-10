@@ -1,10 +1,5 @@
-
 <prayer-calendar></prayer-calendar>
 <script>
-    function randomIntFromInterval(min, max) { // min and max included 
-        return Math.floor(Math.random() * (max - min + 1) + min)
-    }
-
     class Calendar extends HTMLElement {
         constructor() {
             super();
@@ -50,6 +45,7 @@
         }
 
         update = async (year, month) => {
+            loading();
             // Create Month Data ------------------------------------------------------------
             
             const date = new Date(year, month, 1);
@@ -107,7 +103,7 @@
                         </div>
                     </button>
                     `
-    }).join('')
+            }).join('')
 
             document.querySelectorAll('.hour').forEach(elem => {
                 const {id} = elem;
@@ -148,6 +144,7 @@
                     document.getElementById(`s-${date}-${year}`).innerHTML = remainingHoursValue.innerText == 1 ? '' : 's'
             }
             // ---------------------------------------------------------------------------------
+            doneLoading();
         }
 
         nextMonth = () => {

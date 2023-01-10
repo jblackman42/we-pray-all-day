@@ -1,0 +1,33 @@
+<div class="popup-container hidden">
+    <div class="popup">
+        <div id="title-row">
+            <p id="popup-title">title</p>
+        </div>
+        <div id="content">
+            <p id="popup-content">content</p>
+        </div>
+        <div id="btn-row">
+            <button id="popup-btn" onclick="hidePopup()">close</button>
+        </div>
+    </div>
+</div>
+<script>
+    const showPopup = (title, content, btnText) => {
+        document.getElementById('popup-title').innerText = title;
+        document.getElementById('popup-content').innerHTML = content;
+        document.getElementById('popup-btn').innerText = btnText;
+
+        if (!title || !content || !btnText) {
+            return console.error('missing params: please provide "title", "context", and "btnText"')
+        }
+
+
+        const popupContainerDOM = document.querySelector('.popup-container');
+        popupContainerDOM.classList.remove('hidden')
+    }
+    const hidePopup = () => {
+        const popupContainerDOM = document.querySelector('.popup-container');
+    
+        popupContainerDOM.classList.add('hidden')
+    }
+</script>

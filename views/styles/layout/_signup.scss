@@ -73,13 +73,20 @@ $form-gap: 1rem;
 
         }
     }
-    button[type="submit"] {
-        margin-left: auto;
-        border: none;
-        padding: .5rem 1rem;
-        background-color: $accent-blue;
-        color: white;
-        font-weight: bold;
-        border-radius: 2px;
+    .form-footer {
+        display: flex;
+        width: 100%;
+        #curr-time {
+            margin: .5rem 0;
+        }
+        button[type="submit"] {
+            margin-left: auto;
+            border: none;
+            padding: .5rem 1rem;
+            background-color: $accent-blue;
+            color: white;
+            font-weight: bold;
+            border-radius: 2px;
+        }
     }
 }

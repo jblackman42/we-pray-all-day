@@ -4,6 +4,8 @@
     <%- include('../partials/head'); %>
 </head>
 <body>
+    <%- include('../partials/loading'); %>
+    <%- include('../partials/popup'); %>
     <%- include('../partials/navbar'); %>
 
     <form id="sign-up-form">
@@ -34,7 +36,10 @@
             <div id="hours-options">
             </div>
         </div>
-        <button type="submit">Submit</button>
+        <div class="form-footer">
+            <p id="curr-time">Please Select an Hour of Prayer</p>
+            <button type="submit">Submit</button>
+        </div>
     </form>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -45,6 +50,7 @@
         // console.log(date, hour)
         document.getElementById('prayer-date').innerText = new Date(date).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
         (async () => {
+            loading();
             const data = await axios({
                 method: 'get',
                 url: '/api/v1/Communities?$select=Community_ID,Community_Name'
@@ -65,12 +71,20 @@
                 const time = hr == 0 ? `12 AM` : hr == 12 ? `${hr} PM` : hr > 12 ? `${hr - 12} PM` : `${hr} AM`;
                 return `
                     <div class="checkbox-container">
-                        <input type="radio" name="hour" value="${hr}" id="${hr}" ${hr == hour ? 'checked' : ''}>
+                        <input type="radio" name="hour" value="${hr}" id="${hr}" ${hr == hour ? 'checked' : ''} onclick="updateTime(${hr})">
                         <label for="${hr}">${time}</label>
                     </div>
                 `
             }).join('')
+            doneLoading();
         })()
+        const updateTime = (hour) => {
+            const Start_Date = new Date(new Date(date).setHours(hour));
+            const End_Date = new Date(new Date(Start_Date).setMilliseconds(3599999))
+
+            const currTimeDOM = document.getElementById('curr-time');
+            currTimeDOM.innerText = `Hour of Prayer: ${Start_Date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${End_Date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+        }
         document.getElementById('sign-up-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -80,11 +94,15 @@
             const Phone = document.getElementById('Phone').value;
             const Community_ID = document.getElementById('Community_ID').value;
             const Hour_Value = [...document.getElementsByName('hour')].filter(elem => elem.checked)[0].value
-            console.log(Hour_Value)
+            
+            if (!First_Name || !Email || !Phone || !Community_ID || !Hour_Value) {
+                console.log('not all required fields filled')
+                return;
+            }
 
             const Start_Date = new Date(new Date(date).setHours(Hour_Value));
             const adjustedStartDate = new Date(Start_Date.setMinutes(Start_Date.getMinutes() - Start_Date.getTimezoneOffset()));
-            const End_Date = new Date(adjustedStartDate.getMilliseconds() + 3599999)
+            const End_Date = new Date(new Date(adjustedStartDate).setMilliseconds(3599999))
 
             const Prayer_Schedule = {
                 First_Name: First_Name,
@@ -93,15 +111,32 @@
                 Phone: Phone,
                 Community_ID: Community_ID,
                 Start_Date: adjustedStartDate.toISOString(),
-                End_Date: End_Date
+                End_Date: End_Date.toISOString()
             }
             console.log(Prayer_Schedule)
             
+            loading();
+            // REMEBER TO PUT THIS INTO A TRY CATCH AND MAKE SOME FORM OF ERROR HANDLING
             await axios({
                 method: 'post',
                 url: '/api/v1/Prayer_Schedules',
                 data: Prayer_Schedule
             })
+
+            await axios({
+                method: 'post',
+                url: '/api/v1/confirmation-email',
+                data: {
+                    Recipient_Name: `${First_Name} ${Last_Name}`,
+                    Recipient_Email: Email,
+                    Start_Date: adjustedStartDate,
+                    End_Date: End_Date,
+                    Community_ID: Community_ID
+                }
+            })
+
+            doneLoading();
+            showPopup('Thank you for signing up!', `You should recieve a confirmation email regarding your scheduled time of prayer.</br>${Start_Date.toDateString()} ${Start_Date.toLocaleTimeString()} - ${End_Date.toLocaleTimeString()}`, 'Confirm')
         })
     </script>
 </body>
