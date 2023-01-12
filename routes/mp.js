@@ -199,7 +199,7 @@ router.post('/confirmation-email', async (req, res) => {
                                 <p style="text-align: center;">${startDate.toLocaleTimeString()} - ${endDate.toLocaleTimeString()}</p>
                                 <br>
                                 <div class="btn-container">
-                                    <a target="_blank" href="http://localhost:3000/calendar-invite/?start_date=${startDate.toUTCString()}&end_date=${endDate.toUTCString()}">Add to Calendar</a>
+                                    <a target="_blank" href="${process.env.DOMAIN_NAME}/calendar-invite/?start_date=${startDate.toUTCString()}&end_date=${endDate.toUTCString()}">Add to Calendar</a>
                                 </div>
                             </div>
                         </div>
