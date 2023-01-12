@@ -1,6 +1,8 @@
 const express = require('express');
 const navigation = express.Router();
 const ical = require('ical-generator');
+const fs = require('fs')
+const path = require('path')
 
 //home page
 navigation.get('/', (req, res) => {
@@ -12,6 +14,11 @@ navigation.get('/signup', (req, res) => {
   res.render('pages/sign-up')
 })
 
+navigation.get('/guide', (req, res) => {
+  fs.readFile(path.join(__dirname, '..', 'views', 'assets', 'guides', 'Feb-Mar 2023.pdf'), function (err,data){
+      res.contentType("application/pdf").send(data);
+  });
+})
 
 navigation.get('/calendar-invite', (req, res) => {
   const {start_date, end_date} = req.query;
