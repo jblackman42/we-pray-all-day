@@ -4,6 +4,7 @@ const router = express.Router();
 const qs = require('qs');
 // const IP = require('ip');
 const ical = require('ical-generator');
+const schedule = require('node-schedule');
 
 let access_token;
 const authorize = async () => {
@@ -104,11 +105,34 @@ router.get('/Communities', async (req, res) => {
 router.post('/confirmation-email', async (req, res) => {
     if (!access_token) await authorize();
     
-    const {Recipient_Name, Recipient_Email, Start_Date, End_Date, Community_ID} = req.body;
+    const {Recipient_Name, Recipient_Email, Recipient_Phone, Start_Date, End_Date, Community_ID} = req.body;
 
     const startDate = new Date(Start_Date)
     const endDate = new Date(End_Date)
-    // const formattedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
+
+    //gets date/time 5 mins before startDate
+    const textNotifyDate = new Date(startDate.getTime() - (5 * 60 * 1000))
+    
+    const job = schedule.scheduleJob(textNotifyDate, async() => {
+        await axios({
+            method: 'post',
+            url: 'https://my.pureheart.org/ministryplatformapi/texts',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`
+            },
+            data: {
+                "FromPhoneNumberId": 1,
+                "Message": `
+Hello ${Recipient_Name},
+
+It's your time to pray!
+                `,
+                "ToPhoneNumbers": 
+                [Recipient_Phone]
+            }
+        })
+    })
     
     axios({
         method: 'post',
