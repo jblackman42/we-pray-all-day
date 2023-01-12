@@ -107,18 +107,8 @@ router.post('/confirmation-email', async (req, res) => {
     const {Recipient_Name, Recipient_Email, Start_Date, End_Date, Community_ID} = req.body;
 
     const startDate = new Date(Start_Date)
-    const formattedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`
-    
-    const calendarEvent = {
-        start: formattedStartDate,
-        end: formattedStartDate,
-        duration: [3599999, "milliseconds"],
-        title: "We Pray All Day",
-        description: "Pray for 1 hour over all of Maricopa County",
-        location: "anywhere",
-        busy: true,
-        guests: []
-  };
+    const endDate = new Date(End_Date)
+    // const formattedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
     
     axios({
         method: 'post',
@@ -178,7 +168,7 @@ router.post('/confirmation-email', async (req, res) => {
                             display: flex;
                             justify-content: center;
                         }
-                        .container button {
+                        .container a {
                             font-size: 1rem;
                             font-weight: bold;
                             border: none;
@@ -187,6 +177,7 @@ router.post('/confirmation-email', async (req, res) => {
                             padding: .5rem 1rem;
                             border-radius: 4px;
                             cursor: pointer;
+                            text-decoration: none;
                         }
                     </style>
                     <body>
@@ -204,11 +195,11 @@ router.post('/confirmation-email', async (req, res) => {
                                 <br>
                                 <p>We will text you 5 minutes before your scheduled time of prayer with more information.</p>
                                 <br>
-                                <p style="text-align: center;">Wed Jan 11th 2023</p>
-                                <p style="text-align: center;">5:00 pm - 5:59 pm</p>
+                                <p style="text-align: center;">${startDate.toDateString()}</p>
+                                <p style="text-align: center;">${startDate.toLocaleTimeString()} - ${endDate.toLocaleTimeString()}</p>
                                 <br>
                                 <div class="btn-container">
-                                    <a target="_blank" href="http://localhost:3000/calendar-invite/?date=${startDate.toISOString()}">Add to Calendar</a>
+                                    <a target="_blank" href="http://localhost:3000/calendar-invite/?start_date=${startDate.toUTCString()}&end_date=${endDate.toUTCString()}">Add to Calendar</a>
                                 </div>
                             </div>
                         </div>

@@ -80,7 +80,7 @@
         })()
         const updateTime = (hour) => {
             const Start_Date = new Date(new Date(date).setHours(hour));
-            const End_Date = new Date(new Date(Start_Date).setMilliseconds(3599999))
+            const End_Date = new Date(new Date(Start_Date).getTime() + 3600000)
 
             const currTimeDOM = document.getElementById('curr-time');
             currTimeDOM.innerText = `Hour of Prayer: ${Start_Date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${End_Date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
@@ -101,8 +101,8 @@
             }
 
             const Start_Date = new Date(new Date(date).setHours(Hour_Value));
-            const adjustedStartDate = new Date(Start_Date.setMinutes(Start_Date.getMinutes() - Start_Date.getTimezoneOffset()));
-            const End_Date = new Date(new Date(adjustedStartDate).setMilliseconds(3599999))
+            // const adjustedStartDate = new Date(Start_Date.setMinutes(Start_Date.getMinutes() - Start_Date.getTimezoneOffset()));
+            const End_Date = new Date(new Date(Start_Date).getTime() + 3600000)
 
             const Prayer_Schedule = {
                 First_Name: First_Name,
@@ -110,8 +110,8 @@
                 Email: Email,
                 Phone: Phone,
                 Community_ID: Community_ID,
-                Start_Date: adjustedStartDate.toISOString(),
-                End_Date: End_Date.toISOString()
+                Start_Date: Start_Date.toUTCString(),
+                End_Date: End_Date.toUTCString()
             }
             console.log(Prayer_Schedule)
             
@@ -129,7 +129,7 @@
                 data: {
                     Recipient_Name: `${First_Name} ${Last_Name}`,
                     Recipient_Email: Email,
-                    Start_Date: adjustedStartDate,
+                    Start_Date: Start_Date,
                     End_Date: End_Date,
                     Community_ID: Community_ID
                 }

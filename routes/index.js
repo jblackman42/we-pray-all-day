@@ -1,5 +1,6 @@
 const express = require('express');
 const navigation = express.Router();
+const ical = require('ical-generator');
 
 //home page
 navigation.get('/', (req, res) => {
@@ -13,10 +14,26 @@ navigation.get('/signup', (req, res) => {
 
 
 navigation.get('/calendar-invite', (req, res) => {
-  console.log(req.query)
+  const {start_date, end_date} = req.query;
+
+  const Start_Date = new Date(start_date);
+  const End_Date = new Date(Start_Date.getTime() + 3600000);
+  
+  const cal = ical({
+    events: [
+        {
+            start: Start_Date,
+            end: End_Date,
+            summary: 'We Pray All Day',
+            description: 'An hour spent in prayer for Maricopa County.'
+        }
+    ]
+  });
+  
+  cal.serve(res);
 
 
-  res.send({msg: 'help me'})
+  // res.send({msg: 'help me'})
 })
 
 
