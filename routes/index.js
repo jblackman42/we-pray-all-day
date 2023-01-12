@@ -12,4 +12,12 @@ navigation.get('/signup', (req, res) => {
 })
 
 
+navigation.get('/calendar-invite', (req, res) => {
+  console.log(req.query)
+
+
+  res.send({msg: 'help me'})
+})
+
+
 module.exports = navigation;

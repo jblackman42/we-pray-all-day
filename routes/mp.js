@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const qs = require('qs');
 // const IP = require('ip');
+const ical = require('ical-generator');
 
 let access_token;
 const authorize = async () => {
@@ -104,6 +105,20 @@ router.post('/confirmation-email', async (req, res) => {
     if (!access_token) await authorize();
     
     const {Recipient_Name, Recipient_Email, Start_Date, End_Date, Community_ID} = req.body;
+
+    const startDate = new Date(Start_Date)
+    const formattedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`
+    
+    const calendarEvent = {
+        start: formattedStartDate,
+        end: formattedStartDate,
+        duration: [3599999, "milliseconds"],
+        title: "We Pray All Day",
+        description: "Pray for 1 hour over all of Maricopa County",
+        location: "anywhere",
+        busy: true,
+        guests: []
+  };
     
     axios({
         method: 'post',
@@ -193,7 +208,7 @@ router.post('/confirmation-email', async (req, res) => {
                                 <p style="text-align: center;">5:00 pm - 5:59 pm</p>
                                 <br>
                                 <div class="btn-container">
-                                    <button>Add to Calendar</button>
+                                    <a target="_blank" href="http://localhost:3000/calendar-invite/?date=${startDate.toISOString()}">Add to Calendar</a>
                                 </div>
                             </div>
                         </div>
@@ -202,6 +217,21 @@ router.post('/confirmation-email', async (req, res) => {
     })
 
     res.status(200).end();
+})
+
+const cal = ical({
+    events: [
+        {
+            start: new Date(),
+            end: new Date(new Date().setHours(new Date().getHours() + 1)),
+            summary: 'We Pray All Day',
+            description: 'An hour spent in prayer for Maricopa County.'
+        }
+    ]
+});
+
+router.get('/test', (req, res) => {
+    cal.serve(res);
 })
 
 module.exports = router;
