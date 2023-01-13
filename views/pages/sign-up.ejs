@@ -127,7 +127,7 @@
                 method: 'post',
                 url: '/api/v1/confirmation-email',
                 data: {
-                    Recipient_Name: `${First_Name} ${Last_Name}`,
+                    Recipient_Name: First_Name,
                     Recipient_Email: Email,
                     Recipient_Phone: Phone,
                     Start_Date: Start_Date.toUTCString(),

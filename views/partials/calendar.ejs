@@ -16,7 +16,11 @@
                 <div class="calendar">
                     <div id="context">    
                         <h1>Choose A Day To Pray</h1>
-                        <p>Select A Day With Open Hours </p>
+                        <ol>
+                            <li>⏱️ Pick an hour</li>
+                            <li>🗃️ Drop your info (we won't spam you)</li>
+                            <li>📲 Get a text reminder when it's your time</li>
+                        </ol>
                     </div>
                     <div id="month-header">
                         <div id="btn-container">
@@ -28,7 +32,7 @@
                             <div id="empty-square"></div>
                             <p>: Open for Prayer</p>
                             <div id="filled-square"></div>
-                            <p>: Booked for Prayer</p>
+                            <p>: Booked for Prayer (More? Bring it on!)</p>
                         </div>
                     </div>
                     <div id="weekdays"></div>
@@ -76,7 +80,10 @@
             const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const weekdaysDOM = document.querySelector('#weekdays');
             weekdaysDOM.innerHTML = weekdays.map(weekday => {
-                return `<p>${weekday}</p>`
+                const otherLetters = '';
+                const firstLetter = weekday.split('')[0];
+                console.log(otherLetters)
+                return `<p>${firstLetter}<span>${otherLetters}</span></p>`
             }).join('')
             
             // ----------------------------------------------------------------------------
@@ -93,7 +100,7 @@
                 const hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
 
                 return `
-                    <button class="calendar-day" onclick="window.location='/signup?date=${day}'">
+                    <button class="calendar-day" onclick="window.location='/signup?date=${day}'" ${new Date().setHours(0, 0, 0, -1) >= currDate ? 'disabled' : ''}>
                         <p class="date">${date}<sup>${[11,12,13].includes(date) ? 'th' : lastDateDigit == 1 ? 'st' : lastDateDigit == 2 ? 'nd' : lastDateDigit == 3 ? 'rd' : 'th'}</sup></p>
                         <p class="community-title" id="title-${date}-${year}">${new Date().setHours(0, 0, 0, -1) >= currDate ? `<span id="value-${date}-${year}">0</span> hour<span id="s-${date}-${year}">s</span> prayed for` : `<span id="value-${date}-${year}">24</span> hour<span id="s-${date}-${year}">s</span> available`}</p>
                         <div class="hours-container">

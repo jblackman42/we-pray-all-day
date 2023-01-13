@@ -1,0 +1,22 @@
+#banner { 
+    display: grid;
+    place-items: center;
+    max-width: 1280px;
+    min-height: calc(100vh - 113px);
+    margin: 0 auto;
+    img {
+        width: 100%;
+        height: auto;
+    }
+
+    animation: slide-in 1.5s forwards ease-in-out;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(150%) rotate(15deg);
+    }
+    to {
+        transform: translateX(0) rotate(0deg);
+    }
+}

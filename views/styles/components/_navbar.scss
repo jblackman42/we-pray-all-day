@@ -1,8 +1,8 @@
 // controls when the navbar changed into dropdown menu
 $dropdownWidth: 768px;
 $navBackground: $accent-blue;
-$navFontColor: white;
-$dropdownBackground: #bdc3c7;
+$navFontColor: black;
+$dropdownBackground: white;
 $dropdownFontColor: black;
 
 nav {
@@ -11,18 +11,32 @@ nav {
     background-color: $navBackground;
     color: $navFontColor;
     justify-content: space-between;
-    position: relative;
+    position: fixed;
+    width: 100%;
+    z-index: 99999;
+
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     .logo-container {
         width: 20vw;
-        min-width: 200px;
-        max-width: 300px;
+        min-width: 100px;
+        max-width: 150px;
 
         display: grid;
         place-items: center;
-        padding: 0 1rem;
+        padding: 1rem;
+
+        animation: spinner 8s infinite linear alternate;
         img {
             width: 100%;
             display: block;
+        }
+    }
+    @keyframes spinner {
+        50% {
+          transform: rotate(15deg);
+        }
+        100% {
+          transform: rotate(-15deg);
         }
     }
 

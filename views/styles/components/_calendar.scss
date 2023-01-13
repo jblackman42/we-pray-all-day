@@ -1,25 +1,45 @@
 $gridGap: .25rem;
+$calendarWidth: 1280px;
 $calendarDayWidth: calc((90vw / 7) - ($gridGap * 1));
-$calendarDayMaxWidth: calc((1000px / 7) - ($gridGap * 1));
+$calendarDayMaxWidth: calc(($calendarWidth / 7) - ($gridGap * 1));
 
 prayer-calendar {
     display: flex;
     justify-content: center;
+    background-color: $primary-white;
 }
 
 .calendar {
-    background-color: $primary-white;
-    width: 1000px;
+    // background-color: ;
+    width: $calendarWidth;
     max-width: 90vw;
     margin: 0 auto;
 
     #context {
         text-align: center;
+        h1 {
+            font-size: clamp(30px, 7vw, 96px);
+            margin-block: 2rem 1rem;
+        }
+        ol {
+            font-size: clamp(16px, 2vw, 24px);
+            font-weight: 100;
+            margin: 0 auto 2rem auto;
+            padding-left: 1.25rem;
+            width: max-content;
+            li {
+                text-align: left;
+            }
+        }
     }
 
     #month-header {
         display: flex;
         justify-content: space-between;
+        @media screen and (max-width: 850px) {
+            flex-direction: column;
+            align-items: center;
+        }
 
         h3 {
             margin: auto 2rem;
@@ -62,6 +82,11 @@ prayer-calendar {
             #filled-square {
                 background-color: $accent-blue;
                 margin-left: 1rem;
+            }
+
+            @media screen and (max-width: 768px) {
+                display: none;
+                visibility: hidden;
             }
         }
     }
@@ -107,6 +132,7 @@ prayer-calendar {
             cursor: pointer;
             padding: 0;
 
+            
             .date {
                 margin: .5rem 0 0 .5rem;
                 font-weight: bold;
@@ -135,57 +161,69 @@ prayer-calendar {
                     box-sizing: border-box;
                     width: 100%;
                     aspect-ratio: 1 / 1;
-
+                    
                     &.booked {
                         background-color: $accent-blue;
                     }
-
+                    
                     position: relative;
-
-                    &:hover::before,
-                    &:hover::after {
-                        display: block;
-                        visibility: visible;
+                    
+                    
+                }
+                &:disabled {
+                    cursor: default;
+                    opacity: .8;
+                    * {
+                        cursor: default !important;
                     }
-
-                    &::after {
-                        display: none;
-                        visibility: hidden;
-
-                        content: attr(data-content);
-                        color: $primary-black;
-                        position: absolute;
-                        width: max-content;
-                        bottom: calc(100% + 3px);
-                        left: 50%;
-                        transform: translateX(-50%);
-                        z-index: 999;
-
-                        background-color: $primary-white;
-                        box-shadow: 0 0 0 1px $primary-black;
-                        border-radius: 2px;
-                        padding: .25rem;
-                    }
-
-                    &::before {
-                        display: none;
-                        visibility: hidden;
-
-                        content: '';
-                        position: absolute;
-                        width: 6px;
-                        height: 6px;
-                        background-color: $primary-white;
-                        border: 1px solid $primary-black;
-                        border-top-color: transparent;
-                        border-right-color: transparent;
-                        bottom: calc(100% - 2.5px);
-                        left: 50%;
-                        border-bottom-left-radius: 2px;
-                        z-index: 1000;
-
-                        transform-origin: bottom left;
-                        transform: rotate(-45deg);
+                }
+                &:enabled {
+                    .hour {
+                        &:hover::before,
+                        &:hover::after {
+                            display: block;
+                            visibility: visible;
+                        }
+    
+                        &::after {
+                            display: none;
+                            visibility: hidden;
+    
+                            content: attr(data-content);
+                            color: $primary-black;
+                            position: absolute;
+                            width: max-content;
+                            bottom: calc(100% + 3px);
+                            left: 50%;
+                            transform: translateX(-50%);
+                            z-index: 999;
+    
+                            background-color: $primary-white;
+                            box-shadow: 0 0 0 1px $primary-black;
+                            border-radius: 2px;
+                            padding: .25rem;
+                        }
+    
+                        &::before {
+                            display: none;
+                            visibility: hidden;
+    
+                            content: '';
+                            position: absolute;
+                            width: 6px;
+                            height: 6px;
+                            background-color: $primary-white;
+                            border: 1px solid $primary-black;
+                            border-top-color: transparent;
+                            border-right-color: transparent;
+                            bottom: calc(100% - 2.5px);
+                            left: 50%;
+                            border-bottom-left-radius: 2px;
+                            z-index: 1000;
+    
+                            transform-origin: bottom left;
+                            transform: rotate(-45deg);
+                        }
                     }
                 }
             }

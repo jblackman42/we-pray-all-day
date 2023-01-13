@@ -9,9 +9,15 @@ navigation.get('/', (req, res) => {
   res.render('pages/home')
 })
 
-//home page
 navigation.get('/signup', (req, res) => {
   res.render('pages/sign-up')
+})
+navigation.get('/leaders', (req, res) => {
+  res.render('pages/leaders')
+})
+
+navigation.get('/notaboutus', (req, res) => {
+  res.render('pages/not-about-us')
 })
 
 navigation.get('/guide', (req, res) => {

@@ -88,7 +88,7 @@ router.get('/Communities', async (req, res) => {
     try {
         const data = await axios({
             method: 'get',
-            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities${$select ? `?$select=${$select}` : ''}`,
+            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities?$filter=End_Date IS NULL OR GETDATE()<End_Date${$select ? `&$select=${$select}` : ''}`,
             headers: {
                 'Authorization': `Bearer ${access_token}`,
                 'Content-Type': 'application/json'
@@ -99,6 +99,40 @@ router.get('/Communities', async (req, res) => {
         res.status(200).send({Communities: data}).end();
     } catch (error) {
         res.status(500).send(error).end();
+    }
+})
+
+router.post('/Communities', async (req, res) => {
+    if (!access_token) await authorize();
+    console.log('is this working')
+
+    try {
+        const {First_Name, Last_Name, Email, Phone, Community_Name, City, State, Start_Date} = req.body;
+        if (!First_Name || !Email || !Phone || !Community_Name || !State || !City || !Start_Date) throw new Error('missing parameters')
+        const data = await axios({
+            method: 'post',
+            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities`,
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'Content-Type': 'application/json'
+            },
+            data: [{
+                First_Name: First_Name,
+                Last_Name: Last_Name,
+                Email: Email,
+                Phone: Phone,
+                Community_Name: Community_Name,
+                City: State,
+                State: City,
+                Start_Date: Start_Date
+            }]
+        })
+            .then(response => response.data);
+
+        res.status(200).send(data).end();
+    } catch (error) {
+        console.error(error)
+        res.status(500).send({error}).end();
     }
 })
 
@@ -113,6 +147,7 @@ router.post('/confirmation-email', async (req, res) => {
     const textNotifyDate = new Date(startDate.getTime() - (5 * 60 * 1000))
     
     const job = schedule.scheduleJob(textNotifyDate, async() => {
+        console.log('sending text')
         await axios({
             method: 'post',
             url: 'https://my.pureheart.org/ministryplatformapi/texts',
@@ -122,10 +157,7 @@ router.post('/confirmation-email', async (req, res) => {
             },
             data: {
                 "FromPhoneNumberId": 1,
-                "Message": `
-Hello ${Recipient_Name},
-
-It's your time to pray!
+                "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide
                 `,
                 "ToPhoneNumbers": 
                 [Recipient_Phone]

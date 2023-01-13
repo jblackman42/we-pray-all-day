@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+    <%- include('../partials/loading'); %>
+    <%- include('../partials/popup'); %>
+    <%- include('../partials/navbar'); %>
+
+    <section id="leader-header">
+        <h3>We truly believe that we are better together and That revival in our community means every tribe and every tongue.</h3>
+        <h3>No matter your denomination or background. We are in this together!</h3>
+        <h3>We have three commitments that we ask every partner to make:</h3>
+
+        <ol>
+            <li>Coordinate and host 24 hours of prayer, one day every month for one year.</li>
+            <li>Appoint a prayer coordinator as a point person for for mobilizing 24 hours of prayer each month. (Please share their name, email and mobile number with us)</li>
+            <li>Share with your community (church, ministry, group) once a month leading up to your day of prayer, encouraging them to sign up.</li>
+        </ol>
+    </section>
+
+    <form id="register-form">
+        <div class="input-container">
+            <label for="Fist_Name">First Name:</label>
+            <input type="text" name="First_Name" id="First_Name">
+        </div>
+        <div class="input-container">
+            <label for="Last_Name">Last Name:</label>
+            <input type="text" name="Last_Name" id="Last_Name">
+        </div>
+        <div class="input-container">
+            <label for="Email">Email:</label>
+            <input type="email" name="Email" id="Email">
+        </div>
+        <div class="input-container">
+            <label for="Phone">Phone Number:</label>
+            <input type="tel" name="Phone" id="Phone">
+        </div>
+        <div class="input-container full-width">
+            <label for="Community">Church/Community Name:</label>
+            <input type="text" name="Community" id="Community">
+        </div>
+        <div class="input-container">
+            <label for="State">State:</label>
+            <input type="text" name="State" id="State">
+        </div>
+        <div class="input-container">
+            <label for="City">City:</label>
+            <input type="text" name="City" id="City">
+        </div>
+        <div class="form-footer">
+            <!-- <p id="curr-time">Please Select an Hour of Prayer</p> -->
+            <button type="submit">Submit</button>
+        </div>
+        
+    </form>
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const First_Name = document.getElementById('First_Name').value;
+            const Last_Name = document.getElementById('Last_Name').value;
+            const Email = document.getElementById('Email').value;
+            const Phone = document.getElementById('Phone').value;
+            const Community_Name = document.getElementById('Community').value;
+            const State = document.getElementById('State').value;
+            const City = document.getElementById('City').value;
+            
+            if (!First_Name || !Email || !Phone || !Community_Name || !State || !City) {
+                console.log('not all required fields filled')
+                return;
+            }
+
+            const Community = {
+                First_Name: First_Name,
+                Last_Name: Last_Name || null,
+                Email: Email,
+                Phone: Phone,
+                Community_Name: Community_Name,
+                City: State,
+                State: City,
+                Start_Date: new Date()
+            }
+            
+            loading();
+            // REMEBER TO PUT THIS INTO A TRY CATCH AND MAKE SOME FORM OF ERROR HANDLING
+            await axios({
+                method: 'post',
+                url: '/api/v1/Communities',
+                data: Community
+            })
+
+            doneLoading();
+            showPopup('Thank you for signing up!', `
+                <p>Somebody from our team will reach out to you!</p>
+            `, 'Confirm', '/')
+        })
+    </script>
+</body>
+
+</html>

@@ -1,11 +1,11 @@
 $form-gap: 1rem;
 
-#sign-up-form {
+#sign-up-form, #register-form {
     display: flex;
     flex-wrap: wrap;
     gap: $form-gap;
     width: 1000px;
-    max-width: 95vw;
+    max-width: 90vw;
     margin: $form-gap auto;
 
     position: relative;
@@ -27,6 +27,12 @@ $form-gap: 1rem;
         display: flex;
         flex-direction: column;
         width: calc(50% - ($form-gap / 2));
+        @media screen and (max-width: 768px) {
+            width: 100%;
+        }
+        &.full-width {
+            width: 100%;
+        }
         input {
             padding: .5rem .25rem;
             border: none;
@@ -84,7 +90,7 @@ $form-gap: 1rem;
             border: none;
             padding: .5rem 1rem;
             background-color: $accent-blue;
-            color: white;
+            color: black;
             font-weight: bold;
             border-radius: 2px;
         }

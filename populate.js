@@ -40,7 +40,7 @@ const populate = async () => {
     
     // CREATE TEXT JOBS ------------------------------------------
         for (let i = 0; i < schedules.length; i ++) {
-            const {First_Name, Last_Name, Start_Date, Email, Phone} = schedules[i];
+            const {First_Name, Last_Name, Start_Date, Phone} = schedules[i];
         
             const startDate = new Date(Start_Date)
         
