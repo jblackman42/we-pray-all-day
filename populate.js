@@ -48,6 +48,7 @@ const populate = async () => {
             const textNotifyDate = new Date(startDate.getTime() - (5 * 60 * 1000))
             
             const job = schedule.scheduleJob(textNotifyDate, async () => {
+                console.log('sending text')
                 await axios({
                     method: 'post',
                     url: 'https://my.pureheart.org/ministryplatformapi/texts',
