@@ -656,6 +656,9 @@ prayer-calendar {
 .popup-container .popup #content #popup-content {
   margin: 0;
 }
+.popup-container .popup #content #popup-content p {
+  margin: 0;
+}
 .popup-container .popup #btn-row {
   width: 100%;
   display: flex;

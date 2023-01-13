@@ -131,13 +131,17 @@
                     Recipient_Email: Email,
                     Recipient_Phone: Phone,
                     Start_Date: Start_Date.toUTCString(),
-                    End_Date: End_Date.toUTCString(),
+                    Time_String: `${Start_Date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${End_Date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
                     Community_ID: Community_ID
                 }
             })
 
             doneLoading();
-            showPopup('Thank you for signing up!', `You should recieve a confirmation email regarding your scheduled time of prayer.</br>${Start_Date.toDateString()} ${Start_Date.toLocaleTimeString()} - ${End_Date.toLocaleTimeString()}`, 'Confirm', '/')
+            showPopup('Thank you for signing up!', `
+                <p>You should recieve a confirmation email regarding your scheduled time of prayer.</p>
+                <p style="text-align: center;">${Start_Date.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</p>
+                <p style="text-align: center;">${Start_Date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${End_Date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+            `, 'Confirm', '/')
         })
     </script>
 </body>

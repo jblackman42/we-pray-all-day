@@ -105,10 +105,9 @@ router.get('/Communities', async (req, res) => {
 router.post('/confirmation-email', async (req, res) => {
     if (!access_token) await authorize();
     
-    const {Recipient_Name, Recipient_Email, Recipient_Phone, Start_Date, End_Date, Community_ID} = req.body;
+    const {Recipient_Name, Recipient_Email, Recipient_Phone, Start_Date, Time_String, Community_ID} = req.body;
 
     const startDate = new Date(Start_Date)
-    const endDate = new Date(End_Date)
 
     //gets date/time 5 mins before startDate
     const textNotifyDate = new Date(startDate.getTime() - (5 * 60 * 1000))
@@ -211,7 +210,7 @@ It's your time to pray!
                                 <p>Thanks for signing up to pray</p>
                             </div>
                             <div class="content">
-                                <p>Hi {Name},</p>
+                                <p>Hi ${Recipient_Name},</p>
                                 <br>
                                 <p>We are so honored that you would pray with us! We have high expectations that God is going to do immeasurably more than we could ever seek ask or imagine!</p>
                                 <br>
@@ -219,11 +218,11 @@ It's your time to pray!
                                 <br>
                                 <p>We will text you 5 minutes before your scheduled time of prayer with more information.</p>
                                 <br>
-                                <p style="text-align: center;">${startDate.toDateString()}</p>
-                                <p style="text-align: center;">${startDate.toLocaleTimeString()} - ${endDate.toLocaleTimeString()}</p>
+                                <p style="text-align: center;">${startDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</p>
+                                <p style="text-align: center;">${Time_String}</p>
                                 <br>
                                 <div class="btn-container">
-                                    <a target="_blank" href="${process.env.DOMAIN_NAME}/calendar-invite/?start_date=${startDate.toUTCString()}&end_date=${endDate.toUTCString()}">Add to Calendar</a>
+                                    <a target="_blank" href="${process.env.DOMAIN_NAME}/calendar-invite/?start_date=${startDate.toUTCString()}">Add to Calendar</a>
                                 </div>
                             </div>
                         </div>

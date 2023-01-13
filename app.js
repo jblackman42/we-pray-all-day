@@ -18,6 +18,9 @@ app.use("/assets",express.static(__dirname + "/views/assets"));
 
 const port = process.env.PORT || 3000;
 
+//imported functions
+const {populate} = require('./populate')
+
 //navigation routing
 app.use('/', require('./routes/index'))
 app.use('/api/v1', require('./routes/mp'))
@@ -28,6 +31,7 @@ app.use('/api/v1', require('./routes/mp'))
 
 const start = async () => {
     try {
+        await populate()
         app.listen(port, console.log(`\n server is listening on port ${port}\n http://localhost:${port}`));
     } catch (error) { console.log(error) }
 }
