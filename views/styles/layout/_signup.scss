@@ -67,12 +67,15 @@ $form-gap: 1rem;
         // width: max-content;
         .checkbox-container {
             display: grid;
+            box-sizing: border-box;
+            border-radius: 4px;
+            &:has(input[type='radio']:checked) {
+                border: 2px solid $accent-green;
+
+            }
             input[type='radio'] {
                 display: none;
                 visibility: hidden;
-                &:checked ~ label {
-                    background-color: $accent-blue;
-                }
             }
             label {
                 background-color: #FFF;

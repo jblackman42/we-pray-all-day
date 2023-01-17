@@ -70,7 +70,7 @@
             document.querySelector('#hours-options').innerHTML = hours.map(hr => {
                 const time = hr == 0 ? `12 AM` : hr == 12 ? `${hr} PM` : hr > 12 ? `${hr - 12} PM` : `${hr} AM`;
                 return `
-                    <div class="checkbox-container">
+                    <div class="checkbox-container covered">
                         <input type="radio" name="hour" value="${hr}" id="${hr}" ${hr == hour ? 'checked' : ''} onclick="updateTime(${hr})">
                         <label for="${hr}">${time}</label>
                     </div>

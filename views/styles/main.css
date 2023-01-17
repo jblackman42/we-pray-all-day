@@ -934,13 +934,15 @@ prayer-calendar {
 }
 #sign-up-form #hours-options .checkbox-container, #register-form #hours-options .checkbox-container {
   display: grid;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+#sign-up-form #hours-options .checkbox-container:has(input[type=radio]:checked), #register-form #hours-options .checkbox-container:has(input[type=radio]:checked) {
+  border: 2px solid #2ecc71;
 }
 #sign-up-form #hours-options .checkbox-container input[type=radio], #register-form #hours-options .checkbox-container input[type=radio] {
   display: none;
   visibility: hidden;
-}
-#sign-up-form #hours-options .checkbox-container input[type=radio]:checked ~ label, #register-form #hours-options .checkbox-container input[type=radio]:checked ~ label {
-  background-color: #fee32d;
 }
 #sign-up-form #hours-options .checkbox-container label, #register-form #hours-options .checkbox-container label {
   background-color: #FFF;
