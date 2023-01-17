@@ -5,6 +5,8 @@
     display: grid;
     place-items: center;
 
+    font-family: Proxima-nova;
+
     z-index: 9999999;
 
     &.hidden {
@@ -21,7 +23,7 @@
         #title-row {
             padding: 1rem;
             background-color: $accent-blue;
-            color: white;
+            color: black;
             #popup-title {
                 font-weight: bold;
                 margin: 0;
@@ -48,7 +50,7 @@
                 border: none;
                 padding: .5rem 1rem;
                 background-color: $accent-blue;
-                color: white;
+                color: black;
                 font-weight: bold;
                 border-radius: 2px;
                 cursor: pointer;

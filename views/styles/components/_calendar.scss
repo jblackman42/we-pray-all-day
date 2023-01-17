@@ -1,32 +1,39 @@
 $gridGap: .25rem;
-$calendarWidth: 1280px;
+$calendarWidth: 1000px;
 $calendarDayWidth: calc((90vw / 7) - ($gridGap * 1));
 $calendarDayMaxWidth: calc(($calendarWidth / 7) - ($gridGap * 1));
+$calendarDayColor: $accent-blue;
 
 prayer-calendar {
     display: flex;
     justify-content: center;
     background-color: $primary-white;
+    // background-color: $accent-blue;
 }
 
 .calendar {
     // background-color: ;
-    width: $calendarWidth;
-    max-width: 90vw;
+    width: 100%;
     margin: 0 auto;
 
     #context {
         text-align: center;
+        background-color: $accent-blue;
+        box-sizing: content-box;
+        width: 100%;
         h1 {
             font-size: clamp(30px, 7vw, 96px);
-            margin-block: 2rem 1rem;
+            padding-block: 2rem 1rem;
+            margin: 0;
         }
         ol {
             font-size: clamp(16px, 2vw, 24px);
             font-weight: 100;
-            margin: 0 auto 2rem auto;
+            margin: 0 auto;
+            padding-bottom: 2rem;
             padding-left: 1.25rem;
             width: max-content;
+            max-width: 85vw;
             li {
                 text-align: left;
             }
@@ -36,6 +43,12 @@ prayer-calendar {
     #month-header {
         display: flex;
         justify-content: space-between;
+
+        width: $calendarWidth;
+        max-width: 90vw;
+        margin: 0 auto;
+        margin-top: 1rem;
+
         @media screen and (max-width: 850px) {
             flex-direction: column;
             align-items: center;
@@ -45,6 +58,7 @@ prayer-calendar {
             margin: auto 2rem;
             min-width: 150px;
             text-align: center;
+            font-family: Proxima-nova;
         }
 
         #btn-container {
@@ -92,9 +106,11 @@ prayer-calendar {
     }
 
     #weekdays {
+        width: $calendarWidth;
+        max-width: 90vw;
+
         display: flex;
         gap: $gridGap;
-        width: max-content;
         margin: 0 auto;
 
         p {
@@ -104,21 +120,30 @@ prayer-calendar {
             font-weight: bold;
             text-transform: uppercase;
             margin: 1rem 0;
+            @media screen and (max-width: 768px) {
+                span {
+                    display: none;
+                    visibility: hidden;
+                }
+            }
         }
     }
 
     #days-grid {
+        width: $calendarWidth;
+        max-width: 90vw;
+
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         gap: $gridGap;
         place-items: center;
-        width: 100%;
+        // width: 100%;
         margin: 1rem auto;
         margin-top: 0;
 
         .calendar-day {
-            background-color: $primary-gray ;
-            color: $primary-white;
+            background-color: $calendarDayColor;
+            color: $primary-black;
             width: $calendarDayWidth;
             max-width: $calendarDayMaxWidth;
             height: $calendarDayWidth;
@@ -128,31 +153,36 @@ prayer-calendar {
             flex-direction: column;
             text-decoration: none;
             border: none;
+            position: relative;
+
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 
             cursor: pointer;
             padding: 0;
 
             
             .date {
-                margin: .5rem 0 0 .5rem;
+                // margin: .5rem 0 0 .5rem;
+                margin: 1rem auto;
+                font-size: 18px;
                 font-weight: bold;
                 text-transform: lowercase;
                 text-align: left;
             }
 
             .community-title {
-                margin: auto;
-                padding: 0 .25rem;
+                margin-inline: .25rem auto;
+                margin-block: auto;
                 font-size: 14px;
             }
 
             .hours-container {
+                background-color: $primary-black-transparent;
                 display: grid;
                 grid-template-columns: repeat(8, 1fr);
                 gap: 1px;
-                margin: 1px;
-                margin-top: auto;
-                background-color: inherit;
+                padding: 1px;
+                // background-color: inherit;
                 width: calc(100% - 2px);
 
                 .hour {
@@ -170,61 +200,124 @@ prayer-calendar {
                     
                     
                 }
-                &:disabled {
-                    cursor: default;
-                    opacity: .8;
-                    * {
-                        cursor: default !important;
+                .hour {
+                    &:hover::before,
+                    &:hover::after {
+                        display: block;
+                        visibility: visible;
+                    }
+
+                    &::after {
+                        display: none;
+                        visibility: hidden;
+
+                        content: attr(data-content);
+                        font-family: Proxima-nova;
+                        color: $primary-black;
+                        position: absolute;
+                        width: max-content;
+                        bottom: calc(100% + 3px);
+                        left: 50%;
+                        transform: translateX(-50%);
+                        z-index: 999;
+
+                        background-color: $primary-white;
+                        box-shadow: 0 0 0 1px $primary-black;
+                        border-radius: 2px;
+                        padding: .25rem;
+                    }
+
+                    &::before {
+                        display: none;
+                        visibility: hidden;
+
+                        content: '';
+                        position: absolute;
+                        width: 6px;
+                        height: 6px;
+                        background-color: $primary-white;
+                        border: 1px solid $primary-black;
+                        border-top-color: transparent;
+                        border-right-color: transparent;
+                        bottom: calc(100% - 2.5px);
+                        left: 50%;
+                        border-bottom-left-radius: 2px;
+                        z-index: 1000;
+
+                        transform-origin: bottom left;
+                        transform: rotate(-45deg);
                     }
                 }
-                &:enabled {
-                    .hour {
-                        &:hover::before,
-                        &:hover::after {
-                            display: block;
-                            visibility: visible;
-                        }
-    
-                        &::after {
-                            display: none;
-                            visibility: hidden;
-    
-                            content: attr(data-content);
-                            color: $primary-black;
-                            position: absolute;
-                            width: max-content;
-                            bottom: calc(100% + 3px);
-                            left: 50%;
-                            transform: translateX(-50%);
-                            z-index: 999;
-    
-                            background-color: $primary-white;
-                            box-shadow: 0 0 0 1px $primary-black;
-                            border-radius: 2px;
-                            padding: .25rem;
-                        }
-    
-                        &::before {
-                            display: none;
-                            visibility: hidden;
-    
-                            content: '';
-                            position: absolute;
-                            width: 6px;
-                            height: 6px;
-                            background-color: $primary-white;
-                            border: 1px solid $primary-black;
-                            border-top-color: transparent;
-                            border-right-color: transparent;
-                            bottom: calc(100% - 2.5px);
-                            left: 50%;
-                            border-bottom-left-radius: 2px;
-                            z-index: 1000;
-    
-                            transform-origin: bottom left;
-                            transform: rotate(-45deg);
-                        }
+            }
+                
+            &:disabled {
+                cursor: default;
+                // opacity: .8;
+                * {
+                    cursor: default !important;
+                }
+                .hours-container .hour {
+                    &::after, &::before {
+                        content: '';
+                        display: none;
+                        visibility: hidden;
                     }
+                }
+            }
+            .progress-label {
+                display: none;
+                visibility: hidden;
+
+                margin: 0;
+                font-size: clamp(10px, 1.75vw, 12px);
+                margin-top: auto;
+                @media screen and (max-width: 425px) {
+                    margin: auto auto 0 2px;
+                    .covered-label {
+                        display: none;
+                        visibility: hidden;
+                    }
+                }
+            }
+            .progress-bar-container {
+                display: none;
+                visibility: hidden;
+                height: 6px;
+                width: 100%;
+                margin-right: auto;
+
+                background-color: $primary-gray;
+                border-radius: 3px;
+                overflow: hidden;
+
+                .progress-bar {
+    
+                    background-color: $accent-green;
+
+                    width: 100%;
+                    height: 100%;
+    
+                    border-top-right-radius: 3px;
+                    border-bottom-right-radius: 3px;
+                }
+            }
+            @media screen and (max-width: 768px) {
+                justify-content: center;
+                align-items: center;
+
+                .progress-label, .progress-bar-container {
+                    display: block;
+                    visibility: visible;
+                }
+
+                p.date {
+                    margin: 0;
+                    margin-top: auto;
+                    font-size: clamp(11px, 3.5vw, 18px);
+                }
+                .community-title, .hours-container {
+                    display: none;
+                    visibility: hidden;
                 }
             }
         }

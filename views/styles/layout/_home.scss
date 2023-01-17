@@ -1,15 +1,19 @@
 #banner { 
     display: grid;
     place-items: center;
-    max-width: 1280px;
+    width: 100%;
     min-height: calc(100vh - 113px);
     margin: 0 auto;
+    overflow-x: hidden;
     img {
-        width: 100%;
+        width: 1280px;
+        max-width: 90%;
         height: auto;
+        animation: slide-in 1.5s forwards ease-in-out;
     }
-
-    animation: slide-in 1.5s forwards ease-in-out;
+    @media screen and (max-width: 768px) {
+        min-height: 50vh;
+    }
 }
 
 @keyframes slide-in {

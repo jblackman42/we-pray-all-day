@@ -7,7 +7,7 @@ $form-gap: 1rem;
     width: 1000px;
     max-width: 90vw;
     margin: $form-gap auto;
-
+    font-family: Proxima-nova;
     position: relative;
     #back-btn {
         position: absolute;
@@ -66,7 +66,6 @@ $form-gap: 1rem;
                 visibility: hidden;
                 &:checked ~ label {
                     background-color: $accent-blue;
-                    color: #FFF;
                 }
             }
             label {

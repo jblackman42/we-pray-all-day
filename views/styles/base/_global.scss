@@ -1,6 +1,6 @@
 @font-face {
-	font-family: proxima-nova, sans-serif;
-	src: url('../../assets/Proxima\ Nova\ Font.otf') format('opentype');
+	font-family: Proxima-nova;
+	src: url('../../assets/Proxima-Nova.otf') format('opentype');
 }
 @font-face {
 	font-family: Tropoline;
@@ -17,10 +17,8 @@ html {
 	display: flex;
 	flex-direction: column;
 
-	background-color: $accent-blue;
-
-	overflow-x: hidden;
+	background-color: $primary-white;
 }
 p, ol, ul, li {
-	font-family: proxima-nova;
+	font-family: Proxima-nova;
 }

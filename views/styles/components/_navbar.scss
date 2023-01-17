@@ -11,7 +11,6 @@ nav {
     background-color: $navBackground;
     color: $navFontColor;
     justify-content: space-between;
-    position: fixed;
     width: 100%;
     z-index: 99999;
 
@@ -23,20 +22,10 @@ nav {
 
         display: grid;
         place-items: center;
-        padding: 1rem;
-
-        animation: spinner 8s infinite linear alternate;
+        padding: .25rem 1rem;
         img {
             width: 100%;
             display: block;
-        }
-    }
-    @keyframes spinner {
-        50% {
-          transform: rotate(15deg);
-        }
-        100% {
-          transform: rotate(-15deg);
         }
     }
 

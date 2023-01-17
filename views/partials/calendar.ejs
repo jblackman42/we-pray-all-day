@@ -80,9 +80,8 @@
             const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const weekdaysDOM = document.querySelector('#weekdays');
             weekdaysDOM.innerHTML = weekdays.map(weekday => {
-                const otherLetters = '';
+                const otherLetters = weekday.split('').slice(1).join('');
                 const firstLetter = weekday.split('')[0];
-                console.log(otherLetters)
                 return `<p>${firstLetter}<span>${otherLetters}</span></p>`
             }).join('')
             
@@ -99,14 +98,20 @@
                 const lastDateDigit = dateArray[dateArray.length - 1];
                 const hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
 
+                const disabled = new Date().setHours(0, 0, 0, -1) >= currDate;
+
                 return `
-                    <button class="calendar-day" onclick="window.location='/signup?date=${day}'" ${new Date().setHours(0, 0, 0, -1) >= currDate ? 'disabled' : ''}>
+                    <button class="calendar-day" onclick="window.location='/signup?date=${day}'" ${disabled ? 'disabled' : ''}>
                         <p class="date">${date}<sup>${[11,12,13].includes(date) ? 'th' : lastDateDigit == 1 ? 'st' : lastDateDigit == 2 ? 'nd' : lastDateDigit == 3 ? 'rd' : 'th'}</sup></p>
                         <p class="community-title" id="title-${date}-${year}">${new Date().setHours(0, 0, 0, -1) >= currDate ? `<span id="value-${date}-${year}">0</span> hour<span id="s-${date}-${year}">s</span> prayed for` : `<span id="value-${date}-${year}">24</span> hour<span id="s-${date}-${year}">s</span> available`}</p>
                         <div class="hours-container">
                             ${hours.map(hour => {
-                                return `<a href="/signup?date=${day}&hour=${hour}" id="${hour}-${date}-${year}" class="hour"></a>` //booked class makes it blue
-                            }).join('')}    
+                                return `<a href="${disabled ? '' : `/signup?date=${day}&hour=${hour}`}" id="${hour}-${date}-${year}" class="hour"></a>` //booked class makes it blue
+                            }).join('')}
+                        </div>
+                        <p class="progress-label"><span id="progress-${date}-${year}">0</span>% <span class="covered-label">Covered</span></p>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="bar-${date}-${year}" style="max-width: 0%;"></bar>
                         </div>
                     </button>
                     `
@@ -142,12 +147,18 @@
                     currHourDOM.classList.add('booked')
 
                 const remainingHoursValue = document.getElementById(`value-${date}-${year}`);
+                const coveredPercentValue = document.getElementById(`progress-${date}-${year}`);
+                const progressBarValue = document.getElementById(`bar-${date}-${year}`);
                 if (new Date().setHours(0, 0, 0, -1) >= startDate) {
                     remainingHoursValue.innerText = parseInt(remainingHoursValue.innerText) + 1;
                     console.log('before today')
                 } else {
                     remainingHoursValue.innerText = parseInt(remainingHoursValue.innerText) - 1;
                 }
+                    const percentCovered = Math.round(parseInt(remainingHoursValue.innerText) / 24 * 100)
+                    console.log(percentCovered)
+                    coveredPercentValue.innerText = percentCovered;
+                    progressBarValue.style.maxWidth = `${percentCovered}%`;
                     document.getElementById(`s-${date}-${year}`).innerHTML = remainingHoursValue.innerText == 1 ? '' : 's'
             }
             // ---------------------------------------------------------------------------------
