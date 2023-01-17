@@ -48,10 +48,16 @@ $form-gap: 1rem;
             padding: .5rem .25rem;
             border: none;
             border-radius: 2px;
+            background-color: white;
+            color: black;
         }
     }
     .time-container {
         width: 100%;
+        overflow-x: auto;
+        @media screen and (max-width: 768px) {
+            padding-bottom: 10px;
+        }
     }
     #hours-options {
         display: grid;

@@ -914,9 +914,17 @@ prayer-calendar {
   padding: 0.5rem 0.25rem;
   border: none;
   border-radius: 2px;
+  background-color: white;
+  color: black;
 }
 #sign-up-form .time-container, #register-form .time-container {
   width: 100%;
+  overflow-x: auto;
+}
+@media screen and (max-width: 768px) {
+  #sign-up-form .time-container, #register-form .time-container {
+    padding-bottom: 10px;
+  }
 }
 #sign-up-form #hours-options, #register-form #hours-options {
   display: grid;

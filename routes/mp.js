@@ -21,8 +21,8 @@ const authorize = async () => {
         .then(response => response.data)
         .catch(err => console.log(err))
     
-    //automatically gets a new access token when the current one expires
-    setTimeout(async () => await authorize(), data.expires_in * 1000)
+    // //automatically gets a new access token when the current one expires
+    // setTimeout(async () => await authorize(), data.expires_in * 1000)
     access_token = data.access_token;
     return access_token;
 }

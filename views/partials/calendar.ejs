@@ -149,13 +149,15 @@
                 const remainingHoursValue = document.getElementById(`value-${date}-${year}`);
                 const coveredPercentValue = document.getElementById(`progress-${date}-${year}`);
                 const progressBarValue = document.getElementById(`bar-${date}-${year}`);
+                let percentCovered;
                 if (new Date().setHours(0, 0, 0, -1) >= startDate) {
                     remainingHoursValue.innerText = parseInt(remainingHoursValue.innerText) + 1;
                     console.log('before today')
+                    percentCovered = Math.round(parseInt(remainingHoursValue.innerText) / 24 * 100)
                 } else {
                     remainingHoursValue.innerText = parseInt(remainingHoursValue.innerText) - 1;
+                    percentCovered = Math.round((24 - remainingHoursValue.innerText) / 24 * 100)
                 }
-                    const percentCovered = Math.round(parseInt(remainingHoursValue.innerText) / 24 * 100)
                     console.log(percentCovered)
                     coveredPercentValue.innerText = percentCovered;
                     progressBarValue.style.maxWidth = `${percentCovered}%`;
