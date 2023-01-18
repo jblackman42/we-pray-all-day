@@ -319,7 +319,7 @@ router.get('/populate', async (req, res) => {
                     }
                 })
             })
-            const fireDate = new Date(job.pendingInvocations[0].fireDate);
+            const fireDate = new Date(await job.pendingInvocations[0].fireDate);
             jobs.push({
                 name: `${First_Name} ${Last_Name}`,
                 date:`${fireDate.toDateString()} ${fireDate.toLocaleTimeString()}`
