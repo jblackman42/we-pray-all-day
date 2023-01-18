@@ -49,6 +49,14 @@
             <label for="City">City:</label>
             <input type="text" name="City" id="City">
         </div>
+        <div class="input-container full-width">
+            <label for="Pattern">What reoccurring day would you like to sign up for? (Example first Tuesday):</label>
+            <input type="text" name="Pattern" id="Pattern">
+        </div>
+        <div class="input-container full-width">
+            <label for="Prayer_Points">What are your prayer points? (100 characters or less):</label>
+            <textarea name="Prayer_Points" id="Prayer_Points" maxlength="100"></textarea>
+        </div>
         <div class="form-footer">
             <!-- <p id="curr-time">Please Select an Hour of Prayer</p> -->
             <button type="submit">Submit</button>
@@ -66,8 +74,10 @@
             const Community_Name = document.getElementById('Community').value;
             const State = document.getElementById('State').value;
             const City = document.getElementById('City').value;
+            const Pattern = document.getElementById('Pattern').value;
+            const Prayer_Points = document.getElementById('Prayer_Points').value;
             
-            if (!First_Name || !Email || !Phone || !Community_Name || !State || !City) {
+            if (!First_Name || !Email || !Phone || !Community_Name || !State || !City || !Pattern || !Prayer_Points) {
                 console.log('not all required fields filled')
                 return;
             }
@@ -80,7 +90,9 @@
                 Community_Name: Community_Name,
                 City: State,
                 State: City,
-                Start_Date: new Date()
+                Start_Date: new Date(),
+                Pattern: Pattern,
+                Prayer_Points: Prayer_Points
             }
             
             loading();

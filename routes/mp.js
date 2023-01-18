@@ -107,8 +107,8 @@ router.post('/Communities', async (req, res) => {
     await authorize();
 
     try {
-        const {First_Name, Last_Name, Email, Phone, Community_Name, City, State, Start_Date} = req.body;
-        if (!First_Name || !Email || !Phone || !Community_Name || !State || !City || !Start_Date) throw new Error('missing parameters')
+        const {First_Name, Last_Name, Email, Phone, Community_Name, City, State, Start_Date, Pattern, Prayer_Points} = req.body;
+        if (!First_Name || !Email || !Phone || !Community_Name || !State || !City || !Start_Date || !Pattern || !Prayer_Points) throw new Error('missing parameters')
         const data = await axios({
             method: 'post',
             url: `https://my.pureheart.org/ministryplatformapi/tables/Communities`,
@@ -124,7 +124,9 @@ router.post('/Communities', async (req, res) => {
                 Community_Name: Community_Name,
                 City: State,
                 State: City,
-                Start_Date: Start_Date
+                Start_Date: Start_Date,
+                Pattern: Pattern,
+                Prayer_Points: Prayer_Points
             }]
         })
             .then(response => response.data);

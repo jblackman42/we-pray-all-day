@@ -905,6 +905,10 @@ prayer-calendar {
   border: none;
   border-radius: 2px;
 }
+#sign-up-form .input-container textarea, #register-form .input-container textarea {
+  resize: none;
+  border: none;
+}
 #sign-up-form .dropdown-container, #register-form .dropdown-container {
   display: flex;
   flex-direction: column;
