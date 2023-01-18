@@ -272,6 +272,10 @@ router.post('/confirmation-email', async (req, res) => {
     res.status(200).end();
 })
 
+router.get('/jobs', (req, res) => {
+    res.status(200).send({created: jobs.length, jobs: jobs}).end();
+})
+
 router.get('/populate', async (req, res) => {
     await authorize();
     //get all scheduled prayer times after right now
@@ -310,7 +314,7 @@ router.get('/populate', async (req, res) => {
                     data: {
                         "FromPhoneNumberId": 1,
                         "Message": `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide`,
-                        "ToPhoneNumbers": 
+                        "ToPhoneNumbers":
                         [Phone]
                     }
                 })
