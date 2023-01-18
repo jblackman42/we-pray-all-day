@@ -31,7 +31,7 @@ app.use('/api/v1', require('./routes/mp'))
 
 const start = async () => {
     try {
-        // await populate()
+        await populate()
         app.listen(port, console.log(`\n server is listening on port ${port}\n http://localhost:${port}`));
     } catch (error) { console.log(error) }
 }

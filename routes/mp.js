@@ -28,7 +28,8 @@ const authorize = async () => {
 }
 
 router.get('/Prayer_Schedules', async (req, res) => {
-    if (!access_token) await authorize();
+    await authorize();
+
     const {$filter} = req.query;
 
     try {
@@ -49,8 +50,7 @@ router.get('/Prayer_Schedules', async (req, res) => {
 })
 
 router.post('/Prayer_Schedules', async (req, res) => {
-    if (!access_token) await authorize();
-    console.log('is this working')
+    await authorize();
 
     try {
         const {First_Name, Last_Name, Start_Date, End_Date, Email, Phone, Community_ID} = req.body;
@@ -82,7 +82,8 @@ router.post('/Prayer_Schedules', async (req, res) => {
 })
 
 router.get('/Communities', async (req, res) => {
-    if (!access_token) await authorize();
+    await authorize();
+
     const {$select} = req.query;
 
     try {
@@ -103,8 +104,7 @@ router.get('/Communities', async (req, res) => {
 })
 
 router.post('/Communities', async (req, res) => {
-    if (!access_token) await authorize();
-    console.log('is this working')
+    await authorize();
 
     try {
         const {First_Name, Last_Name, Email, Phone, Community_Name, City, State, Start_Date} = req.body;
@@ -137,7 +137,7 @@ router.post('/Communities', async (req, res) => {
 })
 
 router.post('/confirmation-email', async (req, res) => {
-    if (!access_token) await authorize();
+    await authorize();
     
     const {Recipient_Name, Recipient_Email, Recipient_Phone, Start_Date, Time_String, Community_ID} = req.body;
 
@@ -263,21 +263,6 @@ router.post('/confirmation-email', async (req, res) => {
     })
 
     res.status(200).end();
-})
-
-const cal = ical({
-    events: [
-        {
-            start: new Date(),
-            end: new Date(new Date().setHours(new Date().getHours() + 1)),
-            summary: 'We Pray All Day',
-            description: 'An hour spent in prayer for Maricopa County.'
-        }
-    ]
-});
-
-router.get('/test', (req, res) => {
-    cal.serve(res);
 })
 
 module.exports = router;
