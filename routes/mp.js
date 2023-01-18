@@ -277,6 +277,7 @@ router.get('/jobs', (req, res) => {
 })
 
 router.get('/populate', async (req, res) => {
+    jobs.length = 0;
     await authorize();
     //get all scheduled prayer times after right now
     //create a text job for 5 mins before each prayer time
