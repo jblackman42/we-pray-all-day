@@ -58,11 +58,7 @@ const populate = async () => {
                     },
                     data: {
                         "FromPhoneNumberId": 1,
-                        "Message": `
-Hello ${First_Name} ${Last_Name},
-
-It's your time to pray!
-                        `,
+                        "Message": `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide`,
                         "ToPhoneNumbers": 
                         [Phone]
                     }
