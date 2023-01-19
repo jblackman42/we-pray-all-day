@@ -2,12 +2,8 @@ const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const qs = require('qs');
-// const IP = require('ip');
-const ical = require('ical-generator');
-const schedule = require('node-schedule');
 
 let access_token;
-const jobs = [];
 const authorize = async () => {
     const data = await axios({
         method: 'post',
@@ -146,32 +142,44 @@ router.post('/confirmation-email', async (req, res) => {
 
     const startDate = new Date(Start_Date)
 
+    function toIsoString(date) {
+        var tzo = -date.getTimezoneOffset(),
+            dif = tzo >= 0 ? '+' : '-',
+            pad = function(num) {
+                return (num < 10 ? '0' : '') + num;
+            };
+      
+        return date.getFullYear() +
+            '-' + pad(date.getMonth() + 1) +
+            '-' + pad(date.getDate()) +
+            'T' + pad(date.getHours()) +
+            ':' + pad(date.getMinutes()) +
+            ':' + pad(date.getSeconds()) +
+            dif + pad(Math.floor(Math.abs(tzo) / 60)) +
+            ':' + pad(Math.abs(tzo) % 60);
+    }
+
     //gets date/time 5 mins before startDate
     const textNotifyDate = new Date(startDate.getTime() - (5 * 60 * 1000))
     
-    const job = schedule.scheduleJob(textNotifyDate, async() => {
-        console.log('sending text')
-        await axios({
-            method: 'post',
-            url: 'https://my.pureheart.org/ministryplatformapi/texts',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`
-            },
-            data: {
-                "FromPhoneNumberId": 1,
-                "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide`,
-                "ToPhoneNumbers": 
-                [Recipient_Phone]
-            }
-        })
+    const job = await axios({
+        method: 'post',
+        url: 'https://my.pureheart.org/ministryplatformapi/texts',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access_token}`
+        },
+        data: {
+            "FromPhoneNumberId": 1,
+            "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide`,
+            "StartDate": toIsoString(textNotifyDate),
+            "ToPhoneNumbers": 
+            [Recipient_Phone]
+        }
     })
-    const fireDate = new Date(job.pendingInvocations[0].fireDate);
-    jobs.push({
-        name: Recipient_Name,
-        date:`${fireDate.toDateString()} ${fireDate.toLocaleTimeString()}`
-    })
-    
+        .then(response => response.data)
+        .catch(err => console.error(err))
+
     axios({
         method: 'post',
         url: 'https://my.pureheart.org/ministryplatformapi/messages',
@@ -272,12 +280,7 @@ router.post('/confirmation-email', async (req, res) => {
     res.status(200).end();
 })
 
-router.get('/jobs', (req, res) => {
-    res.status(200).send({created: jobs.length, jobs: jobs}).end();
-})
-
 router.get('/populate', async (req, res) => {
-    jobs.length = 0;
     await authorize();
     //get all scheduled prayer times after right now
     //create a text job for 5 mins before each prayer time
@@ -297,39 +300,51 @@ router.get('/populate', async (req, res) => {
     // CREATE TEXT JOBS ------------------------------------------
         for (let i = 0; i < schedules.length; i ++) {
             const {First_Name, Last_Name, Start_Date, Phone} = schedules[i];
-        
+
             const startDate = new Date(Start_Date)
+        
+            function toIsoString(date) {
+                var tzo = -date.getTimezoneOffset(),
+                    dif = tzo >= 0 ? '+' : '-',
+                    pad = function(num) {
+                        return (num < 10 ? '0' : '') + num;
+                    };
+            
+                return date.getFullYear() +
+                    '-' + pad(date.getMonth() + 1) +
+                    '-' + pad(date.getDate()) +
+                    'T' + pad(date.getHours()) +
+                    ':' + pad(date.getMinutes()) +
+                    ':' + pad(date.getSeconds()) +
+                    dif + pad(Math.floor(Math.abs(tzo) / 60)) +
+                    ':' + pad(Math.abs(tzo) % 60);
+            }
         
             //gets date/time 5 mins before startDate
             const textNotifyDate = new Date(startDate.getTime() - (5 * 60 * 1000))
             
-            const job = schedule.scheduleJob(textNotifyDate, async () => {
-                console.log('sending text')
-                await axios({
-                    method: 'post',
-                    url: 'https://my.pureheart.org/ministryplatformapi/texts',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${access_token}`
-                    },
-                    data: {
-                        "FromPhoneNumberId": 1,
-                        "Message": `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide`,
-                        "ToPhoneNumbers":
-                        [Phone]
-                    }
-                })
+            await axios({
+                method: 'post',
+                url: 'https://my.pureheart.org/ministryplatformapi/texts',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${access_token}`
+                },
+                data: {
+                    "FromPhoneNumberId": 1,
+                    "Message": `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide`,
+                    "StartDate": toIsoString(textNotifyDate),
+                    "ToPhoneNumbers": 
+                    [Phone]
+                }
             })
-            const fireDate = new Date(await job.pendingInvocations[0].fireDate);
-            jobs.push({
-                name: `${First_Name} ${Last_Name}`,
-                date:`${fireDate.toDateString()} ${fireDate.toLocaleTimeString()}`
-            })
+                .catch(err => console.error(err))
         }
+        console.log(schedules.length)
     // -----------------------------------------------------------
 
     console.log(`${schedules.length} jobs made`)
-    res.status(200).send({created: jobs.length, jobs: jobs}).end();
+    res.status(200).send({created: schedules.length}).end();
 })
 
 module.exports = router;
