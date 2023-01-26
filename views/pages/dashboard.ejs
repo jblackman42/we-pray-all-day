@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+    <%- include('../partials/loading'); %>
+    <%- include('../partials/navbar'); %>
+
+    <div class="dash-container">
+        <h1>Dashboard</h1>
+        <p id="welcome-msg"></p>
+    
+        <br>
+        <br>
+
+        <p>This page is currently in development. please check back later</p>
+    </div>
+
+</body>
+<script>
+    (async () => {
+        loading();
+        const user = await axios({
+            method: 'get',
+            url: '/api/auth/user'
+        })
+            .then(response => response.data)
+
+        if (!user) {
+            console.log('not logged in')
+            logoutBtnDOM.style.display = 'none';
+            logoutBtnDOM.style.visibility = 'hidden';
+            return
+        }
+
+        console.log(user);
+        const {display_name, nickname, name} = user;
+
+        document.getElementById('welcome-msg').innerText = `Welcome, ${nickname || name}`;
+
+        const group = await axios({
+            method: 'get',
+            url: '/api/auth/group'
+        })
+            .then(response => response.data)
+
+        console.log(group)
+
+        doneLoading();
+    })()
+</script>
+</html>

@@ -86,7 +86,7 @@ router.get('/Communities', async (req, res) => {
     try {
         const data = await axios({
             method: 'get',
-            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities?$filter=End_Date IS NULL OR GETDATE()<End_Date${$select ? `&$select=${$select}` : ''}`,
+            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities?$filter=(End_Date IS NULL OR GETDATE()<End_Date) AND Community_ID != 18${$select ? `&$select=${$select}` : ''}`,
             headers: {
                 'Authorization': `Bearer ${access_token}`,
                 'Content-Type': 'application/json'

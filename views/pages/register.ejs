@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body class="container">
+    <%- include('../partials/loading'); %>
+    <div class="forms-container">
+        <form id="register-form">
+            <h1 class="title">Register</h1>
+            <div class="progress">
+                <div class="step step-0" title="Profile"><i class='fas fa-user'></i></div>
+                <div class="step step-1" title="Church"><i class='fas fas fa-home'></i></div>
+                <div class="step step-2" title="Schedule"><i class='fas fa-calendar-alt'></i></div>
+                <div class="step step-3" title="Account"><i class='fas fa-lock'></i></div>
+            </div>
+            <div class="error-container">
+                <p id="error-msg"></p>
+            </div>
+            <div class="page" id="page-0">
+                <div class="input-container">
+                    <input type="text" name="First_Name" id="First_Name" placeholder=" " >
+                    <label for="First_Name">First Name</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="Last_Name" id="Last_Name" placeholder=" ">
+                    <label for="Last_Name">Last Name</label>
+                </div>
+                <div class="input-container">
+                    <input type="tel" name="Phone" id="Phone" placeholder=" ">
+                    <label for="Phone">Phone Number</label>
+                </div>
+                <div class="input-container">
+                    <input type="email" name="Email" id="Email" placeholder=" ">
+                    <label for="Email">Email</label>
+                </div>
+                <div class="btn-container">
+                    <button type="button" onclick="next()" style="margin-left: auto;">Next</button>
+                </div>
+            </div>
+            <div class="page" id="page-1">
+                <div class="input-container full-width">
+                    <input type="text" name="Church_Name" id="Church_Name" placeholder=" ">
+                    <label for="Church_Name">Church/Community Name</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="Address_Line" id="Address_Line" placeholder=" ">
+                    <label for="Address_Line">Address</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="City" id="City" placeholder=" ">
+                    <label for="City">City</label>
+                </div>
+                <div class="input-container">
+                    <select name="State" id="State" placeholder=" "></select>
+                    <label for="State">State</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="Postal_Code" id="Postal_Code" placeholder=" " pattern="[0-9]*">
+                    <label for="Postal_Code">Postal Code</label>
+                </div>
+                <div class="btn-container">
+                    <button type="button" onclick="back()">Back</button>
+                    <button type="button" onclick="next()">Next</button>
+                </div>
+            </div>
+            <div class="page" id="page-2">
+                <div class="input-container full-width">
+                    <input type="text" name="Pattern" id="Pattern" placeholder=" ">
+                    <label for="Pattern">Recurring Day (Example: 'First Tuesday'):</label>
+                </div>
+                <div class="input-container full-width">
+                    <textarea name="Prayer_Requests" id="Prayer_Requests" maxlength="100" placeholder=" "></textarea>
+                    <label for="Prayer_Requests">Prayer Points (100 characters or less):</label>
+                </div>
+                <div class="btn-container">
+                    <button type="button" onclick="back()">Back</button>
+                    <button type="button" onclick="next()">Next</button>
+                </div>
+            </div>
+            <div class="page" id="page-3">
+                <div class="input-container full-width">
+                    <input type="text" name="Username" id="Username" placeholder=" " autocomplete="off">
+                    <label for="Username">Username</label>
+                </div>
+                <div class="input-container full-width">
+                    <input type="password" name="Password" id="Password" placeholder=" " autocomplete="off">
+                    <label for="Password">Password</label>
+                </div>
+                <div class="input-container full-width">
+                    <input type="password" name="Password2" id="Password2" placeholder=" " autocomplete="off">
+                    <label for="Password">Confirm Password</label>
+                </div>
+                <div class="btn-container">
+                    <button type="button" onclick="back()">Back</button>
+                    <button type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+      
+    </body>
+<script>
+    const stateLabelValues = [{ 'label':'Alabama', 'value': 'AL' },{ 'label':'Alaska', 'value': 'AK'},{ 'label':'American Samoa', 'value': 'AS'},{ 'label':'Arizona', 'value': 'AZ'},{ 'label':'Arkansas', 'value': 'AR'},{ 'label':'California', 'value': 'CA'},{ 'label':'Colorado', 'value': 'CO'},{ 'label':'Connecticut', 'value': 'CT'},{ 'label':'Delaware', 'value': 'DE'},{ 'label':'District of Columbia', 'value': 'DC'},{ 'label':'States of Micronesia', 'value': 'FM'},{ 'label':'Florida', 'value': 'FL'},{ 'label':'Georgia', 'value': 'GA'},{ 'label':'Guam', 'value': 'GU'},{ 'label':'Hawaii', 'value': 'HI'},{ 'label':'Idaho', 'value': 'ID'},{ 'label':'Illinois', 'value': 'IL'},{ 'label':'Indiana', 'value': 'IN'},{ 'label':'Iowa', 'value': 'IA'},{ 'label':'Kansas', 'value': 'KS'},{ 'label':'Kentucky', 'value': 'KY'},{ 'label':'Louisiana', 'value': 'LA'},{ 'label':'Maine', 'value': 'ME'},{ 'label':'Marshall Islands', 'value': 'MH'},{ 'label':'Maryland', 'value': 'MD'},{ 'label':'Massachusetts', 'value': 'MA'},{ 'label':'Michigan', 'value': 'MI'},{ 'label':'Minnesota', 'value': 'MN'},{ 'label':'Mississippi', 'value': 'MS'},{ 'label':'Missouri', 'value': 'MO'},{ 'label':'Montana', 'value': 'MT'},{ 'label':'Nebraska', 'value': 'NE'},{ 'label':'Nevada', 'value': 'NV'},{ 'label':'New Hampshire', 'value': 'NH'},{ 'label':'New Jersey', 'value': 'NJ'},{ 'label':'New Mexico', 'value': 'NM'},{ 'label':'New York', 'value': 'NY'},{ 'label':'North Carolina', 'value': 'NC'},{ 'label':'North Dakota', 'value': 'ND'},{ 'label':'Northern Mariana Islands', 'value': 'MP'},{ 'label':'Ohio', 'value': 'OH'},{ 'label':'Oklahoma', 'value': 'OK'},{ 'label':'Oregan', 'value': 'OR'},{ 'label':'Palau', 'value': 'PW'},{ 'label':'Pennsilvania', 'value': 'PA'},{ 'label':'Puerto Rico', 'value': 'PR'},{ 'label':'Rhode Island', 'value': 'RI'},{ 'label':'South Carolina', 'value': 'SC'},{ 'label':'South Dakota', 'value': 'SD'},{ 'label':'Tennessee', 'value': 'TN'},{ 'label':'Texas', 'value': 'TX'},{ 'label':'Utah', 'value': 'UT'},{ 'label':'Vermont', 'value': 'VT'},{ 'label':'Virgin Islands', 'value': 'VI'},{ 'label':'Virginia', 'value': 'VA'},{ 'label':'Washington', 'value': 'WA'},{ 'label':'West Virginia', 'value': 'WV'},{ 'label':'Wisconsin', 'value': 'WI'},{ 'label':'Wyoming', 'value': 'WY'}];
+    document.getElementById('State').innerHTML = stateLabelValues.map(state => {
+        return `<option value=${state.value}>${state.label}</option>`
+    })
+    const registerForm = document.getElementById('register-form');
+
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const progressDOM = document.querySelector('.progress');
+        progressDOM.classList.add('done')
+
+        const formData = {
+            Address_Line: document.getElementById('Address_Line').value || null,
+            City: document.getElementById('City').value || null,
+            Church_Name: document.getElementById('Church_Name').value || null,
+            State: document.getElementById('State').value || null,
+            Postal_Code: document.getElementById('Postal_Code').value || null,
+            Phone: document.getElementById('Phone').value || null,
+            Email: document.getElementById('Email').value || null,
+            Prayer_Requests: document.getElementById('Prayer_Requests').value || null,
+            Pattern: document.getElementById('Pattern').value || null,
+            First_Name: document.getElementById('First_Name').value || null,
+            Last_Name: document.getElementById('Last_Name').value || null,
+            Username: document.getElementById('Username').value || null,
+            Password: document.getElementById('Password').value || null
+        }
+
+        const formFilled = Object.values(formData).every(o => o !== null);
+
+        const samePasswords = document.getElementById('Password').value == document.getElementById('Password2').value;
+        
+        if (!formFilled) {
+            progressDOM.classList.remove('done')
+            const errorMsgDOM = document.getElementById('error-msg');
+            errorMsgDOM.innerText = 'Not All Fields Completed'
+            return;
+        } else if (!samePasswords) {
+            progressDOM.classList.remove('done')
+            const errorMsgDOM = document.getElementById('error-msg');
+            errorMsgDOM.innerText = 'Passwords Don\'t Match'
+            return;
+        }
+
+        loading();
+        await axios({
+            method: 'post',
+            url: '/api/register',
+            data: formData
+        })
+            .then(response => {if (response.status >= 200 && response.status < 300) window.location = '/dashboard'})
+            .catch(err => {
+                console.error(err)
+                document.querySelector('#error-msg').innerText = err.response.data ? err.response.data.error : 'internal server error';
+            })
+        doneLoading();
+        })
+
+    let page = 0;
+    const next = () => {
+        document.querySelectorAll('.step').forEach(elem => elem.style.transitionDelay = '300ms');
+        page ++;
+        updatePages();
+    }
+    const back = () => {
+        document.querySelectorAll('.step').forEach(elem => elem.style.transitionDelay = '0ms');
+        page --;
+        updatePages();
+    }
+    const updatePages = () => {
+        const currPage = document.getElementById(`page-${page}`);
+        if (!currPage) return page = 0;
+
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(elem => {
+            elem.style.display = 'none';
+            elem.style.visibility = 'hidden';
+        })
+
+        currPage.style.display = 'flex';
+        currPage.style.visibility = 'visible';
+
+        const progressDOM = document.querySelector('.progress');
+        if (page == 0) {
+            progressDOM.classList.add('page-0')
+            progressDOM.classList.remove('page-1')
+            progressDOM.classList.remove('page-2')
+            progressDOM.classList.remove('page-3')
+        } else if (page == 1) {
+            progressDOM.classList.remove('page-0')
+            progressDOM.classList.add('page-1')
+            progressDOM.classList.remove('page-2')
+            progressDOM.classList.remove('page-3')
+        } else if (page == 2) {
+            progressDOM.classList.remove('page-0')
+            progressDOM.classList.remove('page-1')
+            progressDOM.classList.add('page-2')
+            progressDOM.classList.remove('page-3')
+        } else if (page == 3) {
+            progressDOM.classList.remove('page-0')
+            progressDOM.classList.remove('page-1')
+            progressDOM.classList.remove('page-2')
+            progressDOM.classList.add('page-3')
+        }
+        progressDOM.classList.remove('done')
+    }
+    updatePages();
+</script>
+</html>

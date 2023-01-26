@@ -56,26 +56,55 @@
                 url: '/api/v1/Communities?$select=Community_ID,Community_Name'
             })
                 .then(response => response.data)
+
+            const currDate = new Date(date);
+                const day = currDate.getDate();
+                const month = currDate.getMonth() + 1;
+                const year = currDate.getFullYear();
             
+            const data2 = await axios({
+                method: 'get',
+                url: `/api/v1/Prayer_Schedules?$filter=DAY(Start_Date)=${day} AND MONTH(Start_Date)=${month} AND YEAR(Start_Date)=${year}`
+            })
+                .then(response => response.data)
+
+            const { Prayer_Schedules } = data2;
+            
+            
+            const otherID = 18;
             const {Communities} = data;
-            document.getElementById('Community_ID').innerHTML = Communities.map(community => {
+
+            const communitiesHTML = Communities.sort(function(a, b) {
+                var textA = a.Community_Name.toUpperCase();
+                var textB = b.Community_Name.toUpperCase();
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            }).map(community => {
                 const {Community_ID, Community_Name} = community;
                 return `
                     <option value="${Community_ID}">${Community_Name}</option>
                 `
             })
+            communitiesHTML.push(`<option value="${otherID}">Other</option>`)
+            
+            document.getElementById('Community_ID').innerHTML = communitiesHTML.join('');
+
 
 
             const hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
             document.querySelector('#hours-options').innerHTML = hours.map(hr => {
                 const time = hr == 0 ? `12 AM` : hr == 12 ? `${hr} PM` : hr > 12 ? `${hr - 12} PM` : `${hr} AM`;
                 return `
-                    <div class="checkbox-container covered">
+                    <div class="checkbox-container">
                         <input type="radio" name="hour" value="${hr}" id="${hr}" ${hr == hour ? 'checked' : ''} onclick="updateTime(${hr})">
                         <label for="${hr}">${time}</label>
                     </div>
                 `
             }).join('')
+            
+            for (let i = 0; i < Prayer_Schedules.length; i ++) {
+                const currHour = new Date(Prayer_Schedules[i].Start_Date).getHours();
+                document.getElementById(`${currHour}`).classList.add('covered')
+            }
 
             updateTime(hour)
             doneLoading();

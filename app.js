@@ -1,12 +1,27 @@
 const express = require('express');
 const app = express();
+var session = require('express-session');
+const cors = require('cors');
 
 //middleware
 app.use(express.json());
 require('dotenv').config();
 
+app.use(cors({
+    origin: '*'
+}));
+
 app.use(express.json({ limit: '16MB' }));
 app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', 1) // trust first proxy
+
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(session({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized:true,
+    cookie: { maxAge: oneDay },
+    resave: false 
+}));
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -24,6 +39,8 @@ const {populate} = require('./populate')
 //navigation routing
 app.use('/', require('./routes/index'))
 app.use('/api/v1', require('./routes/mp'))
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/register', require('./routes/register'));
 
 const start = async () => {
     try {
