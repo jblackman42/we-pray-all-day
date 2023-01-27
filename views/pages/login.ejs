@@ -12,7 +12,7 @@
             <div class="inputs">
                 <input type="text" name="username" id="username" autocomplete="on" placeholder="Username" required>
                 <input type="password" name="password" id="password" autocomplete="on" placeholder="Password" required>
-                <i class='far fa-eye-slash' id="togglePassword"></i>
+                <i class='far fa-eye-slash' id="togglePassword" onclick="togglePassword()"></i>
             </div>
             <div class="row">
                 <div class="remember-input" title="Keeps you logged in on this device for 30 days">
@@ -31,6 +31,20 @@
     </body>
 <script>
     const loginForm = document.getElementById('loginForm');
+
+    const toggleIcon = document.querySelector("#togglePassword");
+    const password = document.querySelector("#password");
+
+    const togglePassword = () => {
+        console.log('click')
+        // toggle the type attribute
+        const type = password.getAttribute("type") === "password" ? "text" : "password";
+        password.setAttribute("type", type);
+        
+        // toggle the icon
+        toggleIcon.classList.toggle("fa-eye-slash");
+        toggleIcon.classList.toggle("fa-eye");
+    }
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -53,17 +67,5 @@
             })
     })
 
-    const togglePassword = document.querySelector("#togglePassword");
-    const password = document.querySelector("#password");
-
-    togglePassword.addEventListener("click", function () {
-        // toggle the type attribute
-        const type = password.getAttribute("type") === "password" ? "text" : "password";
-        password.setAttribute("type", type);
-        
-        // toggle the icon
-        this.classList.toggle("fa-eye-slash");
-        this.classList.toggle("fa-eye");
-    });
 </script>
 </html>

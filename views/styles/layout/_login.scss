@@ -30,10 +30,14 @@ $text-color: white;
 	.row {
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
+
 		a {
-			font-size: 16px;
 			margin-top: 0.5rem;
 			color: currentColor;
+		}
+		label, a {
+			font-size: clamp(12px, 2vw, 16px);
 		}
 	}
 	.inputs {
@@ -45,6 +49,7 @@ $text-color: white;
 		input {
 			border: none;
 			outline: none;
+			border-radius: 0;
 			border-bottom: 1px solid #00000022;
 			padding: 0.75rem 1rem;
 			&:last-of-type {
@@ -59,12 +64,14 @@ $text-color: white;
 			right: 0;
 			margin: .9rem .5rem;
 			font-size: 1.25rem;
+			cursor: pointer;
 		}
 	}
 	.remember-input {
-		font-size: 16px;
-		margin: .5rem 0;
-		margin-bottom: 0;
+		display: flex;
+		align-items: center;
+		margin-top: .5rem;
+		gap: .25em;
 	}
 	.login,
 	.signIn {

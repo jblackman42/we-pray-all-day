@@ -6,8 +6,8 @@ class Calendar extends HTMLElement {
         this.month = today.getMonth() == 0 ? 1 : 0;
         this.year = today.getFullYear();
 
-        this.apiURL = 'http://localhost:3000'
-        // this.apiURL = 'https://weprayallday.com'
+        // this.apiURL = 'http://localhost:3000'
+        this.apiURL = 'https://weprayallday.com'
 
         this.draw();
     }
@@ -108,12 +108,12 @@ class Calendar extends HTMLElement {
             const disabled = new Date().setHours(0, 0, 0, -1) >= currDate;
 
             return `
-                <button class="calendar-day" onclick="window.location='${this.apiURL}/signup?date=${day}'" ${disabled ? 'disabled' : ''}>
+                <button class="calendar-day" onclick="window.location='/signup?date=${day}'" ${disabled ? 'disabled' : ''}>
                     <p class="date">${date}<sup>${this.getNumLabel(date)}</sup></p>
                     <p class="community-title" id="title-${date}-${month}-${year}"></p>
                     <div class="hours-container">
                         ${hours.map(hour => {
-                            return `<a href="${disabled ? '' : `${this.apiURL}/signup?date=${day}&hour=${hour}`}" id="${hour}-${date}-${month}-${year}" class="hour"></a>` //booked class makes it blue
+                            return `<a href="${disabled ? '' : `/signup?date=${day}&hour=${hour}`}" id="${hour}-${date}-${month}-${year}" class="hour"></a>` //booked class makes it blue
                         }).join('')}
                     </div>
                     <p class="progress-label"><span id="progress-${date}-${month}-${year}">0</span>% <span class="covered-label">Covered</span></p>

@@ -23,6 +23,7 @@ $form-font-size: clamp(18px, 2vw, 20px);
             width: 100%;
             justify-content: space-around;
             padding: 1rem 0;
+            margin-bottom: 1rem;
             .step {
                 --delay: 300ms;
 
@@ -168,6 +169,7 @@ $form-font-size: clamp(18px, 2vw, 20px);
                 height: 100%;
                 box-sizing: border-box;
                 transform-origin: bottom left;
+                white-space: nowrap;
             }
 
             textarea {
