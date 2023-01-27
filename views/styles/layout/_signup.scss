@@ -1,6 +1,6 @@
 $form-gap: 1rem;
 
-#sign-up-form, #register-form {
+#sign-up-form {
     display: flex;
     flex-wrap: wrap;
     gap: $form-gap;
@@ -9,7 +9,7 @@ $form-gap: 1rem;
     margin: $form-gap auto;
     font-family: Proxima-nova;
     position: relative;
-    #back-btn {
+    & > #back-btn {
         position: absolute;
         top: 0;
         left: 0;
@@ -18,12 +18,12 @@ $form-gap: 1rem;
         text-decoration: none;
         color: #2980b9;
     }
-    #prayer-date {
+    & > #prayer-date {
         width: 100%;
         text-align: center;
         // margin: 0;
     }
-    .input-container {
+    & > .input-container {
         display: flex;
         flex-direction: column;
         width: calc(50% - ($form-gap / 2));
@@ -33,17 +33,17 @@ $form-gap: 1rem;
         &.full-width {
             width: 100%;
         }
-        input {
+        & > input {
             padding: .5rem .25rem;
             border: none;
             border-radius: 2px;
         }
-        textarea {
+        & > textarea {
             resize: none;
             border: none;
         }
     }
-    .dropdown-container {
+    & > .dropdown-container {
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -55,7 +55,7 @@ $form-gap: 1rem;
             color: black;
         }
     }
-    .time-container {
+    & > .time-container {
         width: 100%;
         overflow-x: auto;
         @media screen and (max-width: 768px) {
@@ -68,39 +68,46 @@ $form-gap: 1rem;
         margin: 0 auto;
         gap: .5rem;
         // width: max-content;
-        .checkbox-container {
+        & > .checkbox-container {
             display: grid;
             box-sizing: border-box;
             border-radius: 4px;
-            input[type='radio'] {
+            padding: 2px;
+            & > input[type='radio'] {
                 display: none;
                 visibility: hidden;
                 &:checked ~ label {
                     background-color: $accent-blue;
+                    outline: 2px solid $accent-green;
                 // border: 2px solid $accent-blue;
                 }
+                &.covered ~ label {
+                    background-color: $accent-blue;
+                }
             }
-            label {
+            & > label {
                 background-color: #FFF;
-                padding: .5rem .25rem;
+                padding: .5rem;
                 user-select: none;
                 text-align: center;
                 border-radius: 2px;
+                cursor: pointer;
+                white-space: nowrap;
             }
 
         }
     }
-    .form-footer {
+    & > .form-footer {
         display: flex;
         width: 100%;
-        #curr-time {
+        & > #curr-time {
             margin: .5rem 0;
         }
-        button[type="submit"] {
+        & > button[type="submit"] {
             margin-left: auto;
             border: none;
             padding: .5rem 1rem;
-            background-color: $accent-blue;
+            background-color: $accent-yellow;
             color: black;
             font-weight: bold;
             border-radius: 2px;

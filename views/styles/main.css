@@ -333,14 +333,22 @@ p, ol, ul, li {
   font-family: Proxima-nova;
 }
 
+#back-btn {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #2980b9;
+}
+
 nav {
   display: flex;
   flex-wrap: wrap;
-  background-color: #fee32d;
-  color: black;
+  background-color: #282828;
+  color: white;
   justify-content: space-between;
   width: 100%;
   z-index: 99999;
+  border-bottom: 2px solid #fcbb09;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 nav .logo-container {
@@ -383,44 +391,48 @@ nav .nav-container {
   width: 100%;
   overflow: hidden;
   transition: max-height 150ms linear;
-  background-color: white;
+  background-color: #282828;
 }
 @media screen and (max-width: 768px) {
   nav .nav-container {
-    color: black;
+    color: white;
   }
   nav .nav-container.closed {
     max-height: 0px !important;
   }
   nav .nav-container:has(ul li:nth-of-type(1)) {
-    max-height: 39px;
+    max-height: 49px;
   }
   nav .nav-container:has(ul li:nth-of-type(2)) {
-    max-height: 78px;
+    max-height: 98px;
   }
   nav .nav-container:has(ul li:nth-of-type(3)) {
-    max-height: 117px;
+    max-height: 147px;
   }
   nav .nav-container:has(ul li:nth-of-type(4)) {
-    max-height: 156px;
+    max-height: 196px;
   }
   nav .nav-container:has(ul li:nth-of-type(5)) {
-    max-height: 195px;
+    max-height: 245px;
   }
   nav .nav-container:has(ul li:nth-of-type(6)) {
-    max-height: 234px;
+    max-height: 294px;
   }
   nav .nav-container:has(ul li:nth-of-type(7)) {
-    max-height: 273px;
+    max-height: 343px;
   }
   nav .nav-container:has(ul li:nth-of-type(8)) {
-    max-height: 312px;
+    max-height: 392px;
   }
   nav .nav-container:has(ul li:nth-of-type(9)) {
-    max-height: 351px;
+    max-height: 441px;
   }
   nav .nav-container:has(ul li:nth-of-type(10)) {
-    max-height: 390px;
+    max-height: 490px;
+  }
+  nav .nav-container ul.links li {
+    border: none !important;
+    border-top: 2px solid #fcbb09 !important;
   }
 }
 @media screen and (min-width: 769px) {
@@ -449,17 +461,25 @@ nav .nav-container ul.links {
 }
 nav .nav-container ul.links li {
   width: 100%;
+  border-left: 2px solid #fcbb09;
+}
+nav .nav-container ul.links li:first-of-type {
+  border: none;
 }
 nav .nav-container ul.links li a {
   color: currentColor;
+  white-space: nowrap;
   text-decoration: none;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   display: block;
   font-size: 1.25rem;
   text-align: center;
 }
 nav .nav-container ul.links li a:hover {
   background-color: rgba(0, 0, 0, 0.2);
+}
+nav .nav-container ul.links li a.active {
+  text-decoration: underline;
 }
 
 prayer-calendar {
@@ -474,7 +494,8 @@ prayer-calendar {
 }
 .calendar #context {
   text-align: center;
-  background-color: #fee32d;
+  background-color: #282828;
+  color: white;
   box-sizing: content-box;
   width: 100%;
 }
@@ -493,9 +514,26 @@ prayer-calendar {
   width: -moz-max-content;
   width: max-content;
   max-width: 85vw;
+  counter-reset: list-counter;
+  list-style: none;
 }
 .calendar #context ol li {
   text-align: left;
+  counter-increment: list-counter;
+  padding: 0.25rem 0;
+  font-size: clamp(14px, 2vw, 18px);
+}
+.calendar #context ol li::before {
+  content: counter(list-counter);
+  color: black;
+  width: clamp(14px, 2vw, 18px);
+  height: clamp(14px, 2vw, 18px);
+  padding: 0.5em;
+  margin-right: 4px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  background-color: #fcbb09;
 }
 .calendar #month-header {
   display: flex;
@@ -590,8 +628,8 @@ prayer-calendar {
   margin-top: 0;
 }
 .calendar #days-grid .calendar-day {
-  background-color: #fee32d;
-  color: #2e2d2b;
+  background-color: #fcbb09;
+  color: black;
   width: calc(12.8571428571vw - 0.25rem);
   max-width: calc(142.8571428571px - 0.25rem);
   height: calc(12.8571428571vw - 0.25rem);
@@ -613,10 +651,28 @@ prayer-calendar {
   text-transform: lowercase;
   text-align: left;
 }
+@media screen and (max-width: 1024px) {
+  .calendar #days-grid .calendar-day .date {
+    margin: 0.5rem auto;
+  }
+}
 .calendar #days-grid .calendar-day .community-title {
-  margin-inline: 0.25rem auto;
-  margin-block: auto;
   font-size: 14px;
+  background-color: #2e2d2b;
+  color: white;
+  margin: 0;
+  width: 100%;
+  margin-top: auto;
+  padding-block: 0.25rem;
+}
+@media screen and (max-width: 1024px) {
+  .calendar #days-grid .calendar-day .community-title {
+    display: none;
+    visibility: hidden;
+  }
+  .calendar #days-grid .calendar-day .hours-container {
+    order: 999;
+  }
 }
 .calendar #days-grid .calendar-day .hours-container {
   background-color: rgba(46, 45, 43, 0.6666666667);
@@ -631,6 +687,7 @@ prayer-calendar {
   background-color: #f7f1e3;
   box-sizing: border-box;
   width: 100%;
+  margin: 0;
   aspect-ratio: 1/1;
   position: relative;
 }
@@ -679,10 +736,10 @@ prayer-calendar {
   transform: rotate(-45deg);
 }
 .calendar #days-grid .calendar-day:disabled {
-  cursor: default;
+  cursor: not-allowed;
 }
 .calendar #days-grid .calendar-day:disabled * {
-  cursor: default !important;
+  cursor: not-allowed !important;
 }
 .calendar #days-grid .calendar-day:disabled .hours-container .hour::after, .calendar #days-grid .calendar-day:disabled .hours-container .hour::before {
   content: "";
@@ -712,20 +769,28 @@ prayer-calendar {
   width: 100%;
   margin-right: auto;
   background-color: #7f8c8d;
-  border-radius: 3px;
   overflow: hidden;
 }
 .calendar #days-grid .calendar-day .progress-bar-container .progress-bar {
   background-color: #2ecc71;
   width: 100%;
   height: 100%;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
+}
+@media screen and (max-width: 1024px) {
+  .calendar #days-grid .calendar-day .progress-label {
+    display: block;
+    visibility: visible;
+    margin-top: auto;
+    width: 100%;
+    text-align: center;
+  }
 }
 @media screen and (max-width: 768px) {
   .calendar #days-grid .calendar-day {
     justify-content: center;
     align-items: center;
+    border-radius: 3px;
+    overflow: hidden;
   }
   .calendar #days-grid .calendar-day .progress-label, .calendar #days-grid .calendar-day .progress-bar-container {
     display: block;
@@ -828,7 +893,7 @@ prayer-calendar {
 #loadingScreen #loading-bar #progress {
   width: 100%;
   height: 0%;
-  background-color: #2980b9;
+  background-color: #fcbb09;
   position: absolute;
   left: 0;
   bottom: 0;
@@ -838,8 +903,8 @@ prayer-calendar {
   /* Light grey */
   border: 16px solid rgba(0, 0, 0, 0.1333333333);
   /* Blue */
-  border-right: 16px solid #2980b9;
-  border-left: 16px solid #2980b9;
+  border-right: 16px solid #fcbb09;
+  border-left: 16px solid #fcbb09;
   border-radius: 50%;
   width: 100px;
   height: 100px;
@@ -864,7 +929,7 @@ prayer-calendar {
     transform: rotate(360deg);
   }
 }
-#sign-up-form, #register-form {
+#sign-up-form {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -874,7 +939,7 @@ prayer-calendar {
   font-family: Proxima-nova;
   position: relative;
 }
-#sign-up-form #back-btn, #register-form #back-btn {
+#sign-up-form > #back-btn {
   position: absolute;
   top: 0;
   left: 0;
@@ -883,93 +948,100 @@ prayer-calendar {
   text-decoration: none;
   color: #2980b9;
 }
-#sign-up-form #prayer-date, #register-form #prayer-date {
+#sign-up-form > #prayer-date {
   width: 100%;
   text-align: center;
 }
-#sign-up-form .input-container, #register-form .input-container {
+#sign-up-form > .input-container {
   display: flex;
   flex-direction: column;
   width: calc(50% - 0.5rem);
 }
 @media screen and (max-width: 768px) {
-  #sign-up-form .input-container, #register-form .input-container {
+  #sign-up-form > .input-container {
     width: 100%;
   }
 }
-#sign-up-form .input-container.full-width, #register-form .input-container.full-width {
+#sign-up-form > .input-container.full-width {
   width: 100%;
 }
-#sign-up-form .input-container input, #register-form .input-container input {
+#sign-up-form > .input-container > input {
   padding: 0.5rem 0.25rem;
   border: none;
   border-radius: 2px;
 }
-#sign-up-form .input-container textarea, #register-form .input-container textarea {
+#sign-up-form > .input-container > textarea {
   resize: none;
   border: none;
 }
-#sign-up-form .dropdown-container, #register-form .dropdown-container {
+#sign-up-form > .dropdown-container {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
-#sign-up-form .dropdown-container select, #register-form .dropdown-container select {
+#sign-up-form > .dropdown-container select {
   padding: 0.5rem 0.25rem;
   border: none;
   border-radius: 2px;
   background-color: white;
   color: black;
 }
-#sign-up-form .time-container, #register-form .time-container {
+#sign-up-form > .time-container {
   width: 100%;
   overflow-x: auto;
 }
 @media screen and (max-width: 768px) {
-  #sign-up-form .time-container, #register-form .time-container {
+  #sign-up-form > .time-container {
     padding-bottom: 10px;
   }
 }
-#sign-up-form #hours-options, #register-form #hours-options {
+#sign-up-form #hours-options {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   margin: 0 auto;
   gap: 0.5rem;
 }
-#sign-up-form #hours-options .checkbox-container, #register-form #hours-options .checkbox-container {
+#sign-up-form #hours-options > .checkbox-container {
   display: grid;
   box-sizing: border-box;
   border-radius: 4px;
+  padding: 2px;
 }
-#sign-up-form #hours-options .checkbox-container input[type=radio], #register-form #hours-options .checkbox-container input[type=radio] {
+#sign-up-form #hours-options > .checkbox-container > input[type=radio] {
   display: none;
   visibility: hidden;
 }
-#sign-up-form #hours-options .checkbox-container input[type=radio]:checked ~ label, #register-form #hours-options .checkbox-container input[type=radio]:checked ~ label {
+#sign-up-form #hours-options > .checkbox-container > input[type=radio]:checked ~ label {
+  background-color: #fee32d;
+  outline: 2px solid #2ecc71;
+}
+#sign-up-form #hours-options > .checkbox-container > input[type=radio].covered ~ label {
   background-color: #fee32d;
 }
-#sign-up-form #hours-options .checkbox-container label, #register-form #hours-options .checkbox-container label {
+#sign-up-form #hours-options > .checkbox-container > label {
   background-color: #FFF;
-  padding: 0.5rem 0.25rem;
+  padding: 0.5rem;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
   text-align: center;
   border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
 }
-#sign-up-form .form-footer, #register-form .form-footer {
+#sign-up-form > .form-footer {
   display: flex;
   width: 100%;
 }
-#sign-up-form .form-footer #curr-time, #register-form .form-footer #curr-time {
+#sign-up-form > .form-footer > #curr-time {
   margin: 0.5rem 0;
 }
-#sign-up-form .form-footer button[type=submit], #register-form .form-footer button[type=submit] {
+#sign-up-form > .form-footer > button[type=submit] {
   margin-left: auto;
   border: none;
   padding: 0.5rem 1rem;
-  background-color: #fee32d;
+  background-color: #fcbb09;
   color: black;
   font-weight: bold;
   border-radius: 2px;
@@ -1019,6 +1091,26 @@ prayer-calendar {
     border: none !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2666666667) !important;
   }
+}
+
+.register-btn {
+  color: black;
+  background-color: #fee32d;
+  border: none;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  padding: 0.75rem;
+  margin: 1rem auto;
+  margin-top: 0.5rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+}
+.register-btn:hover, .register-btn:focus-within {
+  background-color: #fcbb09;
 }
 
 #about-us-content {
@@ -1092,4 +1184,388 @@ prayer-calendar {
   to {
     transform: translateX(0) rotate(0deg);
   }
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+#loginForm,
+#signUpForm {
+  background-color: #282828;
+  color: white;
+  max-width: 450px;
+}
+#loginForm h1,
+#signUpForm h1 {
+  text-align: center;
+}
+#loginForm .help-msg,
+#signUpForm .help-msg {
+  margin: 0;
+  text-align: center;
+  font-size: 80%;
+}
+#loginForm .row,
+#signUpForm .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#loginForm .row a,
+#signUpForm .row a {
+  margin-top: 0.5rem;
+  color: currentColor;
+}
+#loginForm .row label, #loginForm .row a,
+#signUpForm .row label,
+#signUpForm .row a {
+  font-size: clamp(12px, 2vw, 16px);
+}
+#loginForm .inputs,
+#signUpForm .inputs {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 0.25rem;
+  position: relative;
+}
+#loginForm .inputs input,
+#signUpForm .inputs input {
+  border: none;
+  outline: none;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1333333333);
+  padding: 0.75rem 1rem;
+}
+#loginForm .inputs input:last-of-type,
+#signUpForm .inputs input:last-of-type {
+  border: none;
+}
+#loginForm .inputs #togglePassword,
+#signUpForm .inputs #togglePassword {
+  color: black;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0.9rem 0.5rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+#loginForm .remember-input,
+#signUpForm .remember-input {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  gap: 0.25em;
+}
+#loginForm .login,
+#loginForm .signIn,
+#signUpForm .login,
+#signUpForm .signIn {
+  color: black;
+  background-color: #fcbb09;
+  border: none;
+  width: 100%;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  margin-top: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+#loginForm .login:hover, #loginForm .login:focus-within,
+#loginForm .signIn:hover,
+#loginForm .signIn:focus-within,
+#signUpForm .login:hover,
+#signUpForm .login:focus-within,
+#signUpForm .signIn:hover,
+#signUpForm .signIn:focus-within {
+  background-color: #eaae07;
+}
+#loginForm .form-error,
+#signUpForm .form-error {
+  color: #e74c3c;
+  text-align: center;
+  text-decoration: underline;
+  margin: 0;
+  margin-top: 1rem;
+}
+
+#loginForm,
+#signUpForm {
+  width: clamp(30vw, 25rem, 90vw);
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  padding: 5rem 3rem;
+  box-sizing: border-box;
+  border-radius: 0.75rem;
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+}
+@media screen and (max-width: 380px) {
+  #loginForm,
+#signUpForm {
+    padding-inline: 1rem;
+  }
+}
+#loginForm .loginOption,
+#signUpForm .loginOption {
+  background-color: transparent;
+  color: currentColor;
+  width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+#loginForm .loginOption:hover, #loginForm .loginOption.focus-within,
+#signUpForm .loginOption:hover,
+#signUpForm .loginOption.focus-within {
+  text-decoration: underline;
+}
+#loginForm .loginOption a,
+#signUpForm .loginOption a {
+  color: currentColor;
+  text-decoration: none;
+}
+#loginForm .loginOption a:active,
+#signUpForm .loginOption a:active {
+  filter: brightness(0.6);
+}
+
+.forms-container #register-form {
+  width: 500px;
+  max-width: 90vw;
+  background-color: #282828;
+  box-sizing: content-box;
+  padding: 2rem 0;
+  border-radius: 0.75rem;
+}
+.forms-container #register-form .title {
+  margin: 0;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  color: white;
+  font-size: 2em;
+}
+.forms-container #register-form > .progress {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  padding: 1rem 0;
+  margin-bottom: 1rem;
+  position: relative;
+}
+.forms-container #register-form > .progress .step {
+  --delay: 300ms;
+  background-color: white;
+  padding: 10px;
+  border-radius: 50%;
+  z-index: 99;
+  background-color: white;
+  position: relative;
+  transition: background-color 150ms linear;
+  transition-delay: var(--delay);
+}
+.forms-container #register-form > .progress .step:nth-child(1) {
+  background-color: #fcbb09;
+}
+.forms-container #register-form > .progress .step:nth-child(1)::after {
+  color: #fcbb09;
+}
+.forms-container #register-form > .progress .step i, .forms-container #register-form > .progress .step svg {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+}
+.forms-container #register-form > .progress .step::after {
+  content: attr(data-title);
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 0%);
+  color: white;
+  transition: color 150ms linear;
+  transition-delay: var(--delay);
+}
+.forms-container #register-form > .progress::before, .forms-container #register-form > .progress::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background-color: white;
+  top: calc(50% - 1px);
+}
+.forms-container #register-form > .progress::after {
+  background-color: #fcbb09;
+  left: 0;
+  width: 12.5%;
+  transition: width 300ms linear;
+}
+.forms-container #register-form > .progress.page-1::after {
+  width: 37.5%;
+}
+.forms-container #register-form > .progress.page-1 .step:nth-child(2) {
+  background-color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-1 .step:nth-child(2)::after {
+  color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-2::after {
+  width: 62.5%;
+}
+.forms-container #register-form > .progress.page-2 .step:nth-child(2) {
+  background-color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-2 .step:nth-child(2)::after {
+  color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-2 .step:nth-child(3) {
+  background-color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-2 .step:nth-child(3)::after {
+  color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-3::after {
+  width: 87.5%;
+}
+.forms-container #register-form > .progress.page-3 .step:nth-child(2) {
+  background-color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-3 .step:nth-child(2)::after {
+  color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-3 .step:nth-child(3) {
+  background-color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-3 .step:nth-child(3)::after {
+  color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-3 .step:nth-child(4) {
+  background-color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-3 .step:nth-child(4)::after {
+  color: #fcbb09;
+}
+.forms-container #register-form > .progress.done::after {
+  width: 100%;
+}
+.forms-container #register-form .error-container {
+  display: flex;
+  justify-content: center;
+}
+.forms-container #register-form .error-container p {
+  margin: 0;
+  font-weight: bold;
+  color: #e74c3c;
+}
+.forms-container .page {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem;
+  padding-top: 0;
+  box-sizing: border-box;
+}
+.forms-container .page .input-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: clamp(18px, 2vw, 20px);
+  width: calc(50% - 0.5rem);
+  position: relative;
+}
+.forms-container .page .input-container.full-width {
+  width: 100%;
+}
+@media screen and (max-width: 768px) {
+  .forms-container .page .input-container {
+    width: 100%;
+  }
+}
+.forms-container .page .input-container label {
+  position: absolute;
+  font-size: clamp(18px, 2vw, 20px);
+  color: rgba(0, 0, 0, 0.6);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  transform-origin: bottom left;
+  white-space: nowrap;
+}
+.forms-container .page .input-container textarea {
+  border: none;
+  font-size: clamp(18px, 2vw, 20px);
+  font-family: inherit;
+  border-radius: 2px;
+  outline: none;
+  resize: none;
+}
+.forms-container .page .input-container textarea ~ label {
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+}
+.forms-container .page .input-container input, .forms-container .page .input-container select, .forms-container .page .input-container textarea {
+  border: none;
+  font-size: clamp(18px, 2vw, 20px);
+  border-radius: 2px;
+  outline: none;
+  padding: 4px 2px;
+  background-color: white;
+  color: currentColor;
+  line-height: 1;
+}
+.forms-container .page .input-container input ~ label, .forms-container .page .input-container select ~ label, .forms-container .page .input-container textarea ~ label {
+  transition: transform 100ms ease-in-out, color 100ms linear;
+  padding: 4px;
+}
+.forms-container .page .input-container input:invalid, .forms-container .page .input-container select:invalid, .forms-container .page .input-container textarea:invalid {
+  outline: 2px solid #e74c3c;
+}
+.forms-container .page .input-container input:invalid ~ label::before, .forms-container .page .input-container select:invalid ~ label::before, .forms-container .page .input-container textarea:invalid ~ label::before {
+  content: "Invalid";
+  position: absolute;
+  color: #e74c3c;
+  right: -25%;
+}
+.forms-container .page .input-container input:not(:-moz-placeholder-shown) ~ label, .forms-container .page .input-container select:not(:-moz-placeholder-shown) ~ label, .forms-container .page .input-container textarea:not(:-moz-placeholder-shown) ~ label {
+  transform: scale(0.8) translate(0, calc(-100% - 4px));
+  color: white;
+}
+.forms-container .page .input-container input:not(:-ms-input-placeholder) ~ label, .forms-container .page .input-container select:not(:-ms-input-placeholder) ~ label, .forms-container .page .input-container textarea:not(:-ms-input-placeholder) ~ label {
+  transform: scale(0.8) translate(0, calc(-100% - 4px));
+  color: white;
+}
+.forms-container .page .input-container input:not(:placeholder-shown) ~ label, .forms-container .page .input-container select:not(:placeholder-shown) ~ label, .forms-container .page .input-container textarea:not(:placeholder-shown) ~ label {
+  transform: scale(0.8) translate(0, calc(-100% - 4px));
+  color: white;
+}
+.forms-container .page .input-container select {
+  padding: 1px 2px;
+}
+.forms-container .btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.forms-container .btn-container button {
+  background: #fcbb09;
+  color: currentColor;
+  border: none;
+  text-transform: capitalize;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dash-container {
+  text-align: center;
 }/*# sourceMappingURL=main.css.map */

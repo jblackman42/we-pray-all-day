@@ -86,7 +86,7 @@ router.get('/Communities', async (req, res) => {
     try {
         const data = await axios({
             method: 'get',
-            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities?$filter=End_Date IS NULL OR GETDATE()<End_Date${$select ? `&$select=${$select}` : ''}`,
+            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities?$filter=(End_Date IS NULL OR GETDATE()<End_Date) AND Community_ID != 18${$select ? `&$select=${$select}` : ''}`,
             headers: {
                 'Authorization': `Bearer ${access_token}`,
                 'Content-Type': 'application/json'
@@ -195,85 +195,17 @@ router.post('/confirmation-email', async (req, res) => {
             ],
             "ReplyToAddress": { "DisplayName": "noreply@pureheart.org", "Address": "noreply@pureheart.org" },
             "Subject": `🙏 We Pray All Day`,
-            "Body": `<style>
-                        body, html {
-                            margin: 0;
-                            padding: 0;
-                            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                        }
-                        .container {
-                            max-width: 768px;
-                            margin: 0 auto;
-                            background-color: #f1f2f6;
-                        }
-                        .container .img-container {
-                            background-color: #0eb2f1;
-                            color: white;
-                            display: grid;
-                            place-items: center;
-                            font-size: 1.2rem;
-                            padding: 1rem;
-                        }
-                        .container .img-container img {
-                            width: 384px;
-                            max-width: 90%;
-                            margin: 0 auto;
-                        }
-                        .container .img-container p {
-                            margin: 0;
-                            font-weight: bold;
-                            text-align: center;
-                        }
-                        
-                        .container .content {
-                            max-width: 90%;
-                            margin: 0 auto;
-                            padding: 1rem;
-                        }
-                        .container .content p {
-                            margin: 0;
-                        }
-                        .container .btn-container {
-                            width: 100%;
-                            display: flex;
-                            justify-content: center;
-                        }
-                        .container a {
-                            font-size: 1rem;
-                            font-weight: bold;
-                            border: none;
-                            color: white;
-                            background-color: #0eb2f1;
-                            padding: .5rem 1rem;
-                            border-radius: 4px;
-                            cursor: pointer;
-                            text-decoration: none;
-                        }
-                    </style>
-                    <body>
-                        <div class="container">
-                            <div class="img-container">
-                                <img src="https://www.pureheart.org/wp-content/uploads/2023/01/logo.png" alt="We Pray All Day">
-                                <p>Thanks for signing up to pray</p>
-                            </div>
-                            <div class="content">
-                                <p>Hi ${Recipient_Name},</p>
-                                <br>
-                                <p>We are so honored that you would pray with us! We have high expectations that God is going to do immeasurably more than we could ever seek ask or imagine!</p>
-                                <br>
-                                <p>To help you remember your prayer time, add this to your calendar! It's simple all you gotta do is click it and accept 😁</p>
-                                <br>
-                                <p>We will text you 5 minutes before your scheduled time of prayer with more information.</p>
-                                <br>
-                                <p style="text-align: center;">${startDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</p>
-                                <p style="text-align: center;">${Time_String}</p>
-                                <br>
-                                <div class="btn-container">
-                                    <a target="_blank" href="${process.env.DOMAIN_NAME}/calendar-invite/?start_date=${startDate.toUTCString()}">Add to Calendar</a>
-                                </div>
-                            </div>
-                        </div>
-                    </body>`
+            "Body": `
+                <style>
+                    body, html {margin: 0;padding: 0;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;}.container {max-width: 768px;margin: 0 auto;background-color: #f1f2f6;}.container .img-container {background-color: #2e2d2b;color: white;display: grid;place-items: center;font-size: 1.2rem;padding: 1rem;}.container .img-container img {width: 300px;max-width: 90%;margin: 0 auto;}.container .img-container p {margin: 0;font-weight: bold;}.container #banner {width: 100%;background: #fcbb09;color: white;margin: 0;padding: 1rem 0;text-align: center;text-transform: uppercase;font-weight: bold;}.container .content {max-width: 90%;margin: 0 auto;padding: 1rem;}.container .content p {margin: 0;}.container .btn-container {width: 100%;display: flex;justify-content: center;}.container a {text-decoration: none;font-size: 1rem;font-weight: bold;border: none;color: white;background-color: #fcbb09;padding: .5rem 1rem;border-radius: 4px;cursor: pointer;}
+                </style>
+                <body>
+                    <div class="container">
+                        <div class="img-container"><img src="http://weprayallday.com/assets/final-logo-transparent.png" alt="We Pray All Day"></div>
+                        <p id="banner">Thanks for signing up to pray</p>
+                        <div class="content"><p>Hi ${Recipient_Name},</p><br><p>We are so honored that you would pray with us! We have high expectations that God is going to do immeasurably more than we could ever seek ask or imagine!</p><br><p>To help you remember your prayer time, add this to your calendar! It's simple all you gotta do is click it and accept 😁</p><br><p>We will text you 5 minutes before your scheduled time of prayer with more information.</p><br><p style="text-align: center;">${startDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</p><p style="text-align: center;">${Time_String}</p><br><div class="btn-container"><a href="${process.env.DOMAIN_NAME}/calendar-invite/?start_date=${startDate.toUTCString()}" target="_blank">Add to Calendar</a></div></div>
+                    </div>
+                </body>`
         }
     })
 

@@ -1,0 +1,387 @@
+$accent-red: #f04215;
+$accent-blue: #fee32d;
+$accent-yellow: #fcbb09;
+$accent-yellow-2: #eaae07;
+$accent-green: #2ecc71;
+// $accent-blue: #F3EB1A;
+// $accent-blue: #0eb2f1;
+$primary-black: #2e2d2b;
+$primary-black-transparent: #2e2d2bAA;
+$secondary-black: #282828;
+$primary-gray: #7f8c8d;
+$primary-white: #f5eee3;
+$secondary-white: #f7f1e3;
+
+$gridGap: .25rem;
+$calendarWidth: 1000px;
+$calendarDayWidth: calc((90vw / 7) - ($gridGap * 1));
+$calendarDayMaxWidth: calc(($calendarWidth / 7) - ($gridGap * 1));
+$calendarDayColor: $accent-yellow;
+$calendarFontColor: black;
+
+prayer-calendar {
+    display: flex;
+    justify-content: center;
+    background-color: $primary-white;
+    // background-color: $accent-blue;
+    .calendar {
+        // background-color: ;
+        width: 100%;
+        margin: 0 auto;
+
+        #context {
+            text-align: center;
+            background-color: $secondary-black;
+            color: white;
+            box-sizing: content-box;
+            width: 100%;
+            h1 {
+                font-size: clamp(30px, 7vw, 96px);
+                padding-block: 2rem 1rem;
+                margin: 0;
+            }
+            ol {
+                font-size: clamp(16px, 2vw, 24px);
+                font-weight: 100;
+                margin: 0 auto;
+                padding-bottom: 2rem;
+                padding-left: 1.25rem;
+                width: max-content;
+                max-width: 85vw;
+
+                counter-reset: list-counter;
+                list-style: none;
+                li {
+                    text-align: left;
+                    counter-increment: list-counter;
+                    padding: .25rem 0;
+                    font-size: clamp(14px, 2vw, 18px);
+                    &::before {
+                        content: counter(list-counter);
+                        color: black;
+
+                        width: clamp(14px, 2vw, 18px);
+                        height: clamp(14px, 2vw, 18px);
+                        padding: .5em;
+                        margin-right: 4px;
+                        border-radius: 50%;
+
+                        display: inline-grid;
+                        place-items: center;
+
+                        background-color: $accent-yellow;
+                    }
+                }
+            }
+        }
+
+        #month-header {
+            display: flex;
+            justify-content: space-between;
+
+            width: $calendarWidth;
+            max-width: 90vw;
+            margin: 0 auto;
+            margin-top: 1rem;
+
+            @media screen and (max-width: 850px) {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            h3 {
+                margin: auto 2rem;
+                min-width: 150px;
+                text-align: center;
+                font-family: Proxima-nova;
+            }
+
+            #btn-container {
+                display: flex;
+
+                .btn {
+                    border-radius: 50%;
+                    padding: .25rem;
+                    margin: auto 0;
+                    background-color: $primary-black;
+                    color: $primary-white;
+                    font-size: 16px;
+                    cursor: pointer;
+                    display: grid;
+                    place-items: center;
+                    border: none;
+                    height: max-content;
+                }
+            }
+
+            #legend {
+                display: flex;
+
+                #empty-square,
+                #filled-square {
+                    width: calc(($calendarDayWidth / 8) - 3px);
+                    max-width: calc(($calendarDayMaxWidth / 8) - 3px);
+                    height: calc(($calendarDayWidth / 8) - 3px);
+                    max-height: calc(($calendarDayMaxWidth / 8) - 3px);
+                    background-color: $secondary-white;
+                    border: 1px solid $primary-gray;
+                    margin: auto .25rem;
+                }
+
+                #filled-square {
+                    background-color: $accent-blue;
+                    margin-left: 1rem;
+                }
+
+                @media screen and (max-width: 768px) {
+                    display: none;
+                    visibility: hidden;
+                }
+            }
+        }
+
+        #weekdays {
+            width: $calendarWidth;
+            max-width: 90vw;
+
+            display: flex;
+            gap: $gridGap;
+            margin: 0 auto;
+
+            p {
+                width: $calendarDayWidth;
+                max-width: $calendarDayMaxWidth;
+                text-align: center;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin: 1rem 0;
+                @media screen and (max-width: 768px) {
+                    span {
+                        display: none;
+                        visibility: hidden;
+                    }
+                }
+            }
+        }
+
+        #days-grid {
+            width: $calendarWidth;
+            max-width: 90vw;
+
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: $gridGap;
+            place-items: center;
+            // width: 100%;
+            margin: 1rem auto;
+            margin-top: 0;
+
+            .calendar-day {
+                background-color: $calendarDayColor;
+                color: $calendarFontColor;
+                width: $calendarDayWidth;
+                max-width: $calendarDayMaxWidth;
+                height: $calendarDayWidth;
+                max-height: $calendarDayMaxWidth;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                text-decoration: none;
+                border: none;
+                position: relative;
+
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+                cursor: pointer;
+                padding: 0;
+
+                
+                .date {
+                    // margin: .5rem 0 0 .5rem;
+                    margin: 1rem auto;
+                    font-size: 18px;
+                    font-weight: bold;
+                    text-transform: lowercase;
+                    text-align: left;
+                    @media screen and (max-width: 1024px) {
+                        margin: .5rem auto;
+                    }
+                }
+
+                .community-title {
+                    // margin-inline: .25rem auto;
+                    // margin-block: auto;
+                    font-size: 14px;
+                    background-color: $primary-black;
+                    color: white;
+                    margin: 0;
+                    width: 100%;
+                    margin-top: auto;
+                    padding-block: .25rem;
+                }
+                @media screen and (max-width: 1024px) {
+                    .community-title {
+                        display: none;
+                        visibility: hidden;
+                    }
+                    .hours-container {
+                        order: 999;
+                    }
+                }
+
+                .hours-container {
+                    background-color: $primary-black-transparent;
+                    display: grid;
+                    grid-template-columns: repeat(8, 1fr);
+                    gap: 1px;
+                    padding: 1px;
+                    // background-color: inherit;
+                    width: calc(100% - 2px);
+
+                    .hour {
+                        display: block;
+                        background-color: $secondary-white;
+                        box-sizing: border-box;
+                        width: 100%;
+                        margin: 0;
+                        aspect-ratio: 1 / 1;
+                        
+                        &.booked {
+                            background-color: $accent-blue;
+                        }
+                        
+                        position: relative;
+                        
+                        
+                    }
+                    .hour {
+                        &:hover::before,
+                        &:hover::after {
+                            display: block;
+                            visibility: visible;
+                        }
+
+                        &::after {
+                            display: none;
+                            visibility: hidden;
+
+                            content: attr(data-content);
+                            font-family: Proxima-nova;
+                            color: $primary-black;
+                            position: absolute;
+                            width: max-content;
+                            bottom: calc(100% + 3px);
+                            left: 50%;
+                            transform: translateX(-50%);
+                            z-index: 999;
+
+                            background-color: $primary-white;
+                            box-shadow: 0 0 0 1px $primary-black;
+                            border-radius: 2px;
+                            padding: .25rem;
+                        }
+
+                        &::before {
+                            display: none;
+                            visibility: hidden;
+
+                            content: '';
+                            position: absolute;
+                            width: 6px;
+                            height: 6px;
+                            background-color: $primary-white;
+                            border: 1px solid $primary-black;
+                            border-top-color: transparent;
+                            border-right-color: transparent;
+                            bottom: calc(100% - 2.5px);
+                            left: 50%;
+                            border-bottom-left-radius: 2px;
+                            z-index: 1000;
+
+                            transform-origin: bottom left;
+                            transform: rotate(-45deg);
+                        }
+                    }
+                }
+                    
+                &:disabled {
+                    cursor: not-allowed;
+                    // opacity: .8;
+                    * {
+                        cursor: not-allowed !important;
+                    }
+                    .hours-container .hour {
+                        &::after, &::before {
+                            content: '';
+                            display: none;
+                            visibility: hidden;
+                        }
+                    }
+                }
+                .progress-label {
+                    display: none;
+                    visibility: hidden;
+
+                    margin: 0;
+                    font-size: clamp(10px, 1.75vw, 12px);
+                    margin-top: auto;
+                    @media screen and (max-width: 425px) {
+                        margin: auto auto 0 2px;
+                        .covered-label {
+                            display: none;
+                            visibility: hidden;
+                        }
+                    }
+                }
+                .progress-bar-container {
+                    display: none;
+                    visibility: hidden;
+                    height: 6px;
+                    width: 100%;
+                    margin-right: auto;
+
+                    background-color: $primary-gray;
+                    overflow: hidden;
+
+                    .progress-bar {
+                        background-color: $accent-green;
+
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+                @media screen and (max-width: 1024px) {
+                    .progress-label {
+                        display: block;
+                        visibility: visible;
+                        margin-top: auto;
+                        width: 100%;
+                        text-align: center;
+                        // order: -1;
+                    }
+                }
+                @media screen and (max-width: 768px) {
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 3px;
+                    overflow: hidden;
+
+                    .progress-label, .progress-bar-container {
+                        display: block;
+                        visibility: visible;
+                    }
+
+                    p.date {
+                        margin: 0;
+                        margin-top: auto;
+                        font-size: clamp(11px, 3.5vw, 18px);
+                    }
+                    .community-title, .hours-container {
+                        display: none;
+                        visibility: hidden;
+                    }
+                }
+            }
+        }
+    }
+}

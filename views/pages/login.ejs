@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body class="container">
+    <%- include('../partials/loading'); %>
+    <div class="forms-container">
+        <a id="back-btn" href="/"><i class="material-icons">keyboard_arrow_left	</i> Back To Calendar</a>
+        <form id="loginForm" method="post" action="/api/auth/login">
+            <h1>Sign In</h1>
+            <div class="inputs">
+                <input type="text" name="username" id="username" autocomplete="on" placeholder="Username" required>
+                <input type="password" name="password" id="password" autocomplete="on" placeholder="Password" required>
+                <i class='far fa-eye-slash' id="togglePassword" onclick="togglePassword()"></i>
+            </div>
+            <div class="row">
+                <div class="remember-input" title="Keeps you logged in on this device for 30 days">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember">Keep Me Logged In</label>
+                </div>
+                <a href="https://my.pureheart.org/ministryplatformapi/oauth/reset">Forgot Password</a>
+            </div>
+            <button type="submit" class="login">Sign In</button>
+            <!-- <p class="help-msg">Sign In With Ministry Platform Credentials</p> -->
+            
+            <p class="form-error"><%- error %></p>
+        </form>
+    </div>
+      
+    </body>
+<script>
+    const loginForm = document.getElementById('loginForm');
+
+    const toggleIcon = document.querySelector("#togglePassword");
+    const password = document.querySelector("#password");
+
+    const togglePassword = () => {
+        console.log('click')
+        // toggle the type attribute
+        const type = password.getAttribute("type") === "password" ? "text" : "password";
+        password.setAttribute("type", type);
+        
+        // toggle the icon
+        toggleIcon.classList.toggle("fa-eye-slash");
+        toggleIcon.classList.toggle("fa-eye");
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        loading();
+        await axios({
+            method: 'post',
+            url: '/api/auth/login',
+            data: {
+                "username": document.getElementById('username').value,
+                "password": document.getElementById('password').value,
+                "remember": document.getElementById('remember').checked
+            }
+        })
+            .then(response => {if (response.status >= 200 && response.status < 300) window.location = window.location.pathname == '/login' ? '/' : window.location.pathname})
+            .catch(err => {
+                console.error(err)
+                document.querySelector('.form-error').innerText = err.response.data ? err.response.data.error || `${err.response.status}: ${err.response.statusText}` : 'internal server error';
+                doneLoading();
+            })
+    })
+
+</script>
+</html>

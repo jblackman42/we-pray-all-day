@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+    <%- include('../partials/loading'); %>
+    <%- include('../partials/navbar'); %>
+
+    <div class="dash-container">
+        <h1>Dashboard</h1>
+        <p id="welcome-msg"></p>
+    
+        <br>
+        <br>
+        <form id="group-form">
+
+        <p>This page is currently in development. please check back later</p>
+    </div>
+
+</body>
+<script>
+    (async () => {
+        loading();
+        const user = await axios({
+            method: 'get',
+            url: '/api/auth/user'
+        }).then(response => response.data)
+        if (!user) return
+
+        console.log(user);
+        const {display_name, nickname, name} = user;
+
+        document.getElementById('welcome-msg').innerText = `Welcome, ${nickname || name}`;
+
+        const data = await axios({
+            method: 'get',
+            url: '/api/auth/group'
+        })
+            .then(response => response.data)
+
+        const {group, contact, address, roster} = data;
+
+        // contact information
+        const {Nickname, Last_Name, Email_Address, Mobile_Phone} = contact;
+        // church information
+        const {Company_Name} = contact;
+        const {Address_Line_1, City, Postal_Code, 'State/Region': State} = address;
+        // prayer information
+        const {Prayer_Points, Pattern} = group;
+        
+        console.log(Nickname, Last_Name, Email_Address, Mobile_Phone, Company_Name, Address_Line_1, City, State, Postal_Code, Prayer_Points, Pattern)
+
+        doneLoading();
+    })()
+</script>
+</html>

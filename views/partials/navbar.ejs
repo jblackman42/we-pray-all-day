@@ -11,8 +11,11 @@
     </div>
     <div class="nav-container closed">
         <ul class="links">
-            <li><a href="/notaboutus">It's Not About Us</a></li>
-            <li><a href="/leaders">Leaders</a></li>
+            <li><a class="link" href="/">Home</a></li>
+            <li><a class="link" href="/notaboutus">Not About Us</a></li>
+            <li><a class="link" href="/leaders">Leaders</a></li>
+            <li><a class="link" href="/dashboard">Dashboard</a></li>
+            <li><a class="link" id="logout-btn" href="/logout">Logout</a></li>
         </ul>
     </div>
 </nav>
@@ -21,4 +24,9 @@
         const dropdownContainerDOM = document.querySelector('.nav-container');
         dropdownContainerDOM.classList.toggle('closed')
     }
+
+    document.querySelectorAll('.link').forEach(elem => {
+        const url = elem.getAttribute("href");
+        if (url == window.location.pathname) elem.classList.add('active')
+    })
 </script>

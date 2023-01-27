@@ -4,6 +4,8 @@ const ical = require('ical-generator');
 const fs = require('fs')
 const path = require('path')
 
+const { ensureAuthenticated, checkUserGroups } = require('../middleware/authorize');
+
 //home page
 navigation.get('/', (req, res) => {
   res.render('pages/home')
@@ -15,9 +17,27 @@ navigation.get('/signup', (req, res) => {
 navigation.get('/leaders', (req, res) => {
   res.render('pages/leaders')
 })
-
 navigation.get('/notaboutus', (req, res) => {
   res.render('pages/not-about-us')
+})
+navigation.get('/login', (req, res) => {
+  res.render('pages/login', {error: null})
+})
+navigation.get('/register', (req, res) => {
+  res.render('pages/register')
+})
+navigation.get('/dashboard', ensureAuthenticated, checkUserGroups, (req, res) => {
+  res.render('pages/dashboard')
+})
+
+navigation.get('/logout', (req, res) => {
+  try {
+      req.session.user = null;
+      req.session.access_token = null;
+      res.redirect('/')
+  } catch(err) {
+      res.status(500).send({error: 'internal server error'})
+  }
 })
 
 navigation.get('/guide', (req, res) => {

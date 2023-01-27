@@ -1,9 +1,9 @@
 // controls when the navbar changed into dropdown menu
 $dropdownWidth: 768px;
-$navBackground: $accent-blue;
-$navFontColor: black;
-$dropdownBackground: white;
-$dropdownFontColor: black;
+$navBackground: $secondary-black;
+$navFontColor: white;
+$dropdownBackground: $secondary-black;
+$dropdownFontColor: white;
 
 nav {
     display: flex;
@@ -13,6 +13,8 @@ nav {
     justify-content: space-between;
     width: 100%;
     z-index: 99999;
+
+    border-bottom: 2px solid $accent-yellow;
 
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     .logo-container {
@@ -66,8 +68,12 @@ nav {
             }
             @for $i from 1 through 10 {
                 &:has(ul li:nth-of-type(#{$i})) {
-                    max-height: calc(39px * $i);
+                    max-height: calc(49px * $i);
                 }
+            }
+            ul.links li {
+                border: none !important;
+                border-top: 2px solid $accent-yellow !important;
             }
         }
 
@@ -81,9 +87,11 @@ nav {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                li a:hover {
-                    background-color: transparent !important;
-                    text-decoration: underline;
+                li {
+                    a:hover {
+                        background-color: transparent !important;
+                        text-decoration: underline;
+                    }
                 }
             }
         }
@@ -95,16 +103,24 @@ nav {
             list-style: none;
             li {
                 width: 100%;
+                border-left: 2px solid $accent-yellow;
+                &:first-of-type {
+                    border: none;
+                }
                 a {
                     color: currentColor;
+                    white-space: nowrap;
                     text-decoration: none;
-                    padding: .5rem 1rem;
+                    padding: .75rem 1rem;
                     display: block;
                     font-size: 1.25rem;
                     text-align: center;
 
                     &:hover {
                         background-color: rgba(0,0,0,.2);
+                    }
+                    &.active {
+                        text-decoration: underline;
                     }
                 }
             }
