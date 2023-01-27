@@ -1,17 +1,33 @@
 const express = require('express');
 const app = express();
+var session = require('express-session');
+const cors = require('cors');
 
 //middleware
 app.use(express.json());
 require('dotenv').config();
 
+app.use(cors({
+    origin: '*'
+}));
+
 app.use(express.json({ limit: '16MB' }));
 app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', 1) // trust first proxy
+
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(session({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized:true,
+    cookie: { maxAge: oneDay },
+    resave: false 
+}));
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
 app.use("/styles",express.static(__dirname + "/views/styles"));
+app.use("/styles-widgets",express.static(__dirname + "/views/styles-widgets"));
 app.use("/scripts",express.static(__dirname + "/views/scripts"));
 app.use("/assets",express.static(__dirname + "/views/assets"));
 // app.use("/README.md",express.static(__dirname + "/README.md"));
