@@ -27,6 +27,7 @@ app.use(session({
 app.set('view engine', 'ejs');
 
 app.use("/styles",express.static(__dirname + "/views/styles"));
+app.use("/styles-widgets",express.static(__dirname + "/views/styles-widgets"));
 app.use("/scripts",express.static(__dirname + "/views/scripts"));
 app.use("/assets",express.static(__dirname + "/views/assets"));
 // app.use("/README.md",express.static(__dirname + "/README.md"));

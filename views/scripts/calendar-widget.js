@@ -6,11 +6,12 @@ class Calendar extends HTMLElement {
         this.month = today.getMonth() == 0 ? 1 : 0;
         this.year = today.getFullYear();
 
-        this.apiURL = 'http://localhost:3000'
+        // this.apiURL = 'http://localhost:3000'
+        this.apiURL = 'https://weprayallday.com'
 
 
         var link = document.createElement( "link" );
-        link.href = this.apiURL + '/styles/main.css';
+        link.href = this.apiURL + '/styles-widgets/calendar.css';
         link.type = "text/css";
         link.rel = "stylesheet";
         link.media = "screen,print";
@@ -132,12 +133,12 @@ class Calendar extends HTMLElement {
             const disabled = new Date().setHours(0, 0, 0, -1) >= currDate;
 
             return `
-                <button class="calendar-day" onclick="window.location='${this.apiURL}/signup?date=${day}'" ${disabled ? 'disabled' : ''}>
+                <button class="calendar-day" onclick="window.open('${this.apiURL}/signup?date=${day}', '_blank')" ${disabled ? 'disabled' : ''}>
                     <p class="date">${date}<sup>${this.getNumLabel(date)}</sup></p>
                     <p class="community-title" id="title-${date}-${month}-${year}"></p>
                     <div class="hours-container">
                         ${hours.map(hour => {
-                            return `<a href="${disabled ? '' : `${this.apiURL}/signup?date=${day}&hour=${hour}`}" id="${hour}-${date}-${month}-${year}" class="hour"></a>` //booked class makes it blue
+                            return `<p id="${hour}-${date}-${month}-${year}" class="hour"></p>` //booked class makes it blue
                         }).join('')}
                     </div>
                     <p class="progress-label"><span id="progress-${date}-${month}-${year}">0</span>% <span class="covered-label">Covered</span></p>
@@ -161,7 +162,10 @@ class Calendar extends HTMLElement {
 
         const data = await fetch(`${this.apiURL}/api/v1/Prayer_Schedules?$filter=MONTH(Start_Date)=${month} OR MONTH(Start_Date)=${month + 1} AND YEAR(Start_Date)=${year}`)
             .then(response => response.json())
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                this.doneLoading();
+            })
 
         const {Prayer_Schedules} = data;
 

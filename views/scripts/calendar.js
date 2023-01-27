@@ -7,6 +7,7 @@ class Calendar extends HTMLElement {
         this.year = today.getFullYear();
 
         this.apiURL = 'http://localhost:3000'
+        // this.apiURL = 'https://weprayallday.com'
 
         this.draw();
     }
@@ -134,11 +135,18 @@ class Calendar extends HTMLElement {
         
         // Get booked hours from api -------------------------------------------------------
 
-        const data = await fetch(`${this.apiURL}/api/v1/Prayer_Schedules?$filter=MONTH(Start_Date)=${month} OR MONTH(Start_Date)=${month + 1} AND YEAR(Start_Date)=${year}`)
-            .then(response => response.json())
-            .catch(err => console.error(err))
-
+        const data = await axios({
+            method: 'get',
+            url: `${this.apiURL}/api/v1/Prayer_Schedules?$filter=MONTH(Start_Date)=${month} OR MONTH(Start_Date)=${month + 1} AND YEAR(Start_Date)=${year}`
+        })
+            .then(response => response.data)
+            .catch(err => {
+                console.error(JSON.stringify(err))
+                doneLoading();
+            })
+        
         const {Prayer_Schedules} = data;
+
 
         for (let i = 0; i < Prayer_Schedules.length; i ++) {
             const {Start_Date, End_Date} = Prayer_Schedules[i];

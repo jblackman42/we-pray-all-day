@@ -6,13 +6,14 @@
 <body class="container">
     <%- include('../partials/loading'); %>
     <div class="forms-container">
+        <a id="back-btn" href="/"><i class="material-icons">keyboard_arrow_left	</i> Back To Calendar</a>
         <form id="register-form">
             <h1 class="title">Register</h1>
             <div class="progress">
-                <div class="step step-0" title="Profile"><i class='fas fa-user'></i></div>
-                <div class="step step-1" title="Church"><i class='fas fas fa-home'></i></div>
-                <div class="step step-2" title="Schedule"><i class='fas fa-calendar-alt'></i></div>
-                <div class="step step-3" title="Account"><i class='fas fa-lock'></i></div>
+                <div class="step step-0" data-title="Contact"><i class='fas fa-user'></i></div>
+                <div class="step step-1" data-title="Church"><i class='fas fas fa-home'></i></div>
+                <div class="step step-2" data-title="Schedule"><i class='fas fa-calendar-alt'></i></div>
+                <div class="step step-3" data-title="Account"><i class='fas fa-lock'></i></div>
             </div>
             <div class="error-container">
                 <p id="error-msg"></p>
@@ -161,12 +162,12 @@
 
     let page = 0;
     const next = () => {
-        document.querySelectorAll('.step').forEach(elem => elem.style.transitionDelay = '300ms');
+        document.querySelectorAll('.step').forEach(elem => elem.style.setProperty('--delay', '300ms'));
         page ++;
         updatePages();
     }
     const back = () => {
-        document.querySelectorAll('.step').forEach(elem => elem.style.transitionDelay = '0ms');
+        document.querySelectorAll('.step').forEach(elem => elem.style.setProperty('--delay', '0ms'));
         page --;
         updatePages();
     }

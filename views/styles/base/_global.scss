@@ -22,3 +22,9 @@ html {
 p, ol, ul, li {
 	font-family: Proxima-nova;
 }
+#back-btn {
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	color: #2980b9;
+}

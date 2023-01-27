@@ -24,17 +24,23 @@ $form-font-size: clamp(18px, 2vw, 20px);
             justify-content: space-around;
             padding: 1rem 0;
             .step {
+                --delay: 300ms;
+
                 background-color: $bg-color;
                 padding: 10px;
                 border-radius: 50%;
                 z-index: 99;
                 background-color: $bg-color;
+                position: relative;
 
                 transition: background-color 150ms linear;
-                transition-delay: 300ms;
+                transition-delay: var(--delay);
                 
                 &:nth-child(1) {
                     background-color: $fill-color;
+                    &::after {
+                        color: $fill-color;
+                    }
                 }
                 
                 i, svg {
@@ -42,6 +48,18 @@ $form-font-size: clamp(18px, 2vw, 20px);
                     place-items: center;
                     width: 18px;
                     height: 18px;
+                }
+
+                &::after {
+                    content: attr(data-title);
+                    position: absolute;
+                    left: 50%;
+                    top: 100%;
+                    transform: translate(-50%, 0%);
+                    color: white;
+                    
+                    transition: color 150ms linear;
+                    transition-delay: var(--delay);
                 }
             }
             position: relative;
@@ -68,6 +86,7 @@ $form-font-size: clamp(18px, 2vw, 20px);
                 }
                 .step:nth-child(2) {
                     background-color: $fill-color;
+                    &::after { color: $fill-color; }
                 }
             }
             &.page-2 {
@@ -76,9 +95,11 @@ $form-font-size: clamp(18px, 2vw, 20px);
                 }
                 .step:nth-child(2) {
                     background-color: $fill-color;
+                    &::after { color: $fill-color; }
                 }
                 .step:nth-child(3) {
                     background-color: $fill-color;
+                    &::after { color: $fill-color; }
                 }
             }
             &.page-3 {
@@ -87,12 +108,15 @@ $form-font-size: clamp(18px, 2vw, 20px);
                 }
                 .step:nth-child(2) {
                     background-color: $fill-color;
+                    &::after { color: $fill-color; }
                 }
                 .step:nth-child(3) {
                     background-color: $fill-color;
+                    &::after { color: $fill-color; }
                 }
                 .step:nth-child(4) {
                     background-color: $fill-color;
+                    &::after { color: $fill-color; }
                 }
             }
             &.done::after {

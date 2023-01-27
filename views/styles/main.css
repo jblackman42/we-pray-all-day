@@ -333,6 +333,13 @@ p, ol, ul, li {
   font-family: Proxima-nova;
 }
 
+#back-btn {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #2980b9;
+}
+
 nav {
   display: flex;
   flex-wrap: wrap;
@@ -470,6 +477,9 @@ nav .nav-container ul.links li a {
 }
 nav .nav-container ul.links li a:hover {
   background-color: rgba(0, 0, 0, 0.2);
+}
+nav .nav-container ul.links li a.active {
+  text-decoration: underline;
 }
 
 prayer-calendar {
@@ -677,6 +687,7 @@ prayer-calendar {
   background-color: #f7f1e3;
   box-sizing: border-box;
   width: 100%;
+  margin: 0;
   aspect-ratio: 1/1;
   position: relative;
 }
@@ -882,7 +893,7 @@ prayer-calendar {
 #loadingScreen #loading-bar #progress {
   width: 100%;
   height: 0%;
-  background-color: #2980b9;
+  background-color: #fcbb09;
   position: absolute;
   left: 0;
   bottom: 0;
@@ -892,8 +903,8 @@ prayer-calendar {
   /* Light grey */
   border: 16px solid rgba(0, 0, 0, 0.1333333333);
   /* Blue */
-  border-right: 16px solid #2980b9;
-  border-left: 16px solid #2980b9;
+  border-right: 16px solid #fcbb09;
+  border-left: 16px solid #fcbb09;
   border-radius: 50%;
   width: 100px;
   height: 100px;
@@ -1339,22 +1350,37 @@ prayer-calendar {
   position: relative;
 }
 .forms-container #register-form > .progress .step {
+  --delay: 300ms;
   background-color: white;
   padding: 10px;
   border-radius: 50%;
   z-index: 99;
   background-color: white;
+  position: relative;
   transition: background-color 150ms linear;
-  transition-delay: 300ms;
+  transition-delay: var(--delay);
 }
 .forms-container #register-form > .progress .step:nth-child(1) {
   background-color: #fcbb09;
+}
+.forms-container #register-form > .progress .step:nth-child(1)::after {
+  color: #fcbb09;
 }
 .forms-container #register-form > .progress .step i, .forms-container #register-form > .progress .step svg {
   display: grid;
   place-items: center;
   width: 18px;
   height: 18px;
+}
+.forms-container #register-form > .progress .step::after {
+  content: attr(data-title);
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 0%);
+  color: white;
+  transition: color 150ms linear;
+  transition-delay: var(--delay);
 }
 .forms-container #register-form > .progress::before, .forms-container #register-form > .progress::after {
   content: "";
@@ -1376,14 +1402,23 @@ prayer-calendar {
 .forms-container #register-form > .progress.page-1 .step:nth-child(2) {
   background-color: #fcbb09;
 }
+.forms-container #register-form > .progress.page-1 .step:nth-child(2)::after {
+  color: #fcbb09;
+}
 .forms-container #register-form > .progress.page-2::after {
   width: 62.5%;
 }
 .forms-container #register-form > .progress.page-2 .step:nth-child(2) {
   background-color: #fcbb09;
 }
+.forms-container #register-form > .progress.page-2 .step:nth-child(2)::after {
+  color: #fcbb09;
+}
 .forms-container #register-form > .progress.page-2 .step:nth-child(3) {
   background-color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-2 .step:nth-child(3)::after {
+  color: #fcbb09;
 }
 .forms-container #register-form > .progress.page-3::after {
   width: 87.5%;
@@ -1391,11 +1426,20 @@ prayer-calendar {
 .forms-container #register-form > .progress.page-3 .step:nth-child(2) {
   background-color: #fcbb09;
 }
+.forms-container #register-form > .progress.page-3 .step:nth-child(2)::after {
+  color: #fcbb09;
+}
 .forms-container #register-form > .progress.page-3 .step:nth-child(3) {
   background-color: #fcbb09;
 }
+.forms-container #register-form > .progress.page-3 .step:nth-child(3)::after {
+  color: #fcbb09;
+}
 .forms-container #register-form > .progress.page-3 .step:nth-child(4) {
   background-color: #fcbb09;
+}
+.forms-container #register-form > .progress.page-3 .step:nth-child(4)::after {
+  color: #fcbb09;
 }
 .forms-container #register-form > .progress.done::after {
   width: 100%;
