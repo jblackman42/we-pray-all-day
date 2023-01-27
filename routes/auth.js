@@ -62,9 +62,11 @@ router.post('/login', async (req, res) => {
         res.status(200).send(user).end();
     } catch (err) {
         if (err.response && err.response.data.error_description) {
-            res.status(403).send({error: err.response.data.error_description}).end();
+            const error = err.response.data.error_description == 'invalid_grant' ? 'incorrect username or password' : err.response.data.error_description;
+            res.status(403).send({error: error}).end();
         } else if (err.response && err.response.data) {
-            res.status(403).send({error: err.response.data.error}).end();
+            const error = err.response.data.error == 'invalid_grant' ? 'incorrect username or password' : err.response.data.error;
+            res.status(403).send({error: error}).end();
         } else {
             console.log(err)
             res.status(500).send({error: 'internal server error'})
@@ -106,7 +108,40 @@ router.get('/group', ensureAuthenticated, async (req, res) => {
         })
             .then(response => response.data[0] || null)
 
-        res.status(200).send(group).end();
+        if (!group) return res.status(403).send(null).end();
+
+        const Contact = await axios({
+            method: 'get',
+            url: `${process.env.BASE_URL}/tables/Contacts?$filter=Contact_ID=${group.Contact_ID}`,
+            headers: {
+                "Content-Type": "Application/JSON",
+                "Authorization": `Bearer ${access_token}`
+            }
+        })
+            .then(response => response.data[0])
+
+        const Address = await axios({
+            method: 'get',
+            url: `${process.env.BASE_URL}/tables/Addresses?$filter=Address_ID=${group.Address_ID}`,
+            headers: {
+                "Content-Type": "Application/JSON",
+                "Authorization": `Bearer ${access_token}`
+            }
+        })
+            .then(response => response.data[0])
+            
+        const Prayer_Schedules = await axios({
+            method: 'get',
+            // url: `${process.env.BASE_URL}/tables/Prayer_Schedules?$filter=Community_ID=${group.Prayer_Community_ID}`,
+            url: `${process.env.BASE_URL}/tables/Prayer_Schedules?$filter=Community_ID=5 AND Start_Date >= GETDATE()`,
+            headers: {
+                "Content-Type": "Application/JSON",
+                "Authorization": `Bearer ${access_token}`
+            }
+        })
+            .then(response => response.data)
+
+        res.status(200).send(JSON.stringify({group: group, roster: Prayer_Schedules, contact: Contact, address: Address})).end();
     } catch(err) {
         res.status(500).send({err: err}).end();
     }
