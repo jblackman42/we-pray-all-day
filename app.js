@@ -11,6 +11,15 @@ app.use(cors({
     origin: '*'
 }));
 
+if(process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+        if (req.header('x-forwarded-proto') !== 'https')
+        res.redirect(`https://${req.header('host')}${req.url}`)
+        else
+        next()
+    })
+}
+
 app.use(express.json({ limit: '16MB' }));
 app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', 1) // trust first proxy
