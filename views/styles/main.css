@@ -1050,6 +1050,7 @@ prayer-calendar {
 .video-container {
   display: flex;
   justify-content: center;
+  margin: 1rem 0;
 }
 .video-container iframe {
   width: 800px;
