@@ -147,4 +147,50 @@ router.get('/group', ensureAuthenticated, async (req, res) => {
     }
 })
 
+router.post('/group', ensureAuthenticated, async (req, res) => {
+    try {
+        const {group, contact, address} = req.body;
+        const access_token = await getToken();
+        
+        console.log(group)
+        const groupData = await axios({
+            method: 'put',
+            url: `${process.env.BASE_URL}/tables/Prayer_Communities`,
+            headers: {
+                "Content-Type": "Application/JSON",
+                "Authorization": `Bearer ${access_token}`
+            },
+            data: [group]
+        })
+            .then(response => response.data[0] || null)
+
+        const ContactData = await axios({
+            method: 'put',
+            url: `${process.env.BASE_URL}/tables/Contacts`,
+            headers: {
+                "Content-Type": "Application/JSON",
+                "Authorization": `Bearer ${access_token}`
+            },
+            data: [contact]
+        })
+            .then(response => response.data[0])
+
+        const AddressData = await axios({
+            method: 'put',
+            url: `${process.env.BASE_URL}/tables/Addresses`,
+            headers: {
+                "Content-Type": "Application/JSON",
+                "Authorization": `Bearer ${access_token}`
+            },
+            data: [address]
+        })
+            .then(response => response.data[0])
+
+        res.status(200).send(JSON.stringify({group: groupData, contact: ContactData, address: AddressData})).end();
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({err: err}).end();
+    }
+})
+
 module.exports = router;

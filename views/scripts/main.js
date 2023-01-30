@@ -1,6 +1,3 @@
-
-
-
 (async () => {
     const logoutBtnDOM = document.getElementById('logout-btn');
     const nav = document.querySelector('nav');
@@ -18,6 +15,4 @@
         logoutBtnDOM.style.visibility = 'hidden';
         return
     }
-
-    return
 })()

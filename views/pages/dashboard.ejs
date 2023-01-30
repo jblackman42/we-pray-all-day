@@ -7,51 +7,111 @@
     <%- include('../partials/loading'); %>
     <%- include('../partials/navbar'); %>
 
-    <div class="dash-container">
-        <h1>Dashboard</h1>
-        <p id="welcome-msg"></p>
-    
-        <br>
-        <br>
-        <form id="group-form">
+    <prayer-dashboard class="dash-container">
+        <form id="info-form">
+            <div class="input-container full-width">
+                <label for="Pattern">Recurring Day (Example: 'First Tuesday'):</label>
+                <input type="text" name="Pattern" id="Pattern" disabled>
+            </div>
+            <div class="input-container full-width">
+                <label for="Prayer_Requests">Prayer Points (100 characters or less):</label>
+                <textarea name="Prayer_Requests" id="Prayer_Requests" maxlength="100" disabled></textarea>
+            </div>
 
-        <p>This page is currently in development. please check back later</p>
-    </div>
+            <div class="btn-container">
+                <button id="form-btn" class="btn" type="button">Edit</button>
+                <button id="cancel-btn" class="btn" type="button">Cancel</button>
+                <button id="submit-btn" class="btn" type="submit">Submit</button>
+            </div>
+        </form>
+    </prayer-dashboard>
 
 </body>
 <script>
-    (async () => {
-        loading();
-        const user = await axios({
-            method: 'get',
-            url: '/api/auth/user'
-        }).then(response => response.data)
-        if (!user) return
+    class Dashboard extends HTMLElement {
+        constructor() {
+            super();
 
-        console.log(user);
-        const {display_name, nickname, name} = user;
+            this.contact, this.address, this.group, this.roster;
+            this.getData();
+        }
 
-        document.getElementById('welcome-msg').innerText = `Welcome, ${nickname || name}`;
+        getData = async () => {
+            loading();
+            const data = await axios({
+                method: 'get',
+                url: '/api/auth/group'
+            })
+                .then(response => response.data)
 
-        const data = await axios({
-            method: 'get',
-            url: '/api/auth/group'
-        })
-            .then(response => response.data)
+            const {group, contact, address, roster} = data;
 
-        const {group, contact, address, roster} = data;
+            this.group = group;
+            this.contact = contact;
+            this.address = address;
+            this.roster = roster;
+ 
+            this.update();
+            doneLoading();
+        }
 
-        // contact information
-        const {Nickname, Last_Name, Email_Address, Mobile_Phone} = contact;
-        // church information
-        const {Company_Name} = contact;
-        const {Address_Line_1, City, Postal_Code, 'State/Region': State} = address;
-        // prayer information
-        const {Prayer_Points, Pattern} = group;
+        update = () => {
+            // contact information
+            const {Nickname, Last_Name, Email_Address, Mobile_Phone} = this.contact;
+            // church information
+            const {Company_Name} = this.contact;
+            const {Address_Line_1, City, Postal_Code, 'State/Region': State} = this.address;
+            // prayer information
+            const {Prayer_Points, Pattern} = this.group;
+
+            document.getElementById('form-btn').onclick = this.editForm;
+            document.getElementById('cancel-btn').onclick = this.cancelForm;
+            
+            // schedule
+            document.getElementById('Prayer_Requests').value = Prayer_Points;
+            document.getElementById('Pattern').value = Pattern;
+
+            document.getElementById('info-form').addEventListener('submit', (e) => this.handleSubmit(e))
+            
+            
+            console.log(Nickname, Last_Name, Email_Address, Mobile_Phone, Company_Name, Address_Line_1, City, State, Postal_Code, Prayer_Points, Pattern)
+        }
+
+        handleSubmit = async (e) => {
+            e.preventDefault();
+            loading();
+
+            this.group.Prayer_Points = document.getElementById('Prayer_Requests').value;
+            this.group.Pattern = document.getElementById('Pattern').value;
+
+            const data = await axios({
+                method: 'post',
+                url: '/api/auth/group',
+                data: {group: this.group, contact: this.contact, address: this.address}
+            })
+                .then(response => response.data)
+                .catch(err => console.error(err))
+
+            console.log(data)
+            this.cancelForm();
+            doneLoading();
+        }
+
+        editForm = () => {
+            document.getElementById('info-form').classList.add('edit');
+            document.getElementById('Prayer_Requests').disabled = false;
+            document.getElementById('Pattern').disabled = false;
+        }
+        cancelForm = () => {
+            document.getElementById('info-form').classList.remove('edit');
+            document.getElementById('Prayer_Requests').disabled = true;
+            document.getElementById('Pattern').disabled = true;
+            document.getElementById('Prayer_Requests').value = this.group.Prayer_Points;
+            document.getElementById('Pattern').value = this.group.Pattern;
+        }
+    }
         
-        console.log(Nickname, Last_Name, Email_Address, Mobile_Phone, Company_Name, Address_Line_1, City, State, Postal_Code, Prayer_Points, Pattern)
 
-        doneLoading();
-    })()
+    customElements.define('prayer-dashboard', Dashboard);
 </script>
 </html>
