@@ -3,7 +3,7 @@ class Calendar extends HTMLElement {
         super();
         const today = new Date();
         this.monthDays = [];
-        this.month = today.getMonth() == 0 ? 1 : 0;
+        this.month = today.getMonth();
         this.year = today.getFullYear();
 
         // this.apiURL = 'http://localhost:3000'
