@@ -929,6 +929,17 @@ prayer-calendar {
     transform: rotate(360deg);
   }
 }
+#inputs-container {
+  color: white;
+}
+#inputs-container input[type=number] {
+  width: 3rem;
+  color: black;
+}
+#inputs-container select {
+  color: black;
+}
+
 #sign-up-form {
   display: flex;
   flex-wrap: wrap;
@@ -1062,6 +1073,8 @@ prayer-calendar {
   margin: 1rem auto;
   box-sizing: border-box;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 #leader-header h3 {
   margin: 1rem auto;
@@ -1579,4 +1592,155 @@ prayer-calendar {
 
 .dash-container {
   text-align: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+.dash-container .btn {
+  background-color: #fcbb09;
+  border: none;
+  padding: 4px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: currentColor;
+}
+
+#info-form {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem;
+  padding-top: 0;
+  width: 800px;
+  max-width: 90vw;
+  margin: 1rem auto;
+  box-sizing: border-box;
+}
+#info-form .input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+#info-form .input-container input, #info-form .input-container textarea {
+  border: 1px solid #2e2d2b;
+  resize: none;
+  border-radius: 4px;
+  margin: 4px 0;
+  box-sizing: border-box;
+}
+#info-form .input-container input:disabled, #info-form .input-container textarea:disabled {
+  border-color: transparent;
+  background-color: white;
+  color: black;
+  opacity: 1;
+}
+#info-form .input-container label {
+  text-align: left;
+  font-size: 0.8em;
+}
+#info-form .btn-container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+#info-form .btn-container:first-child {
+  margin-left: auto;
+}
+#info-form #cancel-btn, #info-form #submit-btn {
+  display: none;
+  visibility: hidden;
+}
+#info-form.edit #cancel-btn, #info-form.edit #submit-btn {
+  display: block;
+  visibility: visible;
+}
+#info-form.edit #form-btn {
+  display: none;
+  visibility: hidden;
+}
+
+#table-container {
+  display: grid;
+  place-items: center;
+  font-size: clamp(6px, 2vw, 16px);
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  margin: 1rem auto;
+}
+#table-container #roster-table {
+  min-width: -webkit-max-content;
+  min-width: -moz-max-content;
+  min-width: max-content;
+  filter: drop-shadow(rgba(0, 0, 0, 0.24) 0px 3px 8px);
+}
+#table-container #roster-table .row {
+  display: flex;
+  width: 100%;
+}
+#table-container #roster-table .row:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+#table-container #roster-table .row:nth-child(even) {
+  background-color: #ffffff;
+}
+#table-container #roster-table .row.day {
+  cursor: pointer;
+}
+#table-container #roster-table .row.day:nth-child(4n) {
+  background-color: #f6f6f6;
+}
+#table-container #roster-table .row.highlight {
+  outline: 2px solid #2ecc71;
+}
+#table-container #roster-table .row#header {
+  font-weight: bold;
+  background-color: #2e2d2b;
+  color: white;
+}
+#table-container #roster-table .row#header p {
+  border-bottom: 2px solid #282828;
+  border-right: 2px solid #282828;
+}
+#table-container #roster-table .row#header p:last-of-type {
+  border-right: none;
+}
+#table-container #roster-table .row p {
+  padding: 0.5em;
+  margin: 0;
+  flex: 1 1 0px;
+}
+#table-container #roster-table .row p.date, #table-container #roster-table .row p.hours {
+  flex-grow: 2;
+}
+#table-container #roster-table .dropdown-table {
+  margin: 2px;
+  margin-left: 16px;
+  min-width: -webkit-max-content;
+  min-width: -moz-max-content;
+  min-width: max-content;
+  height: 0px;
+  overflow: hidden;
+}
+#table-container #roster-table .dropdown-table.open {
+  height: auto;
+}
+#table-container #roster-table .dropdown-table p {
+  text-align: left;
+}
+#table-container #roster-table .dropdown-table p.name {
+  flex-grow: 1;
+}
+#table-container #roster-table .dropdown-table p.datetime {
+  flex-grow: 2;
+}
+#table-container #roster-table .dropdown-table p.email {
+  flex-grow: 2;
+}
+#table-container #roster-table .dropdown-table p.phone {
+  flex-grow: 1;
+}
+#table-container #csv-download {
+  margin: 1rem 0;
+  margin-left: auto;
 }/*# sourceMappingURL=main.css.map */
