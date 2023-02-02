@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Dashboard - We Pray All Day</title>
     <%- include('../partials/head'); %>
 </head>
 <body>
@@ -24,6 +25,17 @@
                 <button id="submit-btn" class="btn" type="submit">Submit</button>
             </div>
         </form>
+
+        <div id="table-container">
+            <div id="roster-table">
+                <div class="row" id="header">
+                    <p class="date">Date</p>
+                    <p>Signups</p>
+                    <p class="hours">Hours Covered</p>
+                </div>
+            </div>
+            <button id="csv-download" class="btn">Download CSV</button>
+        </div>
     </prayer-dashboard>
 
 </body>
@@ -50,6 +62,8 @@
             this.contact = contact;
             this.address = address;
             this.roster = roster;
+            
+            this.rows = [['Name', 'Date', 'Time', 'Email', 'Phone']];
  
             this.update();
             doneLoading();
@@ -74,7 +88,75 @@
             document.getElementById('info-form').addEventListener('submit', (e) => this.handleSubmit(e))
             
             
-            console.log(Nickname, Last_Name, Email_Address, Mobile_Phone, Company_Name, Address_Line_1, City, State, Postal_Code, Prayer_Points, Pattern)
+            // console.log(Nickname, Last_Name, Email_Address, Mobile_Phone, Company_Name, Address_Line_1, City, State, Postal_Code, Prayer_Points, Pattern)
+            this.createTable();
+        }
+
+        createTable = () => {
+            const uniqueDays = {};
+            this.roster.map(schedule => new Date(schedule.Start_Date).toLocaleDateString()).forEach(date => {uniqueDays[date] = ++uniqueDays[date] || 1})
+
+            const uniqueDaysArray = Object.entries(uniqueDays);
+            const tableHTML = uniqueDaysArray.sort((a,b) => new Date(a[0]) - new Date(b[0])).map((day, i) => {
+                const currDaysHours = [... new Set(this.roster.filter(schedule => new Date(schedule.Start_Date).toLocaleDateString() == day[0]).map(schedule => new Date(schedule.Start_Date).getHours()))]
+
+                const currDayRoster = this.roster.filter(schedule => new Date(schedule.Start_Date).toLocaleDateString() == day[0]).sort((a,b) => new Date(a.Start_Date) - new Date(b.Start_Date))
+
+                const currRosterHTML = currDayRoster.map(schedule => {
+                    const {First_Name, Last_Name, Email, Phone, Start_Date, End_Date} = schedule;
+                    const date = new Date(Start_Date).toLocaleDateString();
+                    const startDate = new Date(Start_Date).toLocaleTimeString('en-us', {"minute": "2-digit", "hour": "2-digit"});
+                    const endDate = new Date(End_Date).toLocaleTimeString('en-us', {"minute": "2-digit", "hour": "2-digit"});
+                    this.rows.push([`${First_Name} ${Last_Name || ''}`, date, `${startDate} - ${endDate}`, Email, `${Phone}`])
+                    return `
+                        <div class="row">
+                            <p class="name">${First_Name} ${Last_Name || ''}</p>
+                            <p class="datetime">${startDate} - ${endDate}</p>
+                            <p class="email">${Email}</p>
+                            <p class="phone">${Phone}</p>
+                        </div>
+                    `
+                }).join('')
+                return `
+                    <div id="table-${i}" class="row day ${currDaysHours.length == 24 ? 'highlight' : ''}">
+                        <p class="date" style="text-align: left;">${new Date(day[0]).toLocaleDateString('en-us', {"weekday": "short"})} ${new Date(day[0]).toLocaleDateString()}</p>
+                        <p id="signups">${day[1]}</p>
+                        <p class="hours">${currDaysHours.length} / 24</p>
+                    </div>
+                        <div id="dropdown-table-${i}" class="dropdown-table">
+                            <div class="row" id="header">
+                                <p class="name">Name</p>
+                                <p class="datetime">Time</p>
+                                <p class="email">Email</p>
+                                <p class="phone">Phone</p>
+                            </div>
+                            ${currRosterHTML}
+                        </div>
+                `
+            }).join('');
+            document.getElementById('roster-table').innerHTML += tableHTML;
+
+            for (let i = 0; i < uniqueDaysArray.length; i ++) {
+                document.getElementById(`table-${i}`).onclick = () => this.toggleDropdown(i)
+            }
+
+            document.getElementById('csv-download').onclick = this.getCSV;
+
+            const tableContainer = document.getElementById('table-container');
+                tableContainer.style.display = 'grid';
+                tableContainer.style.visibility = 'visible';
+        }
+
+        getCSV = () => {
+            let csvContent = "data:text/csv;charset=utf-8," 
+                + this.rows.map(e => e.join(",")).join("\n");
+
+            var encodedUri = encodeURI(csvContent);
+            window.open(encodedUri);
+        }
+
+        toggleDropdown = (i) => {
+            document.getElementById(`dropdown-table-${i}`).classList.toggle('open')
         }
 
         handleSubmit = async (e) => {
@@ -92,7 +174,6 @@
                 .then(response => response.data)
                 .catch(err => console.error(err))
 
-            console.log(data)
             this.cancelForm();
             doneLoading();
         }
@@ -110,8 +191,6 @@
             document.getElementById('Pattern').value = this.group.Pattern;
         }
     }
-        
-
     customElements.define('prayer-dashboard', Dashboard);
 </script>
 </html>

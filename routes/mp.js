@@ -51,6 +51,8 @@ router.post('/Prayer_Schedules', async (req, res) => {
 
     try {
         const {First_Name, Last_Name, Start_Date, End_Date, Email, Phone, Community_ID} = req.body;
+        const parsedPhoneNumber = Phone.split('').filter(a=>Number.isInteger(parseInt(a))).join('');
+        console.log(parsedPhoneNumber)
         if (!First_Name || !Start_Date || !End_Date || !Email || !Phone || !Community_ID) throw new Error('missing parameters')
         const data = await axios({
             method: 'post',
@@ -65,7 +67,7 @@ router.post('/Prayer_Schedules', async (req, res) => {
                 Start_Date: Start_Date,
                 End_Date: End_Date,
                 Email: Email,
-                Phone: Phone,
+                Phone: parsedPhoneNumber,
                 Community_ID: Community_ID
             }]
         })
@@ -139,8 +141,9 @@ router.post('/confirmation-email', async (req, res) => {
     await authorize();
     
     const {Recipient_Name, Recipient_Email, Recipient_Phone, Start_Date, Time_String, Community_ID} = req.body;
+    const parsedPhoneNumber = Recipient_Phone.split('').filter(a=>Number.isInteger(parseInt(a))).join('');
 
-    const startDate = new Date(Start_Date)
+    const startDate = Start_Date ? new Date(Start_Date) : new Date()
 
     function toIsoString(date) {
         var tzo = -date.getTimezoneOffset(),
@@ -171,10 +174,10 @@ router.post('/confirmation-email', async (req, res) => {
         },
         data: {
             "FromPhoneNumberId": 1,
-            "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide`,
+            "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://rb.gy/clhwr1 \n\n Reply STOP to unsubscribe`,
+            // "Message": `Hello ${Recipient_Name}\nIt's your gosh darn time to pray`,
             "StartDate": toIsoString(textNotifyDate),
-            "ToPhoneNumbers": 
-            [Recipient_Phone]
+            "ToPhoneNumbers": [parsedPhoneNumber]
         }
     })
         .then(response => response.data)
@@ -277,6 +280,23 @@ router.get('/populate', async (req, res) => {
 
     console.log(`${schedules.length} jobs made`)
     res.status(200).send({created: schedules.length}).end();
+})
+
+router.get('/sequence', async (req, res) => {
+    await authorize();
+    const {totalOccurences, dayPosition, weekdays} = req.body;
+
+    const sequence = await axios({
+        method: 'get',
+        url: `${process.env.BASE_URL}/tasks/generate-sequence?$type=Monthly&$totalOccurrences=${totalOccurences}&$dayPosition=${dayPosition}&$weekdays=${weekdays}`,
+        headers: {
+            'Content-Type': 'Application/Json',
+            'Authorization': `Bearer ${access_token}`
+        }
+    })
+        .then(response => response.data)
+
+    res.status(200).send({sequence: sequence}).end();
 })
 
 module.exports = router;
