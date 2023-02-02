@@ -139,6 +139,7 @@ router.post('/confirmation-email', async (req, res) => {
     await authorize();
     
     const {Recipient_Name, Recipient_Email, Recipient_Phone, Start_Date, Time_String, Community_ID} = req.body;
+    const parsedPhoneNumber = Recipient_Phone.split('').filter(a=>Number.isInteger(parseInt(a))).join('');
 
     const startDate = new Date(Start_Date)
 
@@ -171,10 +172,9 @@ router.post('/confirmation-email', async (req, res) => {
         },
         data: {
             "FromPhoneNumberId": 1,
-            "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nhttps://weprayallday.com/guide`,
+            "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\nweprayallday.com/guide \n\nReply STOP to unsubscribe`,
             "StartDate": toIsoString(textNotifyDate),
-            "ToPhoneNumbers": 
-            [Recipient_Phone]
+            "ToPhoneNumbers": [parsedPhoneNumber]
         }
     })
         .then(response => response.data)
