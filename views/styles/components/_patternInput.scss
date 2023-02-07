@@ -1,10 +1,80 @@
-#inputs-container {
-    color: white;
+.input-option {
+    align-items: center;
+    display: flex;
+    gap: .5rem;
+    &:not(:last-of-type) {
+        margin-bottom: .5rem;
+    }
+    span {
+        color: white;
+    }
     input[type="number"] {
         width: 3rem;
         color: black;
     }
-    select {
-        color: black;
+    input[type="radio"] {
+        height: 100%;
+    }
+    select, input {
+        color: white !important;
+        border: solid #FFFFFF66 1px!important;
+        background-color: transparent !important;
+        height: 29px;
+        padding-block: 0 !important;
+        &:disabled, &:disabled {
+            opacity: .5;
+        }
+        option {
+            color: black;
+            &:hover {
+                background-color: $accent-yellow;
+            }
+        }
+    }
+}
+#date-container {
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(0, -50%);
+
+    &.highlight .hover-icon {
+        outline: 2px solid $accent-yellow;
+        outline-offset: 2px;
+    }
+    .hover-icon {
+        border-radius: 50%;
+    }
+
+    #dates {
+        position: absolute;
+        background-color: $primary-black;
+
+        padding: .5rem 1rem;
+        margin: 0;
+
+        border-radius: .5rem;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 8px 0px;
+
+        list-style: none;
+        
+        top: -4px;
+        right: -4px;
+
+        width: max-content;
+
+        display: none;
+        visibility: hidden;
+    }
+
+    &:hover, &:focus {
+        .hover-icon {
+            outline: none;
+        }
+        #dates {
+            display: block;
+            visibility: visible;
+        }
     }
 }

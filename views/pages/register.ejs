@@ -67,20 +67,23 @@
                 </div>
             </div>
             <div class="page" id="page-2">
-                <div class="input-container full-width">
-                    <input type="text" name="Pattern" id="Pattern" placeholder=" ">
-                    <label for="Pattern">Recurring Day (Example: 'First Tuesday'):</label>
-                    <!-- <div id="inputs-container">
+                <div class="input-container full-width" style="z-index: 3;">
+                    <!-- <input type="text" name="Pattern" id="Pattern" placeholder=" ">
+                    <label for="Pattern">Recurring Day (Example: 'First Tuesday'):</label> -->
+                    <div class="input-option" onclick="updateRadioSelect('recurring-pattern')">
+                        <input type="radio" name="pattern" id="recurring-pattern" checked onchange="handleRadioChange()">
+                        <!-- <div class="spacer">
+                            <i class='fas fa-circle'></i>
+                        </div> -->
                         <span>The</span>
-                        <select id="dayPosition" onchange="handleChange()">
-                            <option value="Last">Last</option>
+                        <select id="dayPosition" onchange="handleInputChange()">
                             <option value="First">First</option>
                             <option value="Second">Second</option>
                             <option value="Third">Third</option>
                             <option value="Fourth">Fourth</option>
                             <option value="Last">Last</option>
                         </select>
-                        <select id="weekdays" onchange="handleChange()">
+                        <select id="weekdays" onchange="handleInputChange()">
                             <option value="Sunday">Sunday</option>
                             <option value="Monday">Monday</option>
                             <option value="Tuesday">Tuesday</option>
@@ -93,9 +96,21 @@
                             <option value="WeekendDay">WeekendDay</option>
                         </select>
                         <span>for</span>
-                        <input type="number" id="totalOccurences" max="12" onchange="handleChange()"></input>
-                        <span>month<span>s</span></span>
-                    </div> -->
+                        <input type="number" id="totalOccurences" min="1" max="12" onchange="handleInputChange()"></input>
+                        <span>month<span id="pattern-s">s</span>.</span>
+                    </div>
+                    <div class="input-option" onclick="updateRadioSelect('single-pattern')">
+                        <input type="radio" name="pattern" id="single-pattern" onchange="handleRadioChange()">
+                        <!-- <div class="spacer">
+                            <i class='fas fa-circle'></i>
+                        </div> -->
+                        <input type="date" name="date" id="date" onchange="handleInputChange()" disabled>
+                    </div>
+
+                    <div id="date-container">
+                        <i class='fas fa-info-circle hover-icon'></i>
+                        <ul id="dates"></ul>
+                    </div>
                 </div>
                 <div class="input-container full-width">
                     <textarea name="Prayer_Requests" id="Prayer_Requests" maxlength="100" placeholder=" "></textarea>
@@ -129,6 +144,7 @@
       
     </body>
 <script>
+    let datePattern = [];
     const stateLabelValues = [{ 'label':'Alabama', 'value': 'AL' },{ 'label':'Alaska', 'value': 'AK'},{ 'label':'American Samoa', 'value': 'AS'},{ 'label':'Arizona', 'value': 'AZ'},{ 'label':'Arkansas', 'value': 'AR'},{ 'label':'California', 'value': 'CA'},{ 'label':'Colorado', 'value': 'CO'},{ 'label':'Connecticut', 'value': 'CT'},{ 'label':'Delaware', 'value': 'DE'},{ 'label':'District of Columbia', 'value': 'DC'},{ 'label':'States of Micronesia', 'value': 'FM'},{ 'label':'Florida', 'value': 'FL'},{ 'label':'Georgia', 'value': 'GA'},{ 'label':'Guam', 'value': 'GU'},{ 'label':'Hawaii', 'value': 'HI'},{ 'label':'Idaho', 'value': 'ID'},{ 'label':'Illinois', 'value': 'IL'},{ 'label':'Indiana', 'value': 'IN'},{ 'label':'Iowa', 'value': 'IA'},{ 'label':'Kansas', 'value': 'KS'},{ 'label':'Kentucky', 'value': 'KY'},{ 'label':'Louisiana', 'value': 'LA'},{ 'label':'Maine', 'value': 'ME'},{ 'label':'Marshall Islands', 'value': 'MH'},{ 'label':'Maryland', 'value': 'MD'},{ 'label':'Massachusetts', 'value': 'MA'},{ 'label':'Michigan', 'value': 'MI'},{ 'label':'Minnesota', 'value': 'MN'},{ 'label':'Mississippi', 'value': 'MS'},{ 'label':'Missouri', 'value': 'MO'},{ 'label':'Montana', 'value': 'MT'},{ 'label':'Nebraska', 'value': 'NE'},{ 'label':'Nevada', 'value': 'NV'},{ 'label':'New Hampshire', 'value': 'NH'},{ 'label':'New Jersey', 'value': 'NJ'},{ 'label':'New Mexico', 'value': 'NM'},{ 'label':'New York', 'value': 'NY'},{ 'label':'North Carolina', 'value': 'NC'},{ 'label':'North Dakota', 'value': 'ND'},{ 'label':'Northern Mariana Islands', 'value': 'MP'},{ 'label':'Ohio', 'value': 'OH'},{ 'label':'Oklahoma', 'value': 'OK'},{ 'label':'Oregan', 'value': 'OR'},{ 'label':'Palau', 'value': 'PW'},{ 'label':'Pennsilvania', 'value': 'PA'},{ 'label':'Puerto Rico', 'value': 'PR'},{ 'label':'Rhode Island', 'value': 'RI'},{ 'label':'South Carolina', 'value': 'SC'},{ 'label':'South Dakota', 'value': 'SD'},{ 'label':'Tennessee', 'value': 'TN'},{ 'label':'Texas', 'value': 'TX'},{ 'label':'Utah', 'value': 'UT'},{ 'label':'Vermont', 'value': 'VT'},{ 'label':'Virgin Islands', 'value': 'VI'},{ 'label':'Virginia', 'value': 'VA'},{ 'label':'Washington', 'value': 'WA'},{ 'label':'West Virginia', 'value': 'WV'},{ 'label':'Wisconsin', 'value': 'WI'},{ 'label':'Wyoming', 'value': 'WY'}];
     document.getElementById('State').innerHTML = stateLabelValues.map(state => {
         return `<option value=${state.value}>${state.label}</option>`
@@ -149,8 +165,8 @@
             Postal_Code: document.getElementById('Postal_Code').value || null,
             Phone: document.getElementById('Phone').value || null,
             Email: document.getElementById('Email').value || null,
+            Pattern: datePattern,
             Prayer_Requests: document.getElementById('Prayer_Requests').value || null,
-            Pattern: document.getElementById('Pattern').value || null,
             First_Name: document.getElementById('First_Name').value || null,
             Last_Name: document.getElementById('Last_Name').value || null,
             Username: document.getElementById('Username').value || null,
@@ -239,26 +255,78 @@
 
     
     // for pattern input
-    // const totalOccurencesElem = document.getElementById('totalOccurences');
-    // const monthsLeftInYear = 12 - new Date().getMonth();
-    // totalOccurencesElem.value = monthsLeftInYear;
+    const totalOccurencesElem = document.getElementById('totalOccurences');
+    const monthsLeftInYear = 12 - new Date().getMonth();
+    totalOccurencesElem.value = monthsLeftInYear;
 
-    // const handleChange = async () => {
-    //     const totalOccurences = document.getElementById('totalOccurences').value;
-    //     const dayPosition = document.getElementById('dayPosition').value;
-    //     const weekdays = document.getElementById('weekdays').value;
-    //     const sequence = await axios({
-    //         method: 'get',
-    //         url: '/api/v1/sequence',
-    //         data: {
-    //             totalOccurences: totalOccurences,
-    //             dayPosition: dayPosition,
-    //             weekdays: weekdays
-    //         }
-    //     })
-    //         .then(response => response)
+    const updateRadioSelect = (id) => {
+        document.getElementById(id).checked = true;
+        handleRadioChange();
+    }
 
-    //     console.log(sequence)
-    // }
+    const handleRadioChange = () => {
+        const recurringPatternElem = document.getElementById('recurring-pattern');
+        const singlePatternElem = document.getElementById('single-pattern');
+        if (recurringPatternElem.checked) {
+            document.getElementById('date').disabled = true;
+
+            document.getElementById('totalOccurences').disabled = false;
+            document.getElementById('dayPosition').disabled = false;
+            document.getElementById('weekdays').disabled = false;
+        }
+        if (singlePatternElem.checked) {
+            document.getElementById('date').disabled = false;
+
+            document.getElementById('totalOccurences').disabled = true;
+            document.getElementById('dayPosition').disabled = true;
+            document.getElementById('weekdays').disabled = true;
+        }
+        handleInputChange();
+    }
+    const handleInputChange = async () => {
+        const recurringPatternElem = document.getElementById('recurring-pattern');
+        const singlePatternElem = document.getElementById('single-pattern');
+        const dateElem = document.getElementById('date');
+        if (recurringPatternElem.checked) {
+            await getPattern();
+        } else {
+            datePattern = dateElem.value ? [new Date(dateElem.value).toISOString()] : null;
+        }
+    }
+    const getPattern = async () => {
+        const totalOccurences = document.getElementById('totalOccurences').value;
+        const dayPosition = document.getElementById('dayPosition').value;
+        const weekdays = document.getElementById('weekdays').value;
+
+        document.getElementById('pattern-s').innerText = totalOccurences == 1 ? '' : 's';
+        const dateContainerDOM = document.getElementById('date-container')
+            dateContainerDOM.classList.add('highlight')
+            dateContainerDOM.addEventListener('mouseover', () => {
+                dateContainerDOM.classList.remove('highlight')
+            })
+
+        const sequence = await axios({
+            method: 'post',
+            url: '/api/v1/sequence',
+            data: {
+                "totalOccurences": totalOccurences,
+                "dayPosition": dayPosition,
+                "weekdays": weekdays
+            }
+        })
+            .then(response => response.data)
+            .catch(err => console.error(err))
+
+        datePattern = [];
+        const datesHTML = sequence.map(day => {
+            const offset = new Date(day).getTimezoneOffset();
+            const currDay = new Date(new Date(day).setHours(0,-offset,0,0))
+            datePattern.push(currDay.toISOString())
+
+            return `<li>${currDay.toLocaleDateString('en-us', {"weekday": "short"})} ${currDay.toLocaleDateString()}</li>`
+        }).join('')
+        document.getElementById('dates').innerHTML = datesHTML
+    }
+    handleInputChange();
 </script>
 </html>

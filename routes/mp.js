@@ -282,21 +282,25 @@ router.get('/populate', async (req, res) => {
     res.status(200).send({created: schedules.length}).end();
 })
 
-router.get('/sequence', async (req, res) => {
+router.post('/sequence', async (req, res) => {
     await authorize();
     const {totalOccurences, dayPosition, weekdays} = req.body;
 
-    const sequence = await axios({
-        method: 'get',
-        url: `${process.env.BASE_URL}/tasks/generate-sequence?$type=Monthly&$totalOccurrences=${totalOccurences}&$dayPosition=${dayPosition}&$weekdays=${weekdays}`,
-        headers: {
-            'Content-Type': 'Application/Json',
-            'Authorization': `Bearer ${access_token}`
-        }
-    })
-        .then(response => response.data)
-
-    res.status(200).send({sequence: sequence}).end();
+    try {
+        const sequence = await axios({
+            method: 'get',
+            url: `${process.env.BASE_URL}/tasks/generate-sequence?$type=Monthly&$totalOccurrences=${totalOccurences}&$dayPosition=${dayPosition}&$weekdays=${weekdays}`,
+            headers: {
+                'Content-Type': 'Application/Json',
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+            .then(response => response.data)
+    
+        res.status(200).send(sequence).end();
+    } catch (err) {
+        res.status(500).send(err).end();
+    }
 })
 
 module.exports = router;

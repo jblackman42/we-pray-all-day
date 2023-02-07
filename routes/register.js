@@ -4,13 +4,15 @@ const axios = require('axios');
 const qs = require('qs');
 
 router.post('/', async (req, res) => {
-    const logging = 1;
+    const logging = 0;
     const {Address_Line, City, State, Church_Name, Postal_Code, Phone, First_Name, Last_Name, Email, Prayer_Requests, Pattern, Username, Password} = req.body;
     // get access token
     // make address
     // make household
     // make contact
     // make user
+    // make community
+    // make community reservation
     // set user password
     // add user to user group
     let accessToken, address, household, contact, user, group, community;
@@ -72,17 +74,17 @@ router.post('/', async (req, res) => {
             if (logging) console.log('household created')
         // make contact -------------------------------------------- //
         contact = await axios({
-            method: 'post',
+                method: 'post',
             url: `${process.env.BASE_URL}/tables/Contacts`,
             headers: {
-                "Content-Type": "Application/JSON",
-                "Authorization": `Bearer ${access_token}`
-            },
-            data: [{
-                "Display_Name": `${Last_Name}, ${First_Name}`,
-                "First_Name": First_Name,
-                "Last_Name": Last_Name,
-                "Nickname": First_Name,
+                    "Content-Type": "Application/JSON",
+                    "Authorization": `Bearer ${access_token}`
+                },
+                data: [{
+                        "Display_Name": `${Last_Name}, ${First_Name}`,
+                        "First_Name": First_Name,
+                        "Last_Name": Last_Name,
+                        "Nickname": First_Name,
                 "Email_Address": Email,
                 "Mobile_Phone": Phone,
                 "Company": true,
@@ -151,11 +153,27 @@ router.post('/', async (req, res) => {
                 "Address_ID": address.Address_ID,
                 "Prayer_Points": Prayer_Requests,
                 "Start_Date": new Date(),
-                "End_Date": null,
-                "Pattern": Pattern
+                "End_Date": null
             }]
         })
+            .then(response => response.data[0]);
         if (logging) console.log('created community')
+        // make community reservations--------------------------------- //
+        for (let day of Pattern) {
+            await axios({
+                method: 'post',
+                url: `${process.env.BASE_URL}/tables/Community_Reservations`,
+                headers: {
+                    "Content-Type": "Application/JSON",
+                    "Authorization": `Bearer ${access_token}`
+                },
+                data: [{
+                    "Reservation_Date": day,
+                    "Prayer_Community_ID": community.Prayer_Community_ID
+                }]
+            })
+        }
+        if (logging) console.log('created community reservations')
         
         res.sendStatus(200)
     } catch(err) {

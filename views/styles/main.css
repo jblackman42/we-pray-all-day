@@ -929,15 +929,77 @@ prayer-calendar {
     transform: rotate(360deg);
   }
 }
-#inputs-container {
+.input-option {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+.input-option:not(:last-of-type) {
+  margin-bottom: 0.5rem;
+}
+.input-option span {
   color: white;
 }
-#inputs-container input[type=number] {
+.input-option input[type=number] {
   width: 3rem;
   color: black;
 }
-#inputs-container select {
+.input-option input[type=radio] {
+  height: 100%;
+}
+.input-option select, .input-option input {
+  color: white !important;
+  border: solid rgba(255, 255, 255, 0.4) 1px !important;
+  background-color: transparent !important;
+  height: 29px;
+  padding-block: 0 !important;
+}
+.input-option select:disabled, .input-option select:disabled, .input-option input:disabled, .input-option input:disabled {
+  opacity: 0.5;
+}
+.input-option select option, .input-option input option {
   color: black;
+}
+.input-option select option:hover, .input-option input option:hover {
+  background-color: #fcbb09;
+}
+
+#date-container {
+  color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(0, -50%);
+}
+#date-container.highlight .hover-icon {
+  outline: 2px solid #fcbb09;
+  outline-offset: 2px;
+}
+#date-container .hover-icon {
+  border-radius: 50%;
+}
+#date-container #dates {
+  position: absolute;
+  background-color: #2e2d2b;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  border-radius: 0.5rem;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 8px 0px;
+  list-style: none;
+  top: -4px;
+  right: -4px;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  display: none;
+  visibility: hidden;
+}
+#date-container:hover .hover-icon, #date-container:focus .hover-icon {
+  outline: none;
+}
+#date-container:hover #dates, #date-container:focus #dates {
+  display: block;
+  visibility: visible;
 }
 
 #sign-up-form {
@@ -1498,7 +1560,7 @@ prayer-calendar {
 .forms-container .page .input-container {
   display: flex;
   flex-direction: column;
-  margin-top: clamp(18px, 2vw, 20px);
+  margin-top: 18px;
   width: calc(50% - 0.5rem);
   position: relative;
 }
@@ -1512,7 +1574,7 @@ prayer-calendar {
 }
 .forms-container .page .input-container label {
   position: absolute;
-  font-size: clamp(18px, 2vw, 20px);
+  font-size: 18px;
   color: rgba(0, 0, 0, 0.6);
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -1526,7 +1588,7 @@ prayer-calendar {
 }
 .forms-container .page .input-container textarea {
   border: none;
-  font-size: clamp(18px, 2vw, 20px);
+  font-size: 18px;
   font-family: inherit;
   border-radius: 2px;
   outline: none;
@@ -1539,7 +1601,7 @@ prayer-calendar {
 }
 .forms-container .page .input-container input, .forms-container .page .input-container select, .forms-container .page .input-container textarea {
   border: none;
-  font-size: clamp(18px, 2vw, 20px);
+  font-size: 18px;
   border-radius: 2px;
   outline: none;
   padding: 4px 2px;

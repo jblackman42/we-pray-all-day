@@ -133,7 +133,7 @@ router.get('/group', ensureAuthenticated, async (req, res) => {
         const Prayer_Schedules = await axios({
             method: 'get',
             // url: `${process.env.BASE_URL}/tables/Prayer_Schedules?$filter=Community_ID=`,
-            url: `${process.env.BASE_URL}/tables/Prayer_Schedules?$filter=Prayer_Community_ID=${group.Prayer_Community_ID} AND YEAR(Start_Date) >= YEAR(GETDATE()) AND MONTH(Start_Date) >= MONTH(GETDATE())-1 AND DAY(Start_Date) >= DAY(GETDATE())`,
+            url: `${process.env.BASE_URL}/tables/Prayer_Schedules?$filter=Prayer_Community_ID=${group.Prayer_Community_ID} AND YEAR(Start_Date) >= YEAR(GETDATE()) AND MONTH(Start_Date) >= MONTH(GETDATE())-1`,
             headers: {
                 "Content-Type": "Application/JSON",
                 "Authorization": `Bearer ${access_token}`

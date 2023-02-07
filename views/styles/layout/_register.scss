@@ -1,7 +1,8 @@
 $form-bg: $secondary-black;
 $fill-color: $accent-yellow;
 $bg-color: white;
-$form-font-size: clamp(18px, 2vw, 20px);
+$form-font-size: 18px;
+// $form-font-size: clamp(18px, 2vw, 20px);
 
 .forms-container {
     #register-form {
