@@ -68,7 +68,7 @@ router.post('/Prayer_Schedules', async (req, res) => {
                 End_Date: End_Date,
                 Email: Email,
                 Phone: parsedPhoneNumber,
-                Community_ID: Community_ID
+                Prayer_Community_ID: Community_ID
             }]
         })
             .then(response => response.data);
@@ -80,7 +80,7 @@ router.post('/Prayer_Schedules', async (req, res) => {
     }
 })
 
-router.get('/Communities', async (req, res) => {
+router.get('/Prayer_Communities', async (req, res) => {
     await authorize();
 
     const {$select} = req.query;
@@ -88,13 +88,13 @@ router.get('/Communities', async (req, res) => {
     try {
         const data = await axios({
             method: 'get',
-            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities?$filter=(End_Date IS NULL OR GETDATE()<End_Date) AND Community_ID != 18${$select ? `&$select=${$select}` : ''}`,
+            url: `https://my.pureheart.org/ministryplatformapi/procs/api_MPP_GetPrayerCommunities`,
             headers: {
                 'Authorization': `Bearer ${access_token}`,
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => response.data);
+            .then(response => response.data[0]);
         
         res.status(200).send({Communities: data}).end();
     } catch (error) {

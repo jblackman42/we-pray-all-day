@@ -10,7 +10,7 @@ $form-font-size: 18px;
         max-width: 90vw;
         background-color: $form-bg;
         box-sizing: content-box;
-        padding: 2rem 0;
+        padding-top: 2rem;
         border-radius: .75rem;
         .title {
             margin: 0;
@@ -148,6 +148,11 @@ $form-font-size: 18px;
         // margin: 1rem;
         // margin-top: 0;
         box-sizing: border-box;
+        #pattern-label {
+            color: white;
+            font-size: $form-font-size;
+            margin: .25rem 0;
+        }
         .input-container {
             display: flex;
             flex-direction: column;
@@ -164,7 +169,7 @@ $form-font-size: 18px;
             label {
                 position: absolute;
                 font-size: $form-font-size;
-                color: #00000099;
+                color: #FFFFFFAA;
                 user-select: none;
                 width: 100%;
                 height: 100%;
@@ -173,30 +178,25 @@ $form-font-size: 18px;
                 white-space: nowrap;
             }
 
-            textarea {
-                border: none;
-                font-size: $form-font-size;
-                font-family: inherit;
-                border-radius: 2px;
-                outline: none;
-                resize: none;
-                & ~ label {
-                    height: max-content;
-                }
-            }
             input, select, textarea {
-                border: none;
+                color: white !important;
+                border: solid #FFFFFF66 1px!important;
+                background-color: transparent !important;
                 font-size: $form-font-size;
                 border-radius: 2px;
                 outline: none;
                 padding: 4px 2px;
-                background-color: white;
-                color: currentColor;
-                line-height: 1;
+
+                height: 30px;
+                box-sizing: border-box;
 
                 & ~ label {
                     transition: transform 100ms ease-in-out, color 100ms linear;
                     padding: 4px;
+                    display: flex;
+                    align-items: center;
+                    white-space: break-spaces;
+                    cursor: text;
                 }
 
                 &:invalid {
@@ -211,10 +211,31 @@ $form-font-size: 18px;
                 &:not(:placeholder-shown) ~ label {
                     transform: scale(.8) translate(0, calc(-100% - 4px));
                     color: white;
+                    cursor: default;
+                }       
+                option {
+                    color: black;
+                    &:hover {
+                        background-color: $accent-yellow;
+                    }
                 }
             }
             select {
-                padding: 1px 2px;
+                padding: 0;
+                text-indent: 2px;
+            }
+            textarea {
+                box-sizing: content-box;
+                resize: none;
+                outline: none;
+                height: 42px;
+                // font-size: $form-font-size;
+                // font-family: inherit;
+                // border-radius: 2px;
+                // outline: none;
+                & ~ label {
+                    height: max-content;
+                }
             }
         }
     }

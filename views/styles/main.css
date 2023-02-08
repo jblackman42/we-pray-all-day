@@ -930,8 +930,14 @@ prayer-calendar {
   }
 }
 .input-option {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
+  gap: 0.5rem;
+}
+.input-option .options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 0.5rem;
 }
 .input-option:not(:last-of-type) {
@@ -948,20 +954,11 @@ prayer-calendar {
   height: 100%;
 }
 .input-option select, .input-option input {
-  color: white !important;
-  border: solid rgba(255, 255, 255, 0.4) 1px !important;
-  background-color: transparent !important;
   height: 29px;
   padding-block: 0 !important;
 }
 .input-option select:disabled, .input-option select:disabled, .input-option input:disabled, .input-option input:disabled {
   opacity: 0.5;
-}
-.input-option select option, .input-option input option {
-  color: black;
-}
-.input-option select option:hover, .input-option input option:hover {
-  background-color: #fcbb09;
 }
 
 #date-container {
@@ -969,16 +966,32 @@ prayer-calendar {
   position: absolute;
   top: 0;
   right: 0;
-  transform: translate(0, -50%);
+  display: grid;
+  place-items: center;
 }
-#date-container.highlight .hover-icon {
-  outline: 2px solid #fcbb09;
-  outline-offset: 2px;
+#date-container.disabled {
+  opacity: 0.5;
 }
-#date-container .hover-icon {
+#date-container.disabled::after {
+  display: none;
+}
+#date-container.highlight::after {
+  border-color: #fcbb09;
+}
+#date-container::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  background-color: transparent;
+  border: 2px solid transparent;
   border-radius: 50%;
 }
 #date-container #dates {
+  z-index: 2;
   position: absolute;
   background-color: #2e2d2b;
   padding: 0.5rem 1rem;
@@ -994,10 +1007,10 @@ prayer-calendar {
   display: none;
   visibility: hidden;
 }
-#date-container:hover .hover-icon, #date-container:focus .hover-icon {
+#date-container:not(.disabled):hover .hover-icon, #date-container:not(.disabled):focus .hover-icon {
   outline: none;
 }
-#date-container:hover #dates, #date-container:focus #dates {
+#date-container:not(.disabled):hover #dates, #date-container:not(.disabled):focus #dates {
   display: block;
   visibility: visible;
 }
@@ -1426,7 +1439,7 @@ prayer-calendar {
   max-width: 90vw;
   background-color: #282828;
   box-sizing: content-box;
-  padding: 2rem 0;
+  padding-top: 2rem;
   border-radius: 0.75rem;
 }
 .forms-container #register-form .title {
@@ -1557,6 +1570,11 @@ prayer-calendar {
   padding-top: 0;
   box-sizing: border-box;
 }
+.forms-container .page #pattern-label {
+  color: white;
+  font-size: 18px;
+  margin: 0.25rem 0;
+}
 .forms-container .page .input-container {
   display: flex;
   flex-direction: column;
@@ -1575,7 +1593,7 @@ prayer-calendar {
 .forms-container .page .input-container label {
   position: absolute;
   font-size: 18px;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.6666666667);
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -1586,32 +1604,24 @@ prayer-calendar {
   transform-origin: bottom left;
   white-space: nowrap;
 }
-.forms-container .page .input-container textarea {
-  border: none;
-  font-size: 18px;
-  font-family: inherit;
-  border-radius: 2px;
-  outline: none;
-  resize: none;
-}
-.forms-container .page .input-container textarea ~ label {
-  height: -webkit-max-content;
-  height: -moz-max-content;
-  height: max-content;
-}
 .forms-container .page .input-container input, .forms-container .page .input-container select, .forms-container .page .input-container textarea {
-  border: none;
+  color: white !important;
+  border: solid rgba(255, 255, 255, 0.4) 1px !important;
+  background-color: transparent !important;
   font-size: 18px;
   border-radius: 2px;
   outline: none;
   padding: 4px 2px;
-  background-color: white;
-  color: currentColor;
-  line-height: 1;
+  height: 30px;
+  box-sizing: border-box;
 }
 .forms-container .page .input-container input ~ label, .forms-container .page .input-container select ~ label, .forms-container .page .input-container textarea ~ label {
   transition: transform 100ms ease-in-out, color 100ms linear;
   padding: 4px;
+  display: flex;
+  align-items: center;
+  white-space: break-spaces;
+  cursor: text;
 }
 .forms-container .page .input-container input:invalid, .forms-container .page .input-container select:invalid, .forms-container .page .input-container textarea:invalid {
   outline: 2px solid #e74c3c;
@@ -1625,17 +1635,38 @@ prayer-calendar {
 .forms-container .page .input-container input:not(:-moz-placeholder-shown) ~ label, .forms-container .page .input-container select:not(:-moz-placeholder-shown) ~ label, .forms-container .page .input-container textarea:not(:-moz-placeholder-shown) ~ label {
   transform: scale(0.8) translate(0, calc(-100% - 4px));
   color: white;
+  cursor: default;
 }
 .forms-container .page .input-container input:not(:-ms-input-placeholder) ~ label, .forms-container .page .input-container select:not(:-ms-input-placeholder) ~ label, .forms-container .page .input-container textarea:not(:-ms-input-placeholder) ~ label {
   transform: scale(0.8) translate(0, calc(-100% - 4px));
   color: white;
+  cursor: default;
 }
 .forms-container .page .input-container input:not(:placeholder-shown) ~ label, .forms-container .page .input-container select:not(:placeholder-shown) ~ label, .forms-container .page .input-container textarea:not(:placeholder-shown) ~ label {
   transform: scale(0.8) translate(0, calc(-100% - 4px));
   color: white;
+  cursor: default;
+}
+.forms-container .page .input-container input option, .forms-container .page .input-container select option, .forms-container .page .input-container textarea option {
+  color: black;
+}
+.forms-container .page .input-container input option:hover, .forms-container .page .input-container select option:hover, .forms-container .page .input-container textarea option:hover {
+  background-color: #fcbb09;
 }
 .forms-container .page .input-container select {
-  padding: 1px 2px;
+  padding: 0;
+  text-indent: 2px;
+}
+.forms-container .page .input-container textarea {
+  box-sizing: content-box;
+  resize: none;
+  outline: none;
+  height: 42px;
+}
+.forms-container .page .input-container textarea ~ label {
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
 }
 .forms-container .btn-container {
   width: 100%;

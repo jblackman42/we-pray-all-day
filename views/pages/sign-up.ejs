@@ -54,7 +54,7 @@
             loading();
             const data = await axios({
                 method: 'get',
-                url: '/api/v1/Communities?$select=Community_ID,Community_Name'
+                url: '/api/v1/Prayer_Communities'
             })
                 .then(response => response.data)
 
@@ -72,17 +72,18 @@
             const { Prayer_Schedules } = data2;
             
             
-            const otherID = 18;
+            const otherID = null;
             const {Communities} = data;
+            console.log(Communities)
 
             const communitiesHTML = Communities.sort(function(a, b) {
                 var textA = a.Community_Name.toUpperCase();
                 var textB = b.Community_Name.toUpperCase();
                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
             }).map(community => {
-                const {Community_ID, Community_Name} = community;
+                const {Prayer_Community_ID, Community_Name} = community;
                 return `
-                    <option value="${Community_ID}">${Community_Name}</option>
+                    <option value="${Prayer_Community_ID}">${Community_Name}</option>
                 `
             })
             communitiesHTML.push(`<option value="${otherID}">Other</option>`)

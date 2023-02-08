@@ -29,7 +29,7 @@
                     <label for="Last_Name">Last Name</label>
                 </div>
                 <div class="input-container">
-                    <input type="tel" name="Phone" id="Phone" placeholder=" ">
+                    <input type="tel" name="Phone" id="Phone" placeholder=" " pattern="^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$">
                     <label for="Phone">Phone Number</label>
                 </div>
                 <div class="input-container">
@@ -70,34 +70,34 @@
                 <div class="input-container full-width" style="z-index: 3;">
                     <!-- <input type="text" name="Pattern" id="Pattern" placeholder=" ">
                     <label for="Pattern">Recurring Day (Example: 'First Tuesday'):</label> -->
+                    <p id="pattern-label">Recurring Day:</p>
                     <div class="input-option" onclick="updateRadioSelect('recurring-pattern')">
                         <input type="radio" name="pattern" id="recurring-pattern" checked onchange="handleRadioChange()">
-                        <!-- <div class="spacer">
-                            <i class='fas fa-circle'></i>
-                        </div> -->
-                        <span>The</span>
-                        <select id="dayPosition" onchange="handleInputChange()">
-                            <option value="First">First</option>
-                            <option value="Second">Second</option>
-                            <option value="Third">Third</option>
-                            <option value="Fourth">Fourth</option>
-                            <option value="Last">Last</option>
-                        </select>
-                        <select id="weekdays" onchange="handleInputChange()">
-                            <option value="Sunday">Sunday</option>
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Day">Day</option>
-                            <option value="Weekday">Weekday</option>
-                            <option value="WeekendDay">WeekendDay</option>
-                        </select>
-                        <span>for</span>
-                        <input type="number" id="totalOccurences" min="1" max="12" onchange="handleInputChange()"></input>
-                        <span>month<span id="pattern-s">s</span>.</span>
+                        <div class="options">
+                            <span>The</span>
+                            <select id="dayPosition" onchange="handleInputChange()">
+                                <option value="First">First</option>
+                                <option value="Second">Second</option>
+                                <option value="Third">Third</option>
+                                <option value="Fourth">Fourth</option>
+                                <option value="Last">Last</option>
+                            </select>
+                            <select id="weekdays" onchange="handleInputChange()">
+                                <option value="Sunday">Sunday</option>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Day">Day</option>
+                                <option value="Weekday">Weekday</option>
+                                <option value="WeekendDay">WeekendDay</option>
+                            </select>
+                            <span>for</span>
+                            <input type="number" id="totalOccurences" min="1" max="12" onchange="handleInputChange()"></input>
+                            <span>month<span id="pattern-s">s</span>.</span>
+                        </div>
                     </div>
                     <div class="input-option" onclick="updateRadioSelect('single-pattern')">
                         <input type="radio" name="pattern" id="single-pattern" onchange="handleRadioChange()">
@@ -149,6 +149,7 @@
     document.getElementById('State').innerHTML = stateLabelValues.map(state => {
         return `<option value=${state.value}>${state.label}</option>`
     })
+    document.getElementById('date').valueAsDate = new Date();
     const registerForm = document.getElementById('register-form');
 
     registerForm.addEventListener('submit', async (e) => {
@@ -156,6 +157,11 @@
 
         const progressDOM = document.querySelector('.progress');
         progressDOM.classList.add('done')
+
+        const offsetDatePattern = datePattern == null ? null : datePattern.map(day => {
+            const offset = new Date(day).getTimezoneOffset();
+            return new Date(new Date(day).setHours(0,-offset,0,0)).toISOString();
+        })
 
         const formData = {
             Address_Line: document.getElementById('Address_Line').value || null,
@@ -165,7 +171,7 @@
             Postal_Code: document.getElementById('Postal_Code').value || null,
             Phone: document.getElementById('Phone').value || null,
             Email: document.getElementById('Email').value || null,
-            Pattern: datePattern,
+            Pattern: offsetDatePattern,
             Prayer_Requests: document.getElementById('Prayer_Requests').value || null,
             First_Name: document.getElementById('First_Name').value || null,
             Last_Name: document.getElementById('Last_Name').value || null,
@@ -287,9 +293,16 @@
         const recurringPatternElem = document.getElementById('recurring-pattern');
         const singlePatternElem = document.getElementById('single-pattern');
         const dateElem = document.getElementById('date');
+
+        const dateContainerDOM = document.getElementById('date-container')
+        const inputLabel = document.getElementById('pattern-label');
         if (recurringPatternElem.checked) {
+            inputLabel.innerText = 'Recurring Day:';
+            dateContainerDOM.classList.remove('disabled')
             await getPattern();
         } else {
+            inputLabel.innerText = 'Single Day:';
+            dateContainerDOM.classList.add('disabled')
             datePattern = dateElem.value ? [new Date(dateElem.value).toISOString()] : null;
         }
     }
@@ -319,9 +332,9 @@
 
         datePattern = [];
         const datesHTML = sequence.map(day => {
-            const offset = new Date(day).getTimezoneOffset();
-            const currDay = new Date(new Date(day).setHours(0,-offset,0,0))
-            datePattern.push(currDay.toISOString())
+            // const offset = new Date(day).getTimezoneOffset();
+            const currDay = new Date(new Date(day).setHours(0,0,0,0))
+            datePattern.push(currDay);
 
             return `<li>${currDay.toLocaleDateString('en-us', {"weekday": "short"})} ${currDay.toLocaleDateString()}</li>`
         }).join('')
