@@ -22,7 +22,7 @@
         overflow: hidden;
         #title-row {
             padding: 1rem;
-            background-color: $accent-blue;
+            background-color: $accent-yellow;
             color: black;
             #popup-title {
                 font-weight: bold;
@@ -42,14 +42,14 @@
             width: 100%;
             display: flex;
             justify-content: flex-end;
+            gap: .5rem;
             padding: .5rem;
             box-sizing: border-box;
             border-top: 2px solid $primary-gray;
-            #popup-btn {
-                margin-left: auto;
+            .popup-btn {
                 border: none;
                 padding: .5rem 1rem;
-                background-color: $accent-blue;
+                background-color: $accent-yellow;
                 color: black;
                 font-weight: bold;
                 border-radius: 2px;

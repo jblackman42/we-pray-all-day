@@ -79,6 +79,81 @@
         display: none;
         visibility: hidden;
     }
+    
+    // .input-container {
+    //     display: flex;
+    //     flex-direction: column;
+    //     margin-top: $form-font-size;
+    //     width: calc(50% - .5rem);
+    //     &.full-width {
+    //         width: 100%;
+    //     }
+    //     @media screen and (max-width: 768px) {
+    //         width: 100%;
+    //     }
+
+    //     position: relative;
+
+    //     input, select, textarea {
+    //         color: white !important;
+    //         border: solid #FFFFFF66 1px!important;
+    //         background-color: transparent !important;
+    //         font-size: $form-font-size;
+    //         border-radius: 2px;
+    //         outline: none;
+    //         padding: 4px 2px;
+
+    //         height: 30px;
+    //         box-sizing: border-box;
+
+    //         & ~ label {
+    //             transition: transform 100ms ease-in-out, color 100ms linear;
+    //             padding: 4px;
+    //             display: flex;
+    //             align-items: center;
+    //             white-space: break-spaces;
+    //             cursor: text;
+    //         }
+
+    //         &:invalid {
+    //             outline: 2px solid #e74c3c;
+    //             & ~ label::before {
+    //                 content: "Invalid";
+    //                 position: absolute;
+    //                 color: #e74c3c;
+    //                 right: -25%;
+    //             }
+    //         }
+    //         &:not(:placeholder-shown) ~ label {
+    //             transform: scale(.8) translate(0, calc(-100% - 4px));
+    //             color: white;
+    //             cursor: default;
+    //         }       
+    //         option {
+    //             color: black;
+    //             &:hover {
+    //                 background-color: $accent-yellow;
+    //             }
+    //         }
+    //     }
+    //     select {
+    //         padding: 0;
+    //         text-indent: 2px;
+    //     }
+    //     textarea {
+    //         box-sizing: content-box;
+    //         resize: none;
+    //         outline: none;
+    //         height: 42px;
+    //         // font-size: $form-font-size;
+    //         // font-family: inherit;
+    //         // border-radius: 2px;
+    //         // outline: none;
+    //         & ~ label {
+    //             height: max-content;
+    //         }
+    //     }
+    // }
 }
 
 #table-container {
@@ -153,5 +228,89 @@
     #csv-download {
         margin: 1rem 0;
         margin-left: auto;
+    }
+}
+
+#reservation-table-container {
+    display: grid;
+    place-items: center;
+    width: 500px;
+    max-width: 90vw;
+
+    margin: 0 auto;
+
+    #reservation-table {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        filter: drop-shadow(rgba(0, 0, 0, 0.24) 0px 3px 8px);
+        .row {
+            display: flex;
+            // justify-content: space-between;
+            &:not(.header) { margin-bottom: 4px; }
+            &:last-of-type { margin-bottom: 0; }
+            &:nth-child(odd) {
+                background-color: #f6f6f6;
+            }
+            &:nth-child(even) {
+                background-color: #ffffff
+            }
+            &.header {
+                font-weight: bold;
+                background-color: $primary-black;
+                color: white;
+                p {
+                    border-bottom: 2px solid $secondary-black;
+                    border-right: 2px solid $secondary-black;
+                    &:last-of-type {
+                        border-right: none;
+                    }
+                }
+            }
+            .date-label, p {
+                padding: .5em;
+                margin: 0;
+                margin-right: auto;
+            }
+            .btn {
+                border: none;
+                background-color: transparent;
+                margin: 0;
+                padding: 0 .5rem;
+                &.reservation-edit-btn {
+                    color: #27ae60;
+                }
+                &.reservation-save-btn {
+                    color: #27ae60;
+                    display: none;
+                    visibility: hidden;
+                }
+                &.reservation-cancel-btn {
+                    color: #e74c3c;
+                    display: none;
+                    visibility: hidden;
+                }
+                &.reservation-delete-btn {
+                    color: #34495e;
+                    display: none;
+                    visibility: hidden;
+                }
+            }
+        }
+    }
+
+    #new-prayer-day-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        p {
+            margin: 0;
+            text-align: left;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: .5rem 0;
+        }
     }
 }

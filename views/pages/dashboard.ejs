@@ -7,13 +7,10 @@
 <body>
     <%- include('../partials/loading'); %>
     <%- include('../partials/navbar'); %>
+    <%- include('../partials/popup'); %>
 
     <prayer-dashboard class="dash-container">
         <form id="info-form">
-            <div class="input-container full-width">
-                <label for="Pattern">Recurring Day (Example: 'First Tuesday'):</label>
-                <input type="text" name="Pattern" id="Pattern" disabled>
-            </div>
             <div class="input-container full-width">
                 <label for="Prayer_Requests">Prayer Points (100 characters or less):</label>
                 <textarea name="Prayer_Requests" id="Prayer_Requests" maxlength="100" disabled></textarea>
@@ -25,6 +22,65 @@
                 <button id="submit-btn" class="btn" type="submit">Submit</button>
             </div>
         </form>
+        
+        <div id="reservation-table-container">
+            <div id="new-prayer-day-container">
+                <p>Add new prayer day:</p>
+                <div class="row">
+                    <input type="date" id="new-prayer-date">
+                    <button class="btn" onclick="newDate()">Submit</button>
+                </div>
+            </div>
+
+            <div id="reservation-table">
+                <div class="row header">
+                    <p>My Prayer Days:</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- <div class="input-container" style="z-index: 3;">
+            <p id="pattern-label">Recurring Day:</p>
+            <div class="input-option" onclick="updateRadioSelect('recurring-pattern')">
+                <input type="radio" name="pattern" id="recurring-pattern" checked onchange="handleRadioChange()">
+                <div class="options">
+                    <span>The</span>
+                    <select id="dayPosition" onchange="handleInputChange()">
+                        <option value="First">First</option>
+                        <option value="Second">Second</option>
+                        <option value="Third">Third</option>
+                        <option value="Fourth">Fourth</option>
+                        <option value="Last">Last</option>
+                    </select>
+                    <select id="weekdays" onchange="handleInputChange()">
+                        <option value="Sunday">Sunday</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Day">Day</option>
+                        <option value="Weekday">Weekday</option>
+                        <option value="WeekendDay">WeekendDay</option>
+                    </select>
+                    <span>for</span>
+                    <input type="number" id="totalOccurences" min="1" max="12" onchange="handleInputChange()"></input>
+                    <span>month<span id="pattern-s">s</span>.</span>
+                </div>
+            </div>
+            <div class="input-option" onclick="updateRadioSelect('single-pattern')">
+                <input type="radio" name="pattern" id="single-pattern" onchange="handleRadioChange()">
+                <input type="date" name="date" id="date" onchange="handleInputChange()" disabled>
+            </div>
+
+            <div id="date-container">
+                <i class='fas fa-info-circle hover-icon'></i>
+                <ul id="dates"></ul>
+            </div>
+        </div> -->
+
 
         <div id="table-container">
             <div id="roster-table">
@@ -40,11 +96,12 @@
 
 </body>
 <script>
+    let prayerDays = [];
     class Dashboard extends HTMLElement {
         constructor() {
             super();
 
-            this.contact, this.address, this.group, this.roster;
+            this.contact, this.address, this.group, this.roster, this.reservations;
             this.getData();
         }
 
@@ -57,6 +114,14 @@
                 .then(response => response.data)
 
             const {group, contact, address, roster} = data;
+
+            const data2 = await axios({
+                method: 'get',
+                url: `/api/v1/reservations?id=${group.Prayer_Community_ID}`
+            })
+                .then(response => response.data);
+
+            this.reservations = data2;
 
             this.group = group;
             this.contact = contact;
@@ -83,13 +148,33 @@
             
             // schedule
             document.getElementById('Prayer_Requests').value = Prayer_Points;
-            document.getElementById('Pattern').value = Pattern;
 
             document.getElementById('info-form').addEventListener('submit', (e) => this.handleSubmit(e))
             
             
             // console.log(Nickname, Last_Name, Email_Address, Mobile_Phone, Company_Name, Address_Line_1, City, State, Postal_Code, Prayer_Points, Pattern)
             this.createTable();
+            this.createReservationTable();
+        }
+
+        createReservationTable = () => {
+            const reservationsHTML = this.reservations.map(res => {
+                const {Reservation_Date, Community_Reservation_ID} = res;
+                const currDate = new Date(Reservation_Date);
+                prayerDays.push({
+                    id: Community_Reservation_ID,
+                    date: Reservation_Date
+                })
+                return `
+                <div class="row" id="row-${Community_Reservation_ID}">
+                    <div class="date-label" id="date-${Community_Reservation_ID}">${currDate.toLocaleDateString('en-us', {weekday: "short"})} ${currDate.toLocaleDateString()}</div>
+                    <button title="edit date" id="edit-btn-${Community_Reservation_ID}" class="reservation-edit-btn btn" onclick="edit(${Community_Reservation_ID})"><i class='fas fa-edit'></i></button>
+                    <button title="delete date" id="delete-btn-${Community_Reservation_ID}" class="reservation-delete-btn btn" onclick="remove(${Community_Reservation_ID})"><i class='fas fa-trash'></i></button>
+                    <button title="save date" id="save-btn-${Community_Reservation_ID}" class="reservation-save-btn btn" onclick="save(${Community_Reservation_ID})"><i class='fas fa-save'></i></button>
+                    <button title="cancel" id="cancel-btn-${Community_Reservation_ID}" class="reservation-cancel-btn btn" onclick="cancel(${Community_Reservation_ID})"><i class='fas fa-times-circle'></i></button>
+                </div>`
+            }).join('')
+            document.getElementById('reservation-table').innerHTML += reservationsHTML;
         }
 
         createTable = () => {
@@ -164,7 +249,6 @@
             loading();
 
             this.group.Prayer_Points = document.getElementById('Prayer_Requests').value;
-            this.group.Pattern = document.getElementById('Pattern').value;
 
             const data = await axios({
                 method: 'post',
@@ -181,16 +265,131 @@
         editForm = () => {
             document.getElementById('info-form').classList.add('edit');
             document.getElementById('Prayer_Requests').disabled = false;
-            document.getElementById('Pattern').disabled = false;
         }
         cancelForm = () => {
             document.getElementById('info-form').classList.remove('edit');
             document.getElementById('Prayer_Requests').disabled = true;
-            document.getElementById('Pattern').disabled = true;
             document.getElementById('Prayer_Requests').value = this.group.Prayer_Points;
-            document.getElementById('Pattern').value = this.group.Pattern;
         }
     }
     customElements.define('prayer-dashboard', Dashboard);
+
+    const newDate = async () => {
+        const newDateInput = document.getElementById('new-prayer-date').value;
+        const newDate = new Date(newDateInput);
+
+        const id = document.querySelector('prayer-dashboard').group.Prayer_Community_ID;
+        
+        await axios({
+            method: 'post',
+            url: '/api/v1/reservations',
+            data: {
+                id: id,
+                date: newDate.toISOString()
+            }
+        })
+
+        location.reload();
+    }
+
+    const showButtons = (id) => {
+        const editBtnElem = document.getElementById(`edit-btn-${id}`);
+        const saveBtnElem = document.getElementById(`save-btn-${id}`);
+        const cancelBtnElem = document.getElementById(`cancel-btn-${id}`);
+        const deleteBtnElem = document.getElementById(`delete-btn-${id}`);
+
+        // STYLING
+        editBtnElem.style.display = 'none'
+        editBtnElem.style.visibility = 'hidden'
+
+        saveBtnElem.style.display = 'block'
+        saveBtnElem.style.visibility = 'visible'
+        cancelBtnElem.style.display = 'block'
+        cancelBtnElem.style.visibility = 'visible'
+        deleteBtnElem.style.display = 'block'
+        deleteBtnElem.style.visibility = 'visible'
+    }
+
+    const hideButtons = (id) => {
+        const editBtnElem = document.getElementById(`edit-btn-${id}`);
+        const saveBtnElem = document.getElementById(`save-btn-${id}`);
+        const cancelBtnElem = document.getElementById(`cancel-btn-${id}`);
+        const deleteBtnElem = document.getElementById(`delete-btn-${id}`);
+
+
+        // STYLING
+        editBtnElem.style.display = 'block'
+        editBtnElem.style.visibility = 'visible'
+
+        saveBtnElem.style.display = 'none'
+        saveBtnElem.style.visibility = 'hidden'
+        cancelBtnElem.style.display = 'none'
+        cancelBtnElem.style.visibility = 'hidden'
+        deleteBtnElem.style.display = 'none'
+        deleteBtnElem.style.visibility = 'hidden'
+    }
+
+
+    const edit = (id) => {
+        prayerDays.forEach(obj => cancel(obj.id))
+
+        const dateLabel = document.getElementById(`date-${id}`);
+        const currDate = new Date(dateLabel.innerText);
+        dateLabel.innerHTML = `<input type="date" id="date-input-${id}"></input>`
+        const dateInput = document.getElementById(`date-input-${id}`);
+        dateInput.valueAsDate = currDate;
+        
+        showButtons(id);
+    }
+
+    const cancel = (id) => {
+        const currDate = new Date(prayerDays.filter(obj => obj.id === id)[0].date)
+        const dateLabel = document.getElementById(`date-${id}`);
+        dateLabel.innerHTML = `${currDate.toLocaleDateString('en-us', {weekday: "short"})} ${currDate.toLocaleDateString()}`
+        
+        hideButtons(id)
+    }
+
+    const save = async (id) => {
+        const dateInput = document.getElementById(`date-input-${id}`);
+        const newDate = new Date(dateInput.value);
+        console.log(newDate)
+        // cancel(id)
+        await axios({
+            method: 'put',
+            url: '/api/v1/reservations',
+            data: {
+                id: id,
+                date: newDate.toISOString()
+            }
+        })
+        
+        const offset = newDate.getTimezoneOffset();
+        const currDate = new Date(newDate.setMinutes(newDate.getMinutes() + offset));
+
+        const dateLabel = document.getElementById(`date-${id}`);
+        dateLabel.innerHTML = `${currDate.toLocaleDateString('en-us', {weekday: "short"})} ${currDate.toLocaleDateString()}`
+        hideButtons(id)
+    }
+
+    const remove = (id) => {
+        const currDate = new Date(prayerDays.filter(obj => obj.id === id)[0].date)
+        showPopup('Confirm Delete', `Are you sure you want to delete ${currDate.toLocaleDateString('en-us', {weekday: "short"})} ${currDate.toLocaleDateString()}`, 'Cancel', null, 'Confirm', () => removeDate(id))
+    }
+
+    const removeDate = async (id) => {
+        await axios({
+            method: 'delete',
+            url: '/api/v1/reservations',
+            data: {
+                id: id
+            }
+        })
+
+        prayerDays = prayerDays.filter(obj => obj.id !== id)
+
+        const currRow = document.getElementById(`row-${id}`);
+        currRow.remove();
+    }
 </script>
 </html>

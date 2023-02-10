@@ -56,7 +56,7 @@ router.post('/Prayer_Schedules', async (req, res) => {
         if (!First_Name || !Start_Date || !End_Date || !Email || !Phone || !Community_ID) throw new Error('missing parameters')
         const data = await axios({
             method: 'post',
-            url: `https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules`,
+            url: `${process.env.BASE_URL}/tables/Prayer_Schedules`,
             headers: {
                 'Authorization': `Bearer ${access_token}`,
                 'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ router.get('/Prayer_Communities', async (req, res) => {
     try {
         const data = await axios({
             method: 'get',
-            url: `https://my.pureheart.org/ministryplatformapi/procs/api_MPP_GetPrayerCommunities`,
+            url: `${process.env.BASE_URL}/procs/api_MPP_GetPrayerCommunities`,
             headers: {
                 'Authorization': `Bearer ${access_token}`,
                 'Content-Type': 'application/json'
@@ -110,7 +110,7 @@ router.post('/Communities', async (req, res) => {
         if (!First_Name || !Email || !Phone || !Community_Name || !State || !City || !Start_Date || !Pattern || !Prayer_Points) throw new Error('missing parameters')
         const data = await axios({
             method: 'post',
-            url: `https://my.pureheart.org/ministryplatformapi/tables/Communities`,
+            url: `${process.env.BASE_URL}/tables/Communities`,
             headers: {
                 'Authorization': `Bearer ${access_token}`,
                 'Content-Type': 'application/json'
@@ -133,6 +133,118 @@ router.post('/Communities', async (req, res) => {
         res.status(200).send(data).end();
     } catch (error) {
         console.error(error)
+        res.status(500).send({error}).end();
+    }
+})
+
+router.get('/reservations', async (req, res) => {
+    await authorize();
+
+    try {
+        const {id} = req.query;
+        
+        if (!id) return res.sendStatus(200);
+
+        const data = await axios({
+            method: 'get',
+            url: `${process.env.BASE_URL}/tables/Community_Reservations?$filter=Prayer_Community_ID=${id} AND Active=1 AND Reservation_Date >= GETDATE()-1`,
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.data);
+
+        res.status(200).send(data).end();
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error}).end();
+    }
+})
+
+router.post('/reservations', async (req, res) => {
+    await authorize();
+
+    try {
+        const {id, date} = req.body;
+        
+        if (!id || !date) return res.sendStatus(200);
+
+        const data = await axios({
+            method: 'post',
+            url: `${process.env.BASE_URL}/tables/Community_Reservations`,
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'Content-Type': 'application/json'
+            },
+            data: [{
+                Prayer_Community_ID: id,
+                Reservation_Date: date
+            }]
+        })
+            .then(response => response.data);
+
+        res.status(200).send(data).end();
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error}).end();
+    }
+})
+
+router.put('/reservations', async (req, res) => {
+    await authorize();
+
+    try {
+        const {id, date} = req.body;
+        
+        if (!id || !date) return res.sendStatus(200);
+
+        const data = await axios({
+            method: 'put',
+            url: `${process.env.BASE_URL}/tables/Community_Reservations`,
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'Content-Type': 'application/json'
+            },
+            data: [{
+                Community_Reservation_ID: id,
+                Reservation_Date: date
+            }]
+        })
+            .then(response => response.data);
+
+        res.status(200).send(data).end();
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error}).end();
+    }
+})
+
+router.delete('/reservations', async (req, res) => {
+    await authorize();
+
+    try {
+        const {id} = req.body;
+        
+        if (!id) return res.sendStatus(200);
+
+        const data = await axios({
+            method: 'put',
+            url: `${process.env.BASE_URL}/tables/Community_Reservations`,
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'Content-Type': 'application/json'
+            },
+            data: [{
+                Community_Reservation_ID: id,
+                Active: 0
+            }]
+        })
+            .then(response => response.data);
+
+        res.status(200).send(data).end();
+    } catch (error) {
+        console.error(error);
         res.status(500).send({error}).end();
     }
 })
@@ -167,7 +279,7 @@ router.post('/confirmation-email', async (req, res) => {
     
     const job = await axios({
         method: 'post',
-        url: 'https://my.pureheart.org/ministryplatformapi/texts',
+        url: `${process.env.BASE_URL}/texts`,
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access_token}`
@@ -185,7 +297,7 @@ router.post('/confirmation-email', async (req, res) => {
 
     axios({
         method: 'post',
-        url: 'https://my.pureheart.org/ministryplatformapi/messages',
+        url: `${process.env.BASE_URL}/messages`,
         headers: {
             'Authorization': `Bearer ${access_token}`,
             'Content-Type': 'application/json'
@@ -222,7 +334,7 @@ router.get('/populate', async (req, res) => {
     // GET PRAYER SCHEDULES AFTER NOW ----------------------------
         const schedules = await axios({
             method: 'get',
-            url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules?$filter=DATEADD(minute,5,GETDATE())<Start_Date',
+            url: `${process.env.BASE_URL}/tables/Prayer_Schedules?$filter=DATEADD(minute,5,GETDATE())<Start_Date`,
             headers: {
                 'content-type': 'application/json',
                 'authorization': `Bearer ${access_token}`
@@ -260,7 +372,7 @@ router.get('/populate', async (req, res) => {
             
             await axios({
                 method: 'post',
-                url: 'https://my.pureheart.org/ministryplatformapi/texts',
+                url: `${process.env.BASE_URL}/texts`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${access_token}`

@@ -437,7 +437,6 @@ nav .nav-container {
 }
 @media screen and (min-width: 769px) {
   nav .nav-container {
-    width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
     height: 100%;
@@ -510,7 +509,6 @@ prayer-calendar {
   margin: 0 auto;
   padding-bottom: 2rem;
   padding-left: 1.25rem;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   max-width: 85vw;
@@ -569,7 +567,6 @@ prayer-calendar {
   display: grid;
   place-items: center;
   border: none;
-  height: -webkit-max-content;
   height: -moz-max-content;
   height: max-content;
 }
@@ -705,7 +702,6 @@ prayer-calendar {
   font-family: Proxima-nova;
   color: #2e2d2b;
   position: absolute;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   bottom: calc(100% + 3px);
@@ -829,7 +825,7 @@ prayer-calendar {
 }
 .popup-container .popup #title-row {
   padding: 1rem;
-  background-color: #fee32d;
+  background-color: #fcbb09;
   color: black;
 }
 .popup-container .popup #title-row #popup-title {
@@ -849,15 +845,15 @@ prayer-calendar {
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  gap: 0.5rem;
   padding: 0.5rem;
   box-sizing: border-box;
   border-top: 2px solid #7f8c8d;
 }
-.popup-container .popup #btn-row #popup-btn {
-  margin-left: auto;
+.popup-container .popup #btn-row .popup-btn {
   border: none;
   padding: 0.5rem 1rem;
-  background-color: #fee32d;
+  background-color: #fcbb09;
   color: black;
   font-weight: bold;
   border-radius: 2px;
@@ -908,17 +904,7 @@ prayer-calendar {
   border-radius: 50%;
   width: 100px;
   height: 100px;
-  -webkit-animation: spin 1s linear infinite;
-          animation: spin 1s linear infinite;
-}
-
-@-webkit-keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -1001,7 +987,6 @@ prayer-calendar {
   list-style: none;
   top: -4px;
   right: -4px;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   display: none;
@@ -1013,6 +998,58 @@ prayer-calendar {
 #date-container:not(.disabled):hover #dates, #date-container:not(.disabled):focus #dates {
   display: block;
   visibility: visible;
+}
+
+footer {
+  display: grid;
+  place-items: center;
+  color: white;
+  background-color: #2e2d2b;
+  padding: 4rem 0;
+}
+footer p {
+  text-align: center;
+  padding: 0.25rem 1rem;
+  margin: 0;
+}
+footer .links {
+  display: flex;
+  margin-top: 1rem;
+}
+footer .links a {
+  margin: 0;
+}
+footer a {
+  color: inherit;
+  text-decoration: none;
+  font-family: Proxima-nova;
+  padding: 0.25rem 1rem;
+  margin: 1rem;
+  border-right: 1px solid currentColor;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+footer a:last-of-type {
+  border: none;
+}
+footer .img-container {
+  width: 200px;
+}
+footer .img-container img {
+  width: 100%;
+}
+@media screen and (max-width: 425px) {
+  footer .links {
+    flex-direction: column;
+  }
+  footer .links a {
+    border: none;
+    text-align: center;
+  }
+  footer a {
+    text-decoration: underline;
+  }
 }
 
 #sign-up-form {
@@ -1109,7 +1146,6 @@ prayer-calendar {
   padding: 0.5rem;
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
   text-align: center;
   border-radius: 2px;
@@ -1196,7 +1232,6 @@ prayer-calendar {
   color: black;
   background-color: #fee32d;
   border: none;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   padding: 0.75rem;
@@ -1228,7 +1263,6 @@ prayer-calendar {
   font-family: Proxima-nova;
   margin: 1rem auto;
   display: block;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   border: none;
@@ -1258,21 +1292,11 @@ prayer-calendar {
   width: 1280px;
   max-width: 90%;
   height: auto;
-  -webkit-animation: slide-in 1.5s forwards ease-in-out;
-          animation: slide-in 1.5s forwards ease-in-out;
+  animation: slide-in 1.5s forwards ease-in-out;
 }
 @media screen and (max-width: 768px) {
   #banner {
     min-height: 50vh;
-  }
-}
-
-@-webkit-keyframes slide-in {
-  from {
-    transform: translateX(150%) rotate(15deg);
-  }
-  to {
-    transform: translateX(0) rotate(0deg);
   }
 }
 
@@ -1405,7 +1429,7 @@ prayer-calendar {
 }
 @media screen and (max-width: 380px) {
   #loginForm,
-#signUpForm {
+  #signUpForm {
     padding-inline: 1rem;
   }
 }
@@ -1596,7 +1620,6 @@ prayer-calendar {
   color: rgba(255, 255, 255, 0.6666666667);
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
   width: 100%;
   height: 100%;
@@ -1637,11 +1660,6 @@ prayer-calendar {
   color: white;
   cursor: default;
 }
-.forms-container .page .input-container input:not(:-ms-input-placeholder) ~ label, .forms-container .page .input-container select:not(:-ms-input-placeholder) ~ label, .forms-container .page .input-container textarea:not(:-ms-input-placeholder) ~ label {
-  transform: scale(0.8) translate(0, calc(-100% - 4px));
-  color: white;
-  cursor: default;
-}
 .forms-container .page .input-container input:not(:placeholder-shown) ~ label, .forms-container .page .input-container select:not(:placeholder-shown) ~ label, .forms-container .page .input-container textarea:not(:placeholder-shown) ~ label {
   transform: scale(0.8) translate(0, calc(-100% - 4px));
   color: white;
@@ -1664,7 +1682,6 @@ prayer-calendar {
   height: 42px;
 }
 .forms-container .page .input-container textarea ~ label {
-  height: -webkit-max-content;
   height: -moz-max-content;
   height: max-content;
 }
@@ -1766,13 +1783,11 @@ prayer-calendar {
   display: grid;
   place-items: center;
   font-size: clamp(6px, 2vw, 16px);
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   margin: 1rem auto;
 }
 #table-container #roster-table {
-  min-width: -webkit-max-content;
   min-width: -moz-max-content;
   min-width: max-content;
   filter: drop-shadow(rgba(0, 0, 0, 0.24) 0px 3px 8px);
@@ -1819,7 +1834,6 @@ prayer-calendar {
 #table-container #roster-table .dropdown-table {
   margin: 2px;
   margin-left: 16px;
-  min-width: -webkit-max-content;
   min-width: -moz-max-content;
   min-width: max-content;
   height: 0px;
@@ -1846,4 +1860,88 @@ prayer-calendar {
 #table-container #csv-download {
   margin: 1rem 0;
   margin-left: auto;
+}
+
+#reservation-table-container {
+  display: grid;
+  place-items: center;
+  width: 500px;
+  max-width: 90vw;
+  margin: 0 auto;
+}
+#reservation-table-container #reservation-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  filter: drop-shadow(rgba(0, 0, 0, 0.24) 0px 3px 8px);
+}
+#reservation-table-container #reservation-table .row {
+  display: flex;
+}
+#reservation-table-container #reservation-table .row:not(.header) {
+  margin-bottom: 4px;
+}
+#reservation-table-container #reservation-table .row:last-of-type {
+  margin-bottom: 0;
+}
+#reservation-table-container #reservation-table .row:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+#reservation-table-container #reservation-table .row:nth-child(even) {
+  background-color: #ffffff;
+}
+#reservation-table-container #reservation-table .row.header {
+  font-weight: bold;
+  background-color: #2e2d2b;
+  color: white;
+}
+#reservation-table-container #reservation-table .row.header p {
+  border-bottom: 2px solid #282828;
+  border-right: 2px solid #282828;
+}
+#reservation-table-container #reservation-table .row.header p:last-of-type {
+  border-right: none;
+}
+#reservation-table-container #reservation-table .row .date-label, #reservation-table-container #reservation-table .row p {
+  padding: 0.5em;
+  margin: 0;
+  margin-right: auto;
+}
+#reservation-table-container #reservation-table .row .btn {
+  border: none;
+  background-color: transparent;
+  margin: 0;
+  padding: 0 0.5rem;
+}
+#reservation-table-container #reservation-table .row .btn.reservation-edit-btn {
+  color: #27ae60;
+}
+#reservation-table-container #reservation-table .row .btn.reservation-save-btn {
+  color: #27ae60;
+  display: none;
+  visibility: hidden;
+}
+#reservation-table-container #reservation-table .row .btn.reservation-cancel-btn {
+  color: #e74c3c;
+  display: none;
+  visibility: hidden;
+}
+#reservation-table-container #reservation-table .row .btn.reservation-delete-btn {
+  color: #34495e;
+  display: none;
+  visibility: hidden;
+}
+#reservation-table-container #new-prayer-day-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#reservation-table-container #new-prayer-day-container p {
+  margin: 0;
+  text-align: left;
+}
+#reservation-table-container #new-prayer-day-container .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
 }/*# sourceMappingURL=main.css.map */

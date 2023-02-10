@@ -25,7 +25,6 @@ prayer-calendar .calendar #context ol {
   margin: 0 auto;
   padding-bottom: 2rem;
   padding-left: 1.25rem;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   max-width: 85vw;
@@ -84,7 +83,6 @@ prayer-calendar .calendar #month-header #btn-container .btn {
   display: grid;
   place-items: center;
   border: none;
-  height: -webkit-max-content;
   height: -moz-max-content;
   height: max-content;
 }
@@ -220,7 +218,6 @@ prayer-calendar .calendar #days-grid .calendar-day .hours-container .hour::after
   font-family: Proxima-nova;
   color: #2e2d2b;
   position: absolute;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   bottom: calc(100% + 3px);

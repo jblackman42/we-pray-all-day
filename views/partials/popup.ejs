@@ -7,19 +7,32 @@
             <div id="popup-content"></div>
         </div>
         <div id="btn-row">
-            <button id="popup-btn" onclick="hidePopup()">close</button>
+            <button class="popup-btn" id="popup-btn1" onclick="hidePopup()">close</button>
+            <button class="popup-btn" id="popup-btn2">close</button>
         </div>
     </div>
 </div>
 <script>
-    const showPopup = (title, content, btnText, btnLink) => {
+    const showPopup = (title, content, btnText, btnLink, btn2Text, btn2Function) => {
         document.getElementById('popup-title').innerText = title;
         document.getElementById('popup-content').innerHTML = content;
-        document.getElementById('popup-btn').innerText = btnText;
-        document.getElementById('popup-btn').onclick = () => hidePopup(btnLink);
+        document.getElementById('popup-btn1').innerText = btnText;
+        document.getElementById('popup-btn1').onclick = () => hidePopup(btnLink);
 
         if (!title || !content || !btnText) {
             return console.error('missing params: please provide "title", "context", and "btnText"')
+        }
+
+        const button2Elem = document.getElementById('popup-btn2');
+        if (!btn2Text || !btn2Function) {
+            button2Elem.style.display = 'none';
+            button2Elem.style.visibility = 'hidden';
+        } else {
+            button2Elem.innerText = btn2Text;
+            button2Elem.onclick = () => {
+                hidePopup();
+                btn2Function();
+            };
         }
 
 
@@ -31,6 +44,6 @@
     
         popupContainerDOM.classList.add('hidden')
 
-        window.location = btnLink
+        if (btnLink) window.location = btnLink
     }
 </script>
