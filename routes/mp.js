@@ -53,7 +53,7 @@ router.post('/Prayer_Schedules', async (req, res) => {
         const {First_Name, Last_Name, Start_Date, End_Date, Email, Phone, Community_ID} = req.body;
         const parsedPhoneNumber = Phone.split('').filter(a=>Number.isInteger(parseInt(a))).join('');
         console.log(parsedPhoneNumber)
-        if (!First_Name || !Start_Date || !End_Date || !Email || !Phone || !Community_ID) throw new Error('missing parameters')
+        if (!First_Name || !Start_Date || !End_Date || !Email || !Phone) throw new Error('missing parameters')
         const data = await axios({
             method: 'post',
             url: `${process.env.BASE_URL}/tables/Prayer_Schedules`,

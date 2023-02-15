@@ -87,6 +87,7 @@
                 `
             })
             communitiesHTML.push(`<option value="${otherID}">Other</option>`)
+            communitiesHTML.unshift(`<option value="${undefined}">Choose One...</option>`)
             
             document.getElementById('Community_ID').innerHTML = communitiesHTML.join('');
 
@@ -128,7 +129,7 @@
             const Community_ID = document.getElementById('Community_ID').value;
             const Hour_Value = [...document.getElementsByName('hour')].filter(elem => elem.checked)[0].value
             
-            if (!First_Name || !Email || !Phone || !Community_ID || !Hour_Value) {
+            if (!First_Name || !Email || !Phone || (Community_ID == 'undefined') || !Hour_Value) {
                 console.log('not all required fields filled')
                 return;
             }
@@ -142,7 +143,7 @@
                 Last_Name: Last_Name,
                 Email: Email,
                 Phone: Phone,
-                Community_ID: Community_ID,
+                Community_ID: Community_ID == "null" ? null : Community_ID,
                 Start_Date: Start_Date.toUTCString(),
                 End_Date: End_Date.toUTCString()
             }
