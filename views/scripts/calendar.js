@@ -179,7 +179,7 @@ class Calendar extends HTMLElement {
             const s = beforeToday ? hourCount == 1 ? '' : 's' : 24 - hourCount == 1 ? '' : 's';
             
             const dayTitleDOM = document.getElementById(`title-${date}-${month}-${year}`)
-                dayTitleDOM.innerText = beforeToday ? `${hourCount} Hour${s} Prayed For` : `${24 - hourCount} Hour${s} Available`;
+                dayTitleDOM.innerText = beforeToday ? `${hourCount} Hour${s} Prayed For` : 24 - hourCount == 0 ? 'Fully Covered' : `${24 - hourCount} Hour${s} Available`;
             
                 const progressLabelDOM = document.getElementById(`progress-${date}-${month}-${year}`);
                     progressLabelDOM.innerText = percentage;
