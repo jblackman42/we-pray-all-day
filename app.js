@@ -51,6 +51,7 @@ app.use('/', require('./routes/index'))
 app.use('/api/v1', require('./routes/mp'))
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/register', require('./routes/register'));
+app.use('/api/sms', require('./routes/sms'));
 
 const start = async () => {
     try {

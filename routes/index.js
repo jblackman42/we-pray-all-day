@@ -41,7 +41,8 @@ navigation.get('/logout', (req, res) => {
 })
 
 navigation.get('/guide', (req, res) => {
-  fs.readFile(path.join(__dirname, '..', 'views', 'assets', 'guides', 'Feb-Mar 2023.pdf'), function (err,data){
+  const filename = 'Apr-May 2023.pdf'
+  fs.readFile(path.join(__dirname, '..', 'views', 'assets', 'guides', filename), function (err,data){
       res.contentType("application/pdf").send(data);
   });
 })
