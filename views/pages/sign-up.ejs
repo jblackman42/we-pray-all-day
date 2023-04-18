@@ -129,7 +129,7 @@
             const Community_ID = document.getElementById('Community_ID').value;
             const Hour_Value = [...document.getElementsByName('hour')].filter(elem => elem.checked)[0].value
             
-            if (!First_Name || !Email || !Phone || (Community_ID == 'undefined') || !Hour_Value) {
+            if (!First_Name || !Last_Name || !Email || !Phone || (Community_ID == 'undefined') || !Hour_Value) {
                 console.log('not all required fields filled')
                 return;
             }
@@ -147,7 +147,6 @@
                 Start_Date: Start_Date.toUTCString(),
                 End_Date: End_Date.toUTCString()
             }
-            console.log(Prayer_Schedule)
             
             loading();
             // REMEBER TO PUT THIS INTO A TRY CATCH AND MAKE SOME FORM OF ERROR HANDLING

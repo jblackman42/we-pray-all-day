@@ -52,7 +52,6 @@ router.post('/Prayer_Schedules', async (req, res) => {
     try {
         const {First_Name, Last_Name, Start_Date, End_Date, Email, Phone, Community_ID} = req.body;
         const parsedPhoneNumber = Phone.split('').filter(a=>Number.isInteger(parseInt(a))).join('');
-        console.log(parsedPhoneNumber)
         if (!First_Name || !Start_Date || !End_Date || !Email || !Phone) throw new Error('missing parameters')
         const data = await axios({
             method: 'post',
@@ -71,7 +70,21 @@ router.post('/Prayer_Schedules', async (req, res) => {
                 Prayer_Community_ID: Community_ID
             }]
         })
-            .then(response => response.data);
+            .then(response => response.data[0]);
+
+        const { Prayer_Schedule_ID } = data;
+
+        await axios({
+            method: 'post',
+            url: 'https://my.pureheart.org/ministryplatformapi/procs/api_PrayerSignup',
+            data: {
+                "@PrayerScheduleID": Prayer_Schedule_ID
+            },
+            headers: {
+                'content-type': 'application/json',
+                'authorization': `Bearer ${access_token}`
+            }
+        })
 
         res.status(200).send(data).end();
     } catch (error) {
