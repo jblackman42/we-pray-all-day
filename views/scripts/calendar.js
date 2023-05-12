@@ -29,11 +29,14 @@ class Calendar extends HTMLElement {
                         <h3 id="month-label"></h3>
                         <button class="btn" id="next-month"><i class="material-icons">keyboard_arrow_right</i></button>
                     </div>
+                    <div id="community-select-container">
+                        <select id="community-select"></select>
+                    </div>
                     <div id="legend">
                         <div id="empty-square"></div>
                         <p>: Open for Prayer</p>
                         <div id="filled-square"></div>
-                        <p>: Booked for Prayer (More? Bring it on!)</p>
+                        <p>: Booked for Prayer</p>
                     </div>
                 </div>
                 <div id="weekdays"></div>
@@ -57,6 +60,29 @@ class Calendar extends HTMLElement {
 
     update = async (year, month) => {
         loading();
+
+        // Fill In Community Select -----------------------------------------------------
+        const communityData = await axios({
+            method: 'get',
+            url: `${this.apiURL}/api/v1/Prayer_Communities`
+        })
+            .then(response => response.data)
+            .catch(err => {
+                console.error(JSON.stringify(err))
+                doneLoading();
+            })
+        
+        const { Communities } = communityData
+        
+        const communitySelectDOM = document.getElementById('community-select');
+        communitySelectDOM.innerHTML = Communities.map(community => {
+            const { Prayer_Community_ID, Community_Name } = community;
+            return `
+                <option value="${Prayer_Community_ID}">${Community_Name}</value>
+            `
+        }).join('')
+        // ------------------------------------------------------------------------------
+
         // Create Month Data ------------------------------------------------------------
         
         const date = new Date(year, month, 1);
@@ -113,7 +139,7 @@ class Calendar extends HTMLElement {
                     <p class="community-title" id="title-${date}-${month}-${year}"></p>
                     <div class="hours-container">
                         ${hours.map(hour => {
-                            return `<a href="${disabled ? '' : `/signup?date=${day}&hour=${hour}`}" id="${hour}-${date}-${month}-${year}" class="hour"></a>` //booked class makes it blue
+                            return disabled ? `<p id="${hour}-${date}-${month}-${year}" class="hour"></p>` : `<a href="/signup?date=${day}&hour=${hour}" id="${hour}-${date}-${month}-${year}" class="hour"></a>` //booked class makes it blue
                         }).join('')}
                     </div>
                     <p class="progress-label"><span id="progress-${date}-${month}-${year}">0</span>% <span class="covered-label">Covered</span></p>
@@ -179,12 +205,12 @@ class Calendar extends HTMLElement {
             const s = beforeToday ? hourCount == 1 ? '' : 's' : 24 - hourCount == 1 ? '' : 's';
             
             const dayTitleDOM = document.getElementById(`title-${date}-${month}-${year}`)
-                dayTitleDOM.innerText = beforeToday ? `${hourCount} Hour${s} Prayed For` : 24 - hourCount == 0 ? 'Fully Covered' : `${24 - hourCount} Hour${s} Available`;
+                dayTitleDOM.innerText = beforeToday ? `${hourCount} Hour${s} Prayed For` : 24 - hourCount == 0 ? 'Fully Covered' : `${24 - hourCount} Hour${s} Remaining`;
             
-                const progressLabelDOM = document.getElementById(`progress-${date}-${month}-${year}`);
-                    progressLabelDOM.innerText = percentage;
-                const progressBarDOM = document.getElementById(`bar-${date}-${month}-${year}`);
-                    progressBarDOM.style.maxWidth = `${percentage}%`;
+            const progressLabelDOM = document.getElementById(`progress-${date}-${month}-${year}`);
+                progressLabelDOM.innerText = percentage;
+            const progressBarDOM = document.getElementById(`bar-${date}-${month}-${year}`);
+                progressBarDOM.style.maxWidth = `${percentage}%`;
         }
 
         // ---------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 $gridGap: .25rem;
-$calendarWidth: 1000px;
+$calendarWidth: 1200px;
 $calendarDayWidth: calc((90vw / 7) - ($gridGap * 1));
 $calendarDayMaxWidth: calc(($calendarWidth / 7) - ($gridGap * 1));
 $calendarDayColor: $accent-yellow;
@@ -71,10 +71,14 @@ prayer-calendar {
         max-width: 90vw;
         margin: 0 auto;
         margin-top: 1rem;
+        gap: 1rem;
 
-        @media screen and (max-width: 850px) {
+        @media screen and (max-width: 1100px) {
             flex-direction: column;
             align-items: center;
+            #legend p {
+                margin: 0;
+            }
         }
 
         h3 {
@@ -102,9 +106,24 @@ prayer-calendar {
             }
         }
 
+        #community-select-container {
+            font-family: Proxima-nova;
+            margin-block: auto;
+            select {
+                padding: .5rem .25rem;
+                border: none;
+                border-radius: 2px;
+                background-color: white;
+                color: black;
+            }
+        }
+
         #legend {
             display: flex;
 
+            p {
+                white-space: nowrap;
+            }
             #empty-square,
             #filled-square {
                 width: calc(($calendarDayWidth / 8) - 3px);
@@ -311,8 +330,11 @@ prayer-calendar {
                 visibility: hidden;
 
                 margin: 0;
+                padding-block: 4px 0;
                 font-size: clamp(10px, 1.75vw, 12px);
                 margin-top: auto;
+                background-color: $primary-black;
+                color: white;
                 @media screen and (max-width: 425px) {
                     margin: auto auto 0 2px;
                     .covered-label {
@@ -353,6 +375,11 @@ prayer-calendar {
                 align-items: center;
                 border-radius: 3px;
                 overflow: hidden;
+                
+                .progress-label {
+                    background-color: transparent;
+                    color: black;
+                }
 
                 .progress-label, .progress-bar-container {
                     display: block;
