@@ -54,6 +54,13 @@ router.post('/', (req, res) => {
   }
 })
 
+const isWithinTimeRange = (date1, date2) => {
+  const diffMilliseconds = Math.abs(date1 - date2);
+  const diffSeconds = diffMilliseconds / 1000;
+
+  return diffSeconds >= 15 * 60 && diffSeconds <= 24 * 60 * 60;
+}
+
 router.get('/schedule-texts', async (req, res) => {
 
   // get todays prayers
@@ -116,6 +123,12 @@ router.get('/schedule-texts', async (req, res) => {
         // to: Phone,
         sendAt: textScheduleTime.toISOString(),
         scheduleType: 'fixed'
+      }
+
+      if (!isWithinTimeRange(getDate(), textScheduleTime)) {
+        new Error('out of bounds time\nmust be between 900 seconds and 1 day\n' + getDate() + '\n' + textScheduleTime)
+
+        continue;
       }
       
       // texts.push(prayer)
