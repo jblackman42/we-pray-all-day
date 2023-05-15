@@ -125,7 +125,12 @@ router.get('/schedule-texts', async (req, res) => {
           prayer.Message_SID = message.sid;
           prayer.Message_Status = 2;
           updatedPrayers.push(prayer)
-        });
+        })
+        .catch(err => {
+          console.log(First_Name)
+          console.log(textScheduleTime.toISOString())
+          console.log(err)
+        })
     }
 
     // update records in MP
