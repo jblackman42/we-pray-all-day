@@ -125,7 +125,7 @@ router.get('/schedule-texts', async (req, res) => {
         scheduleType: 'fixed'
       }
 
-      if (!isWithinTimeRange(getDate(), textScheduleTime)) {
+      if (!isWithinTimeRange(new Date(), textScheduleTime)) {
         new Error('out of bounds time\nmust be between 900 seconds and 1 day\n' + new Date().toISOString() + '\n' + textScheduleTime.toISOString())
 
         continue;
