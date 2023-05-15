@@ -123,7 +123,8 @@ router.get('/schedule-texts', async (req, res) => {
   }
 })
 
-router.get('/check-text-statuses', async (req, res) => {
+// router.get('/check-text-sta', async (req, res) => {
+   router.get('/check-texts', async (req, res) => {
   try {
 
     const { date } = req.query;
