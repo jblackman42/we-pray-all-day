@@ -66,6 +66,7 @@ router.get('/schedule-texts', async (req, res) => {
   
   try {
     const scheduleDate = date ? new Date(date) : new Date();
+    console.log(scheduleDate.toLocaleString())
     const todaysPrayers = await axios({
       method: 'get',
       url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
