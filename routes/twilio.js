@@ -70,9 +70,11 @@ router.get('/schedule-texts', async (req, res) => {
 
   const { date } = req.query;
   const updatedPrayers = [];
+
+  if (!date) return res.status(400).send({err: 'no date provided'}).end();
   
   try {
-    const scheduleDate = date ? new Date(date) : new Date(new Date().toLocaleString('en-US', {timeZone: 'US/Arizona'}));
+    const scheduleDate = new Date(date);
     const todaysPrayers = await axios({
       method: 'get',
       url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
@@ -93,6 +95,7 @@ router.get('/schedule-texts', async (req, res) => {
       const { First_Name, Start_Date, Message_SID, Phone, Prayer_Community_ID, Company_Name } = prayer;
 
       if (Message_SID) {
+        console.log(`not scheduling ${First_Name}'s prayer`)
 
         // get message status from twilio
         const status = await client.messages(prayer.Message_SID)
@@ -104,16 +107,22 @@ router.get('/schedule-texts', async (req, res) => {
 
         // set message status from MP to correct delivery status (will be updated in MP later)
         prayer.Message_Status = deliveredStatuses.includes(status) ? 3 : scheduledStatuses.includes(status) ? 2 : 4;
-        updatedPrayers.push(prayer)
 
         // don't schedule text
         continue;
       }
+      console.log(`scheduling ${First_Name}'s prayer`)
 
+      
+      
       // if no message id text needs to be scheduled
-
+      
       // get prayer start date minus 5 minutes
       const textScheduleTime = new Date(new Date(Start_Date).getTime() - (60000 * 5));
+      const diffSeconds = (textScheduleTime - new Date()) / 1000;
+      console.log(textScheduleTime)
+      console.log(new Date())
+      console.log(diffSeconds / 60 + ' minutes ago')
       
       const textData = {
         // body: `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://rb.gy/clhwr1 \n\n Reply STOP to unsubscribe`,
@@ -121,8 +130,8 @@ router.get('/schedule-texts', async (req, res) => {
         messagingServiceSid: process.env.TWILIO_SERVICE_SID,
         to: '5305518112',
         // to: Phone,
-        sendAt: textScheduleTime.toISOString(),
-        scheduleType: 'fixed'
+        // sendAt: textScheduleTime.toISOString(),
+        // scheduleType: 'fixed'
       }
 
       if (!isWithinTimeRange(new Date(), textScheduleTime)) {
