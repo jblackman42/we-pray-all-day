@@ -101,6 +101,8 @@ router.get('/schedule-texts', async (req, res) => {
         // set message status from MP to correct delivery status (will be updated in MP later)
         prayer.Message_Status = deliveredStatuses.includes(status) ? 3 : scheduledStatuses.includes(status) ? 2 : 4;
 
+        updatedPrayers.push(prayer)
+
         // don't schedule text  
         continue;
       }
@@ -109,7 +111,7 @@ router.get('/schedule-texts', async (req, res) => {
       // if no message id text needs to be scheduled
       
       // get prayer start date minus 5 minutes
-      const textScheduleTime = new Date(new Date(Start_Date).getTime() - (60000 * 5));
+      const textScheduleTime = new Date(new Date(Start_Date).getTime() - (60000 * 5) - new Date(Start_Date).getTimezoneOffset());
       const diffSeconds = (textScheduleTime - new Date(date)) / 1000;
       const diffMinutes = diffSeconds / 60;
       // console.log(absDiffMinutes + ' minutes ' + (diffSeconds > 0 ? 'till' : 'ago'))
@@ -120,7 +122,7 @@ router.get('/schedule-texts', async (req, res) => {
       }
 
       const textData = {
-        // body: `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://rb.gy/clhwr1 \n\n Reply STOP to unsubscribe`,
+        // body: `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://weprayallday.com/guide \n\n Reply STOP to unsubscribe`,
         body: `${First_Name}\n${textScheduleTime.toISOString()}`,
         messagingServiceSid: process.env.TWILIO_SERVICE_SID,
         to: '5305518112',
