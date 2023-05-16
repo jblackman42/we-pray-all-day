@@ -111,12 +111,12 @@ router.get('/schedule-texts', async (req, res) => {
       // if no message id text needs to be scheduled
       
       // get prayer start date minus 5 minutes
-      const textScheduleTime = new Date(new Date(Start_Date).getTime() - (60000 * 5) - new Date(Start_Date).getTimezoneOffset());
+      const textScheduleTime = new Date(new Date(Start_Date).getTime() - (60000 * 5));
       const diffSeconds = (textScheduleTime - new Date(date)) / 1000;
       const diffMinutes = diffSeconds / 60;
       // console.log(absDiffMinutes + ' minutes ' + (diffSeconds > 0 ? 'till' : 'ago'))
 
-      if (diffMinutes < 15 || diffMinutes > 1440) {
+      if (diffMinutes < 1 || diffMinutes > 1440) {
         console.log('invalid time');
         continue;
       }
@@ -124,11 +124,13 @@ router.get('/schedule-texts', async (req, res) => {
       const textData = {
         // body: `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://weprayallday.com/guide \n\n Reply STOP to unsubscribe`,
         body: `${First_Name}\n${textScheduleTime.toISOString()}`,
-        messagingServiceSid: process.env.TWILIO_SERVICE_SID,
+        // messagingServiceSid: process.env.TWILIO_SERVICE_SID,
+        from: '6025606370',
         to: '5305518112',
         // to: Phone,
-        sendAt: textScheduleTime.toISOString(),
-        scheduleType: 'fixed'
+        // sendAt: textScheduleTime.toISOString(),
+        scheduleType: 'relative',
+        relativeScheduledTime: diffSeconds
       }
 
       // texts.push(prayer)
@@ -240,6 +242,73 @@ router.get('/check-texts', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).send(err).end();
+  }
+})
+
+
+
+
+
+
+
+router.get('/send-texts', async (req, res) => {
+  const {ids} = req.query;
+  
+  if (!ids) return res.status(400).send({err: 'no prayer schedule ids provided'}).end();
+
+  try {
+    const updatedPrayers = [];
+    const currPrayers = await axios({
+      method: 'get',
+      url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
+      params: {
+        '$filter': `Prayer_Schedule_ID IN ${ids} AND Message_SID IS NULL`,
+        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Start_Date], Phone, Prayer_Schedules.[Prayer_Community_ID], Prayer_Community_ID_Table_Contact_ID_Table.[Company_Name], Message_Status, Message_SID`,
+      },
+      headers: {
+        'Authorization': `Bearer ${await getAccessToken()}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.data)
+  
+    
+    for (const prayer of currPrayers) {
+      const { First_Name, Last_Name, Start_Date, Message_SID, Phone, Prayer_Community_ID, Company_Name } = prayer;
+      
+      await client.messages
+        .create({
+          body: `${First_Name} ${Last_Name}\n${Phone}\n${Company_Name}\n\nNow using SQL jobs`,
+          messagingServiceSid: process.env.TWILIO_SERVICE_SID,
+          to: '5305518112'
+          // to: Phone
+        })
+        .then(message => {
+          prayer.Message_SID = message.sid;
+          prayer.Message_Status = 2;
+          updatedPrayers.push(prayer)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    }
+  
+    
+    // update records in MP
+    await axios({
+      method: 'put',
+      url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
+      data: updatedPrayers,
+      headers: {
+        'Authorization': `Bearer ${await getAccessToken()}`,
+        'Content-Type': 'application/json'
+      }
+    })
+  
+    res.send(updatedPrayers);
+  } catch (error) {
+    console.error(error)
+    res.status(500).send(error).end();
   }
 })
 
