@@ -54,13 +54,6 @@ router.post('/', (req, res) => {
   }
 })
 
-const isWithinTimeRange = (date1, date2) => {
-  const diffMilliseconds = Math.abs(date1 - date2);
-  const diffSeconds = diffMilliseconds / 1000;
-
-  return diffSeconds >= 15 * 60 && diffSeconds <= 24 * 60 * 60;
-}
-
 router.get('/schedule-texts', async (req, res) => {
 
   // get todays prayers
@@ -108,38 +101,34 @@ router.get('/schedule-texts', async (req, res) => {
         // set message status from MP to correct delivery status (will be updated in MP later)
         prayer.Message_Status = deliveredStatuses.includes(status) ? 3 : scheduledStatuses.includes(status) ? 2 : 4;
 
-        // don't schedule text
+        // don't schedule text  
         continue;
       }
       console.log(`scheduling ${First_Name}'s prayer`)
 
-      
-      
       // if no message id text needs to be scheduled
       
       // get prayer start date minus 5 minutes
       const textScheduleTime = new Date(new Date(Start_Date).getTime() - (60000 * 5));
-      const diffSeconds = (textScheduleTime - new Date()) / 1000;
-      console.log(textScheduleTime)
-      console.log(new Date())
-      console.log(diffSeconds / 60 + ' minutes ago')
-      
+      const diffSeconds = (textScheduleTime - new Date(date)) / 1000;
+      const diffMinutes = diffSeconds / 60;
+      // console.log(absDiffMinutes + ' minutes ' + (diffSeconds > 0 ? 'till' : 'ago'))
+
+      if (diffMinutes < 15 || diffMinutes > 1440) {
+        console.log('invalid time');
+        continue;
+      }
+
       const textData = {
         // body: `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://rb.gy/clhwr1 \n\n Reply STOP to unsubscribe`,
-        body: `Hello ${First_Name}\nThanks for praying with ${Company_Name} at ${textScheduleTime.toLocaleTimeString()}`,
+        body: `${First_Name}\n${textScheduleTime.toISOString()}`,
         messagingServiceSid: process.env.TWILIO_SERVICE_SID,
         to: '5305518112',
         // to: Phone,
-        // sendAt: textScheduleTime.toISOString(),
-        // scheduleType: 'fixed'
+        sendAt: textScheduleTime.toISOString(),
+        scheduleType: 'fixed'
       }
 
-      if (!isWithinTimeRange(new Date(), textScheduleTime)) {
-        new Error('out of bounds time\nmust be between 900 seconds and 1 day\n' + new Date().toISOString() + '\n' + textScheduleTime.toISOString())
-
-        continue;
-      }
-      
       // texts.push(prayer)
       await client.messages
         .create(textData)
@@ -149,9 +138,7 @@ router.get('/schedule-texts', async (req, res) => {
           updatedPrayers.push(prayer)
         })
         .catch(err => {
-          console.log(First_Name)
-          console.log(textScheduleTime.toISOString())
-          console.log(err)
+          console.error(err)
         })
     }
 
