@@ -54,154 +54,20 @@ router.post('/', (req, res) => {
   }
 })
 
-router.get('/schedule-texts', async (req, res) => {
-
-  // get todays prayers
-  // loop through all prayers
-  // calculate time 5 mins before prayer time
-  // schedule each prayer for calculated time
+router.get('/check-texts', async (req, res) => {
 
   const { date } = req.query;
-  const updatedPrayers = [];
-
+  
   if (!date) return res.status(400).send({err: 'no date provided'}).end();
-  
-  try {
-    const scheduleDate = new Date(date);
-    const todaysPrayers = await axios({
-      method: 'get',
-      url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
-      params: {
-        '$filter': `YEAR(Prayer_Schedules.[Start_Date]) = ${scheduleDate.getFullYear()} AND MONTH(Prayer_Schedules.[Start_Date]) = ${scheduleDate.getMonth() + 1} AND DAY(Prayer_Schedules.[Start_Date]) = ${scheduleDate.getDate()}`,
-        // '$filter': `YEAR(Prayer_Schedules.[Start_Date]) = 2023 AND MONTH(Prayer_Schedules.[Start_Date]) = 5 AND DAY(Prayer_Schedules.[Start_Date]) = 10`,
-        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Start_Date], Phone, Prayer_Schedules.[Prayer_Community_ID], Prayer_Community_ID_Table_Contact_ID_Table.[Company_Name], Message_Status, Message_SID`,
-        '$orderby': `Prayer_Schedules.[Start_Date]`
-      },
-      headers: {
-        'Authorization': `Bearer ${await getAccessToken()}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.data);
-  
-    for (const prayer of todaysPrayers) {
-      const { First_Name, Start_Date, Message_SID, Phone, Prayer_Community_ID, Company_Name } = prayer;
-
-      if (Message_SID) {
-        console.log(`not scheduling ${First_Name}'s prayer`)
-
-        // get message status from twilio
-        const status = await client.messages(prayer.Message_SID)
-        .fetch()
-        .then(message => message.status);
-
-        const deliveredStatuses = ['sent', 'delivered', 'read'];
-        const scheduledStatuses = ['accepted', 'scheduled', 'queued', 'sending']
-
-        // set message status from MP to correct delivery status (will be updated in MP later)
-        prayer.Message_Status = deliveredStatuses.includes(status) ? 3 : scheduledStatuses.includes(status) ? 2 : 4;
-
-        updatedPrayers.push(prayer)
-
-        // don't schedule text  
-        continue;
-      }
-      console.log(`scheduling ${First_Name}'s prayer`)
-
-      // if no message id text needs to be scheduled
-      
-      // get prayer start date minus 5 minutes
-      const textScheduleTime = new Date(new Date(Start_Date).getTime() - (60000 * 5));
-      const diffSeconds = (textScheduleTime - new Date(date)) / 1000;
-      const diffMinutes = diffSeconds / 60;
-      // console.log(absDiffMinutes + ' minutes ' + (diffSeconds > 0 ? 'till' : 'ago'))
-
-      if (diffMinutes < 1 || diffMinutes > 1440) {
-        console.log('invalid time');
-        continue;
-      }
-
-      const textData = {
-        // body: `🙏 Hello ${First_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://weprayallday.com/guide \n\n Reply STOP to unsubscribe`,
-        body: `${First_Name}\n${textScheduleTime.toISOString()}`,
-        // messagingServiceSid: process.env.TWILIO_SERVICE_SID,
-        from: '6025606370',
-        to: '5305518112',
-        // to: Phone,
-        // sendAt: textScheduleTime.toISOString(),
-        scheduleType: 'relative',
-        relativeScheduledTime: diffSeconds
-      }
-
-      // texts.push(prayer)
-      await client.messages
-        .create(textData)
-        .then(message => {
-          prayer.Message_SID = message.sid;
-          prayer.Message_Status = 2;
-          updatedPrayers.push(prayer)
-        })
-        .catch(err => {
-          console.error(err)
-        })
-    }
-
-    // update records in MP
-    await axios({
-      method: 'put',
-      url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
-      data: updatedPrayers,
-      headers: {
-        'Authorization': `Bearer ${await getAccessToken()}`,
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.data)
-  
-    res.send(updatedPrayers);
-  } catch (err) {
-    console.error(err)
-    res.status(500).send(err).end();
-  }
-})
-
-router.get('/check-text', async (req, res) => {
-  const {messageSID} = req.query;
-  const {secret} = req.headers;
-
-  if (secret !== process.env.API_AUTH_SECRET) return res.status(403).send({err: 'who are you?'}).end();
-
-  if (!messageSID) return res.status(500).send({err: 'no messageSID'}).end();
 
   try {
-    const messageData = await client.messages(messageSID)
-    .fetch()
-    .then(message => message);
-  
-    res.send(messageData)
-  } catch (err) {
-    console.error(err)
-    res.status(500).send(err).end();
-  }
-  
-})
-
-// router.get('/check-text-sta', async (req, res) => {
-router.get('/check-texts', async (req, res) => {
-  try {
-
-    const { date } = req.query;
-
-    const scheduleDate = date ? `'${date}'` : 'GETDATE()'
 
     const currentPrayers = await axios({
       method: 'get',
       url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
       params: {
-        '$filter': `YEAR(Prayer_Schedules.Start_Date) = YEAR(${scheduleDate}) AND MONTH(Prayer_Schedules.Start_Date) = MONTH(${scheduleDate}) AND DAY(Prayer_Schedules.Start_Date) = DAY(${scheduleDate}) AND DATEPART(HOUR, Prayer_Schedules.Start_Date) = DATEPART(HOUR, ${scheduleDate})`,
-        // '$filter': `YEAR(Prayer_Schedules.[Start_Date]) = 2023 AND MONTH(Prayer_Schedules.[Start_Date]) = 5 AND DAY(Prayer_Schedules.[Start_Date]) = 10`,
-        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Start_Date], Phone, Prayer_Schedules.[Prayer_Community_ID], Prayer_Community_ID_Table_Contact_ID_Table.[Company_Name], Message_Status, Message_SID`,
-        '$orderby': `Prayer_Schedules.[Start_Date]`
+        '$filter': `DATE(GETDATE()) = DATE(${date}) AND Message_SID IS NOT NULL`,
+        '$select': `Prayer_Schedule_ID, Message_Status, Message_SID`
       },
       headers: {
         'Authorization': `Bearer ${await getAccessToken()}`,
@@ -211,10 +77,6 @@ router.get('/check-texts', async (req, res) => {
     .then(response => response.data);
 
     for (const prayer of currentPrayers) {
-      if (!prayer.Message_SID) {
-        prayer.Message_Status = 4;
-        continue;
-      }
 
       const status = await client.messages(prayer.Message_SID)
         .fetch()
@@ -245,12 +107,6 @@ router.get('/check-texts', async (req, res) => {
   }
 })
 
-
-
-
-
-
-
 router.get('/send-texts', async (req, res) => {
   const {ids} = req.query;
   
@@ -263,7 +119,7 @@ router.get('/send-texts', async (req, res) => {
       url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
       params: {
         '$filter': `Prayer_Schedule_ID IN ${ids} AND Message_SID IS NULL`,
-        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Start_Date], Phone, Prayer_Schedules.[Prayer_Community_ID], Prayer_Community_ID_Table_Contact_ID_Table.[Company_Name], Message_Status, Message_SID`,
+        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Last_Name], Prayer_Schedules.[Start_Date], Phone, Prayer_Schedules.[Prayer_Community_ID], Prayer_Community_ID_Table_Contact_ID_Table.[Company_Name], Message_Status, Message_SID`,
       },
       headers: {
         'Authorization': `Bearer ${await getAccessToken()}`,
