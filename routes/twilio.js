@@ -66,7 +66,7 @@ router.get('/check-texts', async (req, res) => {
       method: 'get',
       url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
       params: {
-        '$filter': `DATE(GETDATE()) = DATE(${date}) AND Message_SID IS NOT NULL`,
+        '$filter': `DATEDIFF(day, GETDATE(), '${date}') = 0 AND Message_SID IS NOT NULL`,
         '$select': `Prayer_Schedule_ID, Message_Status, Message_SID`
       },
       headers: {
@@ -119,7 +119,7 @@ router.get('/send-texts', async (req, res) => {
       url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
       params: {
         '$filter': `Prayer_Schedule_ID IN ${ids} AND Message_SID IS NULL`,
-        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Last_Name], Prayer_Schedules.[Start_Date], Phone, Prayer_Schedules.[Prayer_Community_ID], Prayer_Community_ID_Table_Contact_ID_Table.[Company_Name], Message_Status, Message_SID`,
+        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Last_Name], Prayer_Schedules.[Start_Date], Phone, Prayer_Schedules.[Prayer_Community_ID], Prayer_Community_ID_Table_Contact_ID_Table.[Company_Name], WPAD_Community_ID_Table.[Reminder_Text], Message_Status, Message_SID`,
       },
       headers: {
         'Authorization': `Bearer ${await getAccessToken()}`,
@@ -130,13 +130,18 @@ router.get('/send-texts', async (req, res) => {
   
     
     for (const prayer of currPrayers) {
-      const { First_Name, Last_Name, Start_Date, Message_SID, Phone, Prayer_Community_ID, Company_Name } = prayer;
+      const { First_Name, Last_Name, Start_Date, Message_SID, Phone, Prayer_Community_ID, Company_Name, Reminder_Text } = prayer;
+
+      const defaultPrayerPoints = 'Our Hearts & Homes\nThe Church\nSalvations\nOur State\nOur Nation\nAll the Earth\nYour Church'
+
+      const textBody = `Hi ${First_Name}! It's your time to pray!\nHere are some things to pray about:\n\n${Reminder_Text || defaultPrayerPoints}\n\nAccess the full prayer guide here:\nhttps://rb.gy/clhwr1\n\nThis text reminder is brought to you by We Pray All Day.\nReply 'STOP' to unsubscribe.`;
       
       await client.messages
         .create({
-          body: `${First_Name} ${Last_Name}\n${Phone}\n${Company_Name}\n\nNow using SQL jobs`,
+          body: textBody,
           messagingServiceSid: process.env.TWILIO_SERVICE_SID,
-          to: '5305518112'
+          // to: Phone,
+          to: '530-551-8112',
           // to: Phone
         })
         .then(message => {
