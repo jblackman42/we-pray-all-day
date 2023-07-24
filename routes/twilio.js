@@ -173,4 +173,53 @@ router.get('/send-texts', async (req, res) => {
   }
 })
 
+
+
+
+router.get('/daily-texts', async (req, res) => {
+  const { ids } = req.query;
+
+  if (!ids) return res.status(400).send({error: 'Missing Parameter: ids'}).end();
+  
+  try {
+    const prayer_schedules = await axios({
+      method: 'get',
+      url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
+      params: {
+        $select: `Prayer_Schedule_ID, First_name, Phone`,
+        $filter: `Cancelled=0 AND Prayer_Schedule_ID IN (${ids})`
+      },
+      headers: {
+        'Content-Type': 'Application/Json',
+        'Authorization': `Bearer ${await getAccessToken()}`
+      }
+    })
+      .then(response => response.data)
+
+    for (const prayer of prayer_schedules) {
+      const { First_name, Phone } = prayer;
+      
+      // const textBody = `Hi ${First_Name}! It's your time to pray!\nHere are some things to pray about:\n\n${Reminder_Text || defaultPrayerPoints}\n\nAccess the full prayer guide here:\nhttps://rb.gy/clhwr1\n\nThis text reminder is brought to you by We Pray All Day.\nReply 'STOP' to unsubscribe.`;
+      const textBody = `Hello ${First_name}! Here's a reminder that your time of prayer is tomorrow. Thank you for being a part of We Pray All Day.\n\nReply 'STOP' to unsubscribe`;
+      
+      await client.messages
+        .create({
+          body: textBody,
+          messagingServiceSid: process.env.TWILIO_SERVICE_SID,
+          // to: Phone,
+          to: '530-551-8112',
+          // to: '720-984-7345',
+        })
+    }
+
+    res.status(200).send({msg: 'Texts sent successfully'}).end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({error: 'Internal Server Error'}).end();
+  }
+})
+
+
+
+
 module.exports = router;
