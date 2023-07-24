@@ -187,7 +187,7 @@ router.get('/daily-texts', async (req, res) => {
       url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
       params: {
         $select: `Prayer_Schedule_ID, First_name, Phone`,
-        $filter: `Cancelled=0 AND Prayer_Schedule_ID IN (${ids})`
+        $filter: `Cancelled=0 AND Prayer_Schedule_ID IN ${ids}`
       },
       headers: {
         'Content-Type': 'Application/Json',
