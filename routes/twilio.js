@@ -206,8 +206,8 @@ router.get('/daily-texts', async (req, res) => {
         .create({
           body: textBody,
           messagingServiceSid: process.env.TWILIO_SERVICE_SID,
-          // to: Phone,
-          to: '530-551-8112',
+          to: Phone,
+          // to: '530-551-8112',
           // to: '720-984-7345',
         })
     }
