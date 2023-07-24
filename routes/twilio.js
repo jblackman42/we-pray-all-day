@@ -119,7 +119,7 @@ router.get('/send-texts', async (req, res) => {
       url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
       params: {
         '$filter': `Prayer_Schedule_ID IN ${ids} AND Message_SID IS NULL`,
-        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Last_Name], Prayer_Schedules.[Start_Date], Phone, Prayer_Schedules.[Prayer_Community_ID], Prayer_Community_ID_Table_Contact_ID_Table.[Company_Name], WPAD_Community_ID_Table.[Reminder_Text], Message_Status, Message_SID`,
+        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Last_Name], Prayer_Schedules.[Start_Date], Phone, WPAD_Community_ID_Table.[Reminder_Text], Message_Status, Message_SID`,
       },
       headers: {
         'Authorization': `Bearer ${await getAccessToken()}`,
