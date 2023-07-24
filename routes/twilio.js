@@ -140,8 +140,8 @@ router.get('/send-texts', async (req, res) => {
         .create({
           body: textBody,
           messagingServiceSid: process.env.TWILIO_SERVICE_SID,
-          // to: Phone,
-          to: '530-551-8112',
+          to: Phone,
+          // to: '530-551-8112',
           // to: Phone
         })
         .then(message => {
