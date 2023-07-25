@@ -288,25 +288,25 @@ router.post('/confirmation-email', async (req, res) => {
     }
 
     //gets date/time 5 mins before startDate
-    const textNotifyDate = new Date(startDate.getTime() - (5 * 60 * 1000))
+    // const textNotifyDate = new Date(startDate.getTime() - (5 * 60 * 1000))
     
-    const job = await axios({
-        method: 'post',
-        url: `${process.env.BASE_URL}/texts`,
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${access_token}`
-        },
-        data: {
-            "FromPhoneNumberId": 1,
-            "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://rb.gy/clhwr1 \n\n Reply STOP to unsubscribe`,
-            // "Message": `Hello ${Recipient_Name}\nIt's your gosh darn time to pray`,
-            "StartDate": toIsoString(textNotifyDate),
-            "ToPhoneNumbers": [parsedPhoneNumber]
-        }
-    })
-        .then(response => response.data)
-        .catch(err => console.error(err))
+    // const job = await axios({
+    //     method: 'post',
+    //     url: `${process.env.BASE_URL}/texts`,
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${access_token}`
+    //     },
+    //     data: {
+    //         "FromPhoneNumberId": 1,
+    //         "Message": `🙏 Hello ${Recipient_Name}\nIt's your time to pray!\n\n🏡❤️ Our Hearts & Homes\n⛪️ The Church\n✝️ Salvations\n🌱 Our State\n🌎 Our Nation\n🌍 All the Earth\n⛪️ Your Church\n\nFull prayer guide BELOW!\n⬇️ ⬇️\n\n https://rb.gy/clhwr1 \n\n Reply STOP to unsubscribe`,
+    //         // "Message": `Hello ${Recipient_Name}\nIt's your gosh darn time to pray`,
+    //         "StartDate": toIsoString(textNotifyDate),
+    //         "ToPhoneNumbers": [parsedPhoneNumber]
+    //     }
+    // })
+    //     .then(response => response.data)
+    //     .catch(err => console.error(err))
 
     axios({
         method: 'post',
