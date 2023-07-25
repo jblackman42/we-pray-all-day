@@ -5,6 +5,7 @@ const qs = require('qs');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
+const telnyx = require('telnyx')(process.env.TELNYX_API_KEY);
 
 const getAccessToken = async () => {
   const data = await axios({
@@ -112,66 +113,64 @@ router.get('/send-texts', async (req, res) => {
   
   if (!ids) return res.status(400).send({err: 'no prayer schedule ids provided'}).end();
 
-  try {
-    const updatedPrayers = [];
-    const currPrayers = await axios({
-      method: 'get',
-      url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
-      params: {
-        '$filter': `Prayer_Schedule_ID IN ${ids} AND Message_SID IS NULL`,
-        '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Last_Name], Prayer_Schedules.[Start_Date], Phone, WPAD_Community_ID_Table.[Reminder_Text], Message_Status, Message_SID`,
-      },
-      headers: {
-        'Authorization': `Bearer ${await getAccessToken()}`,
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.data)
-  
-    
-    for (const prayer of currPrayers) {
-      const { First_Name, Last_Name, Start_Date, Message_SID, Phone, Prayer_Community_ID, Company_Name, Reminder_Text } = prayer;
-
-      const defaultPrayerPoints = 'Our Hearts & Homes\nThe Church\nSalvations\nOur State\nOur Nation\nAll the Earth\nYour Church'
-
-      const textBody = `Hi ${First_Name}! It's your time to pray!\nHere are some things to pray about:\n\n${Reminder_Text || defaultPrayerPoints}\n\nAccess the full prayer guide here:\nhttps://rb.gy/clhwr1\n\nThis text reminder is brought to you by We Pray All Day.\nReply 'STOP' to unsubscribe.`;
-      
-      await client.messages
-        .create({
-          body: textBody,
-          // messagingServiceSid: process.env.TWILIO_SERVICE_SID,
-          from: process.env.TWILIO_NUMBER,
-          // to: Phone,
-          to: '530-551-8112',
-          // to: Phone
-        })
-        .then(message => {
-          prayer.Message_SID = message.sid;
-          prayer.Message_Status = 2;
-          updatedPrayers.push(prayer)
-        })
-        .catch(err => {
-          console.error(err)
-        })
+  const updatedPrayers = [];
+  const currPrayers = await axios({
+    method: 'get',
+    url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
+    params: {
+      '$filter': `Prayer_Schedule_ID IN ${ids} AND Message_SID IS NULL`,
+      '$select': `Prayer_Schedule_ID, Prayer_Schedules.[First_Name], Prayer_Schedules.[Last_Name], Prayer_Schedules.[Start_Date], Phone, WPAD_Community_ID_Table.[Reminder_Text], Message_Status, Message_SID`,
+    },
+    headers: {
+      'Authorization': `Bearer ${await getAccessToken()}`,
+      'Content-Type': 'application/json'
     }
+  })
+    .then(response => response.data)
   
     
-    // update records in MP
-    await axios({
-      method: 'put',
-      url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
-      data: updatedPrayers,
-      headers: {
-        'Authorization': `Bearer ${await getAccessToken()}`,
-        'Content-Type': 'application/json'
-      }
-    })
-  
-    res.send(updatedPrayers);
-  } catch (error) {
-    console.error(error)
-    res.status(500).send(error).end();
+  for (const prayer of currPrayers) {
+    const { First_Name, Last_Name, Start_Date, Message_SID, Phone, Prayer_Community_ID, Company_Name, Reminder_Text } = prayer;
+
+    const defaultPrayerPoints = 'Our Hearts & Homes\nThe Church\nSalvations\nOur State\nOur Nation\nAll the Earth\nYour Church'
+
+    const textBody = `Hi ${First_Name}! It's your time to pray!\nHere are some things to pray about:\n\n${Reminder_Text || defaultPrayerPoints}\n\nAccess the prayer guide here:\nhttps://weprayallday.com/guide\n\nThis text reminder is brought to you by We Pray All Day.\nReply 'STOP' to unsubscribe.`;
+
+    await telnyx.messages
+      .create({
+        'from': process.env.TELNYX_PHONE_NUMBER,
+        'to': `+1${Phone.split('-').join('')}`,
+        'text': textBody
+      })
+      .then(message => {
+        prayer.Message_SID = message.data.id;
+        prayer.Message_Status = 3;
+      })
+      .catch(err => {
+        // console.log(err)
+        prayer.Message_Status = 4;
+      })
+    
+    updatedPrayers.push(prayer)
   }
+
+  // update records in MP
+  await axios({
+    method: 'put',
+    url: 'https://my.pureheart.org/ministryplatformapi/tables/Prayer_Schedules',
+    data: updatedPrayers,
+    headers: {
+      'Authorization': `Bearer ${await getAccessToken()}`,
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(() => {
+      res.send(updatedPrayers);
+    })
+    .catch(err => {
+      res.status(500).send({error: 'Failed to updated prayer schedules. Try again later.'}).end();
+    })
+
 })
 
 
@@ -205,12 +204,9 @@ router.get('/daily-texts', async (req, res) => {
       
       await client.messages
         .create({
-          body: textBody,
-          // messagingServiceSid: process.env.TWILIO_SERVICE_SID,
-          from: process.env.TWILIO_NUMBER,
-          // to: Phone,
-          to: '530-551-8112',
-          // to: '720-984-7345',
+          'from': process.env.TELNYX_PHONE_NUMBER,
+          'to': Phone,
+          'text': textBody
         })
     }
 
