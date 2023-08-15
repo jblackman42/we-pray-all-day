@@ -44,7 +44,6 @@ app.use("/assets",express.static(__dirname + "/views/assets"));
 const port = process.env.PORT || 3000;
 
 //imported functions
-const {populate} = require('./populate')
 
 //navigation routing
 app.use('/', require('./routes/index'))

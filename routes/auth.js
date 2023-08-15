@@ -100,7 +100,11 @@ router.get('/group', ensureAuthenticated, async (req, res) => {
         
         const group = await axios({
             method: 'get',
-            url: `${process.env.BASE_URL}/tables/Prayer_Communities?$filter=Contact_ID=${user.ext_Contact_ID}`,
+            url: `${process.env.BASE_URL}/tables/WPAD_Authorized_Users`,
+            params: {
+                $select: 'WPAD_Authorized_Users.[user_ID], WPAD_Community_ID_Table.[WPAD_Community_ID],WPAD_Community_ID_Table.[Community_Name], WPAD_Community_ID_Table.[Address], WPAD_Community_ID_Table.[City], WPAD_Community_ID_Table.[State], WPAD_Community_ID_Table.[Zip], WPAD_Community_ID_Table.[Start_Date], WPAD_Community_ID_Table.[End_Date], WPAD_Community_ID_Table.[Reminder_Text]',
+                $filter: `user_ID=${user.userid}`
+            },
             headers: {
                 "Content-Type": "Application/JSON",
                 "Authorization": `Bearer ${access_token}`
@@ -110,30 +114,35 @@ router.get('/group', ensureAuthenticated, async (req, res) => {
 
         if (!group) return res.status(403).send(null).end();
 
-        const Contact = await axios({
-            method: 'get',
-            url: `${process.env.BASE_URL}/tables/Contacts?$filter=Contact_ID=${group.Contact_ID}`,
-            headers: {
-                "Content-Type": "Application/JSON",
-                "Authorization": `Bearer ${access_token}`
-            }
-        })
-            .then(response => response.data[0])
+        const Contact = null;
+        // await axios({
+        //     method: 'get',
+        //     url: `${process.env.BASE_URL}/tables/Contacts?$filter=Contact_ID=${group.Contact_ID}`,
+        //     headers: {
+        //         "Content-Type": "Application/JSON",
+        //         "Authorization": `Bearer ${access_token}`
+        //     }
+        // })
+        //     .then(response => response.data[0])
 
-        const Address = await axios({
-            method: 'get',
-            url: `${process.env.BASE_URL}/tables/Addresses?$filter=Address_ID=${group.Address_ID}`,
-            headers: {
-                "Content-Type": "Application/JSON",
-                "Authorization": `Bearer ${access_token}`
-            }
-        })
-            .then(response => response.data[0])
+        const Address = null;
+        // await axios({
+        //     method: 'get',
+        //     url: `${process.env.BASE_URL}/tables/Addresses?$filter=Address_ID=${group.Address_ID}`,
+        //     headers: {
+        //         "Content-Type": "Application/JSON",
+        //         "Authorization": `Bearer ${access_token}`
+        //     }
+        // })
+        //     .then(response => response.data[0])
             
         const Prayer_Schedules = await axios({
             method: 'get',
             // url: `${process.env.BASE_URL}/tables/Prayer_Schedules?$filter=Community_ID=`,
-            url: `${process.env.BASE_URL}/tables/Prayer_Schedules?$filter=Prayer_Community_ID=${group.Prayer_Community_ID} AND YEAR(Start_Date) >= YEAR(GETDATE()) AND MONTH(Start_Date) >= MONTH(GETDATE())-1`,
+            url: `${process.env.BASE_URL}/tables/Prayer_Schedules`,
+            params: {
+                $filter: `WPAD_Community_ID=${group.WPAD_Community_ID} AND YEAR(Start_Date) >= YEAR(GETDATE()) AND MONTH(Start_Date) >= MONTH(GETDATE())-1`
+            },
             headers: {
                 "Content-Type": "Application/JSON",
                 "Authorization": `Bearer ${access_token}`
@@ -143,6 +152,7 @@ router.get('/group', ensureAuthenticated, async (req, res) => {
 
         res.status(200).send(JSON.stringify({group: group, roster: Prayer_Schedules, contact: Contact, address: Address})).end();
     } catch(err) {
+        console.log(err)
         res.status(500).send({err: err}).end();
     }
 })

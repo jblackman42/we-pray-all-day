@@ -117,7 +117,7 @@
 
             const data2 = await axios({
                 method: 'get',
-                url: `/api/v1/reservations?id=${group.Prayer_Community_ID}`
+                url: `/api/v1/reservations?id=${group.WPAD_Community_ID}`
             })
                 .then(response => response.data);
 
@@ -136,10 +136,10 @@
 
         update = () => {
             // contact information
-            const {Nickname, Last_Name, Email_Address, Mobile_Phone} = this.contact;
+            // const {Nickname, Last_Name, Email_Address, Mobile_Phone} = this.contact;
             // church information
-            const {Company_Name} = this.contact;
-            const {Address_Line_1, City, Postal_Code, 'State/Region': State} = this.address;
+            // const {Company_Name} = this.contact;
+            // const {Address_Line_1, City, Postal_Code, 'State/Region': State} = this.address;
             // prayer information
             const {Prayer_Points, Pattern} = this.group;
 
